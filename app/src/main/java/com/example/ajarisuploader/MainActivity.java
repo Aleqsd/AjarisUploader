@@ -3,16 +3,12 @@ package com.example.ajarisuploader;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,43 +27,22 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-
         // Get intent, action and MIME type
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
 
-        //TODO gerer les tableaux quand multiples et les videos+images
-
         if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if (type.startsWith("image/")) {
-                handleSendImage(intent); // Handle single image being sent
-                Intent uploadIntent = new Intent(this, UploadActivity.class);
-                Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                uploadIntent.putExtra("URI", imageUri);
-                startActivity(uploadIntent);
-            }
+            Intent uploadIntent = new Intent(this, UploadActivity.class);
+            Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            uploadIntent.putExtra("URI", imageUri);
+            startActivity(uploadIntent);
+
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-            handleSendMultipleImages(intent); // Handle single image being sent
             Intent uploadIntent = new Intent(this, UploadActivity.class);
             ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
             uploadIntent.putExtra("URI", imageUris);
             startActivity(uploadIntent);
-        }
-    }
-
-    void handleSendImage(Intent intent) {
-        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
-            Log.i("TEST", imageUri.toString());
-        }
-    }
-
-    void handleSendMultipleImages(Intent intent) {
-        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-        if (imageUris != null) {
-            for (Uri uri : imageUris)
-                Log.i("TEST", uri.toString());
         }
     }
 }
