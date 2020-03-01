@@ -1,0 +1,7 @@
+
+C
+java:S1604"(Make this anonymous inner class a lambda(¨É¬Õùÿÿÿÿ
+{
+java:S1450"eRemove the "notificationsViewModel" field and declare it as a local variable in the relevant methods.(êÅ³³
+T
+java:S1172"9Remove this unused method parameter "savedInstanceState".(©ó‘ãøÿÿÿÿ
