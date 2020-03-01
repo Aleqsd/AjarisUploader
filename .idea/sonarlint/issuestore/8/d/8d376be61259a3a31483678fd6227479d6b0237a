@@ -1,7 +1,7 @@
 
 C
 java:S1604"(Make this anonymous inner class a lambda(öÔ°Æýÿÿÿÿ
-w
-java:S1450"\Remove the "homeViewModel" field and declare it as a local variable in the relevant methods.(¿ž­¶üÿÿÿÿ
 T
 java:S1172"9Remove this unused method parameter "savedInstanceState".(©ó‘ãøÿÿÿÿ
+w
+java:S1450"\Remove the "homeViewModel" field and declare it as a local variable in the relevant methods.(¿ž­¶üÿÿÿÿ

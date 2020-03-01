@@ -14,7 +14,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,16 +48,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(uploadIntent);
             }
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-            Log.i("INTENT", Objects.requireNonNull(intent.getParcelableExtra(Intent.EXTRA_STREAM)));
-            if (type.startsWith("image/")) {
-                handleSendMultipleImages(intent); // Handle single image being sent
-                Intent uploadIntent = new Intent(this, UploadActivity.class);
-                ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-                uploadIntent.putExtra("URI", imageUris);
-                startActivity(uploadIntent);
-            }
-        } else {
-            // Handle other intents, such as being started from the home screen
+            handleSendMultipleImages(intent); // Handle single image being sent
+            Intent uploadIntent = new Intent(this, UploadActivity.class);
+            ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            uploadIntent.putExtra("URI", imageUris);
+            startActivity(uploadIntent);
         }
     }
 

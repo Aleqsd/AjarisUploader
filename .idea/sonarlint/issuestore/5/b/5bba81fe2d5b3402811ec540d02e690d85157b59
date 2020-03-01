@@ -1,7 +1,7 @@
 
-|
-java:S1450"aRemove the "dashboardViewModel" field and declare it as a local variable in the relevant methods.(ֵכ€תÿÿÿÿ
-T
-java:S1172"9Remove this unused method parameter "savedInstanceState".(©ף‘דרÿÿÿÿ
 C
 java:S1604"(Make this anonymous inner class a lambda(׃‰תר‏ÿÿÿÿ
+T
+java:S1172"9Remove this unused method parameter "savedInstanceState".(©ף‘דרÿÿÿÿ
+|
+java:S1450"aRemove the "dashboardViewModel" field and declare it as a local variable in the relevant methods.(ֵכ€תÿÿÿÿ
