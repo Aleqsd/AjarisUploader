@@ -10,12 +10,19 @@
         android:layout_height="match_parent"
         android:text="Hello" />
 
-    <Button
+    <ImageButton
+        android:id="@+id/button"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background = "@drawable/roundedbutton"
-        android:text="Test"
-    />
+        android:src="@drawable/plus_icon"
+        android:background="@drawable/roundedbutton"
+        android:padding="20dp"
+        android:adjustViewBounds="true"
+        android:elevation="3dp"
+        android:scaleType="centerInside"
+        android:layout_marginBottom="70dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="bottom|right"/>
 
 
 </FrameLayout>
