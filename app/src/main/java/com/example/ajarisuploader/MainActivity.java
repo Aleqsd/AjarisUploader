@@ -3,6 +3,8 @@ package com.example.ajarisuploader;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -44,5 +46,10 @@ public class MainActivity extends AppCompatActivity {
             uploadIntent.putExtra("URI", imageUris);
             startActivity(uploadIntent);
         }
+    }
+
+    public void openAddProfile(View view) {
+        Intent intent = new Intent(MainActivity.this, AddProfile.class);
+        startActivity(intent);
     }
 }

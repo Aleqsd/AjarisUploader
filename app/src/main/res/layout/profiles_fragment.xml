@@ -3,26 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Profiles">
 
-    <TextView
+    <ListView
+        android:id="@+id/profiles_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="wrap_content" >
+    </ListView>
 
-    <ImageButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@drawable/plus_icon"
-        android:background="@drawable/roundedbutton"
-        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:maxImageSize="50dp"
+        app:backgroundTint="@android:color/holo_blue_light"
+        android:tint="@android:color/white"
+        android:src="@android:drawable/ic_input_add"
         android:adjustViewBounds="true"
+        android:scaleType="center"
         android:elevation="3dp"
-        android:scaleType="centerInside"
         android:layout_marginBottom="70dp"
         android:layout_marginRight="10dp"
-        android:layout_gravity="bottom|right"/>
+        android:layout_gravity="bottom|end"
+        android:onClick="openAddProfile"
+        />
 
 
 </FrameLayout>
