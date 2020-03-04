@@ -7,19 +7,42 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 
 /***
  * Activité visée à s'ouvrir par l'intent du share
  */
 public class UploadActivity extends AppCompatActivity {
+
+    private static final String TAG = "UPL";
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +50,8 @@ public class UploadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upload);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        TextView textView = findViewById(R.id.urisTextView);
+        textView = findViewById(R.id.urisTextView);
+        Button buttonUpload = findViewById(R.id.buttonUpload);
 
         Intent intent = getIntent();
         if (intent.getParcelableExtra("URI") != null) {
@@ -44,6 +68,50 @@ public class UploadActivity extends AppCompatActivity {
         } else
             Log.e("IntentError", "L'intent reçu est invalide");
 
+
+        buttonUpload.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                upload();
+            }
+        });
+
+    }
+
+    private void upload() {
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://demo-interne.ajaris.com/Demo/upCheck.do";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    String xmlStringWithoutN = response.replaceAll("\\s+", "");
+                    String xmlString = xmlStringWithoutN.substring(xmlStringWithoutN.indexOf(">") + 1);
+
+                    Document doc = convertStringToXMLDocument(xmlString);
+
+                    String errorCode = doc.getElementsByTagName("error-code").item(0).getTextContent();
+                    String errorMessage = doc.getElementsByTagName("error-message").item(0).getTextContent();
+
+                    textView.setText("Error Code : " + errorCode + " ; Error Message : " + errorMessage);
+                }, error -> textView.setText("That didn't work!"));
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+
+    private static Document convertStringToXMLDocument(String xmlString) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+            return builder.parse(new InputSource(new StringReader(xmlString)));
+        } catch (Exception e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+        }
+        return null;
     }
 
     private void showDemoNotification() {

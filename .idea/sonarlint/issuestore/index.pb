@@ -1,8 +1,6 @@
 
 Y
 )app/src/main/res/menu/bottom_nav_menu.xml,b\2\b2bdb93c5506261fbedb574044fb21ea44be597a
-Y
-)app/src/main/res/layout/activity_main.xml,7\6\76b07e40f24cce093536731477540f12e7da3cb6
 b
 2app/src/main/res/layout/fragment_notifications.xml,8\7\8731159a9e23e0b407066a25322caa8c70b6906f
 R
@@ -47,3 +45,19 @@ n
 >app/src/main/java/com/example/ajarisuploader/MainActivity.java,a\9\a98c113da113778153e5d20b522fa14021974889
 p
 @app/src/main/java/com/example/ajarisuploader/UploadActivity.java,6\e\6ebc6d81dda1c0ad6754bc0d3416a5184e7b4fb7
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+i
+9app/src/main/java/com/example/ajarisuploader/Profile.java,9\0\9030f5fa2b14148f53a3689ccc960d0808a27f5f
+p
+@app/src/main/java/com/example/ajarisuploader/ProfileAdapter.java,c\7\c7a16f31146241acf42b733aae69e4f27caeb116
+j
+:app/src/main/java/com/example/ajarisuploader/Profiles.java,1\c\1c677037c23ace5a59bfce0da35f893f8e2aa047
+s
+Capp/src/main/java/com/example/ajarisuploader/ProfilesViewModel.java,c\6\c64e4c806e317445612320f6777335abd08ea5ac
+p
+@app/src/main/java/com/example/ajarisuploader/AboutViewModel.java,b\5\b5eca5a06abb6d4ec018d2799f585de1a149e70e
+o
+?app/src/main/java/com/example/ajarisuploader/FirstFragment.java,f\8\f8dbd505115a41be6ff2423045b3824a8254fc78
+l
+<app/src/main/java/com/example/ajarisuploader/AddProfile.java,f\f\fff5f13ef29de8a8f4236534c6842c4ee7ec1413

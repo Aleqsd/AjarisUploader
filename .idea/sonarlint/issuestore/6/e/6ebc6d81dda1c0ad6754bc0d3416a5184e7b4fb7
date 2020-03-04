@@ -1,0 +1,33 @@
+
+`
+java:S1128)">Remove this unused import 'javax.xml.parsers.DocumentBuilder'.(ƒ”¯¹ùÿÿÿÿ8˜á°¯Š.
+N
+java:S1128"1Remove this unused import 'org.w3c.dom.Document'.(Á§²“8˜á°¯Š.
+O
+java:S1128"-Remove this unused import 'org.w3c.dom.Node'.(ùŠÿËıÿÿÿÿ8˜á°¯Š.
+W
+java:S1128"5Remove this unused import 'android.view.MotionEvent'.(˜šËŞúÿÿÿÿ8òŒ®Š.
+U
+java:S1128"8Remove this unused import 'com.android.volley.Response'.(ˆïƒ 8ËüË®Š.
+n	java:S117’"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’±Ï8ÊË®Š.
+d
+java:S1128!"BRemove this unused import 'org.xmlpull.v1.XmlPullParserException'.(ã·§Çşÿÿÿÿ8ÑŠ¯Š.
+[
+java:S1128 "9Remove this unused import 'org.xmlpull.v1.XmlPullParser'.(úœÊ”ÿÿÿÿÿ8ÑŠ¯Š.
+s	java:S117“"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(—ıÓâøÿÿÿÿ8±¤²¯Š.
+R
+java:S1128$"0Remove this unused import 'java.io.IOException'.(ªº»Úıÿÿÿÿ8±¤²¯Š.
+b
+java:S1128""@Remove this unused import 'org.xmlpull.v1.XmlPullParserFactory'.(Öª‚ûÿÿÿÿ8±¤²¯Š.
+g
+java:S1128*"ERemove this unused import 'javax.xml.parsers.DocumentBuilderFactory'.(»·±Ñüÿÿÿÿ8±¤²¯Š.
+E
+java:S1172P"(Remove this unused method parameter "v".(¡é††8±¤²¯Š.
+m
+java:S1858`"K"response" is already a string, there's no need to call "toString()" on it.(‰”şüÿÿÿÿ8±¤²¯Š.
+O
+java:S2755i"-Disable XML external entity (XXE) processing.(ÂÿÕ‹ÿÿÿÿÿ8±¤²¯Š.
+I
+java:S10683"'Remove this unused "TAG" private field.(¹¥¿Ùûÿÿÿÿ8±¤²¯Š.
+Y	java:S125›"<This block of commented-out lines of code should be removed.(ÁÊâû8±¤²¯Š.
+^	java:S125 "<This block of commented-out lines of code should be removed.(ç“Ğ˜ûÿÿÿÿ8±¤²¯Š.
