@@ -86,7 +86,7 @@ public class Profile {
 
     public static Profile stringToProfile(String profile) {
         String[] profileString = profile.split(";");
-        if(profileString.length < 6) {
+        if(profileString.length != 6) {
             return new Profile();
         }
         String name = profileString[0];

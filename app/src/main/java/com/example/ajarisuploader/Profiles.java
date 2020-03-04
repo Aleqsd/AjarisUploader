@@ -50,11 +50,9 @@ public class Profiles extends Fragment {
         // Create the adapter to convert the array to views
         ProfileAdapter adapter = new ProfileAdapter(getContext(), profiles);
 
-        ArrayList<Profile> savedProfiles = new ArrayList<Profile>();
-        savedProfiles = Preferences.getPreferences(getContext());
-        for (Profile savedProfile : savedProfiles) {
-            Log.println(Log.INFO, "debug", savedProfile.toString());
-            adapter.add(savedProfile);
+        profiles = Preferences.getPreferences(getContext());
+        for (Profile p : profiles) {
+            adapter.add(p);
         }
         // Attach the adapter to a ListView
         ListView listView = (ListView) this.view.findViewById(R.id.profiles_list);
