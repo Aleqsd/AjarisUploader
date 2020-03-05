@@ -14,7 +14,7 @@ public class Preferences {
 
     public static ArrayList<Profile> getPreferences(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(AjarisPREFERENCES, Context.MODE_PRIVATE);
-        ArrayList<Profile> profiles = new ArrayList<Profile>();
+        ArrayList<Profile> profiles = new ArrayList<>();
         String[] profilesString = sharedPref.getString(AjarisKEY, "").split(",");
         for (int i = 0; i < profilesString.length; i++) {
             profiles.add(Profile.stringToProfile(profilesString[i]));
@@ -34,6 +34,7 @@ public class Preferences {
     }
 
     public static void addPreference(Profile profile, Context context) {
+        if(profile.isEmpty()) return;
         ArrayList<Profile> profiles = Preferences.getPreferences(context);
         if(profiles.get(0).isEmpty()) {
             profiles.set(0, profile);
@@ -44,7 +45,13 @@ public class Preferences {
     }
 
     public static void removePreference(Profile profile, Context context) {
-        // TODO
+        ArrayList<Profile> profiles = Preferences.getPreferences(context);
+        if(profiles.get(0).isEmpty()) {
+            Preferences.removeAllPreferences(context);
+        } else {
+            profiles.remove(profile);
+        }
+        Preferences.savePreferences(profiles, context);
     }
 
     public static void removeAllPreferences(Context context) {

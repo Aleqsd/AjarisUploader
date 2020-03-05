@@ -39,7 +39,6 @@ public class GetRequests extends AsyncTask<String, Void, String> {
 
             result = stringBuilder.toString();
         } catch (IOException e) {
-            e.printStackTrace();
             result = null;
         }
         return result;

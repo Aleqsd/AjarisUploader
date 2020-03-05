@@ -24,4 +24,11 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <!-- Strings used for add profile form -->
+    <string name="hint_name">Nom du profil</string>
+    <string name="hint_url">URL</string>
+    <string name="hint_login">Identifiant</string>
+    <string name="hint_pwd">Mot de passe</string>
+
 </resources>
