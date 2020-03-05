@@ -1,6 +1,8 @@
 package com.example.ajarisuploader;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,6 +25,7 @@ public class AddProfile extends AppCompatActivity {
     private final String LOGIN = "/upLogin.do";
     private final String LOGOUT = "/upLogout.do";
     private final String CONFIG_IMPORT = "/upSetConfigImport.do";
+    private Document lastDocument = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +34,22 @@ public class AddProfile extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        System.out.println("ADD PROFILE ACTIVITY");
-        if(this.urlIsValid("https://demo-interne.ajaris.com/Demo")) {
-            System.out.println("URL IS VALID");
-        } else {
-            System.out.println("URL IS INVALID");
-        }
+        Button addButton = (Button) findViewById(R.id.button_add);
+        addButton.setOnClickListener(v -> {
+            Preferences.addPreference(new Profile(), AddProfile.this);
+            Intent intent = new Intent(AddProfile.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            AddProfile.this.finish();
+        });
+
+        Button cancelButton = (Button) findViewById(R.id.button_cancel);
+        cancelButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AddProfile.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            AddProfile.this.finish();
+        });
     }
 
     private boolean urlIsValid(String url) {
@@ -45,8 +58,27 @@ public class AddProfile extends AppCompatActivity {
         try {
             GetRequests getRequest = new GetRequests();
             String result = getRequest.execute(url + this.CHECK).get();
-            isValid = this.getErrorCode(this.readXML(result)) == 0 ? true : false;
+            this.lastDocument = this.readXML(result);
+            isValid = this.getErrorCode(this.lastDocument) == 0 ? true : false;
         } catch (InterruptedException e) {
+            e.printStackTrace();
+            isValid = false;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private boolean credentialsAreValid(String url, String login, String pwd) {
+        url = url.replaceAll("/$", "");
+        boolean isValid;
+        try {
+            GetRequests getRequest = new GetRequests();
+            String result = getRequest.execute(url + this.LOGIN + "?pseudo=" + login + "&password=" + pwd + "&ajaupmo=ajaupmo").get();
+            this.lastDocument = this.readXML(result);
+            isValid = this.getErrorCode(this.lastDocument) == 0 ? true : false;
+        }  catch (InterruptedException e) {
             e.printStackTrace();
             isValid = false;
         } catch (ExecutionException e) {

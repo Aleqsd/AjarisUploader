@@ -47,7 +47,6 @@ public class Profiles extends Fragment {
         Preferences.removeAllPreferences(getContext());
         Preferences.addPreference(profile, getContext());
         Preferences.addPreference(profile2, getContext());
-        // Create the adapter to convert the array to views
         ProfileAdapter adapter = new ProfileAdapter(getContext(), profiles);
 
         profiles = Preferences.getPreferences(getContext());
