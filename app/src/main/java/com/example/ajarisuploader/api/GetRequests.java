@@ -1,4 +1,4 @@
-package com.example.ajarisuploader;
+package com.example.ajarisuploader.api;
 
 import android.os.AsyncTask;
 
