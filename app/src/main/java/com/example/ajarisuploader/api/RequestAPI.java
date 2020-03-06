@@ -47,4 +47,33 @@ public class RequestAPI {
         return document;
     }
 
+    public static boolean isProfilValid(String url, String jsessionid, String ptoken, String config) {
+        url = url.replaceAll("/$", "");
+        boolean isValid;
+        try {
+            GetRequests getRequest = new GetRequests();
+            String result = getRequest.execute(url + CONFIG_IMPORT + "?jsessionid=" + jsessionid + "&ptoken=" + ptoken + "&config" + config +"&ajaupmo=ajaupmo").get();
+            Document lastDocument = XMLParser.readXML(result);
+            isValid = XMLParser.getErrorCode(lastDocument) == 0;
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    public static boolean isLoggedOut(String url, String jsessionid) {
+        url = url.replaceAll("/$", "");
+        boolean isValid;
+        try {
+            GetRequests getRequest = new GetRequests();
+            String result = getRequest.execute(url + LOGOUT + "?jsessionid=" + jsessionid).get();
+            Document lastDocument = XMLParser.readXML(result);
+            isValid = XMLParser.getCode(lastDocument) == 0;
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            isValid = false;
+        }
+        return isValid;
+    }
 }

@@ -49,6 +49,21 @@ public class XMLParser {
         return errorCode;
     }
 
+    public static int getCode(Document doc) {
+        if (doc == null) return -10;
+        int errorCode = -1;
+
+        NodeList nList = doc.getElementsByTagName("result");
+        Node nNode = nList.item(0);
+
+        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element eElement = (Element) nNode;
+            errorCode = Integer.parseInt(eElement.getElementsByTagName("code").item(0).getTextContent());
+        }
+        return errorCode;
+    }
+
+
     public static String getErrorMessage(Document doc) {
         if (doc == null) return "";
         String errorMessage = "";
@@ -61,6 +76,20 @@ public class XMLParser {
             errorMessage = eElement.getElementsByTagName("error-message").item(0).getTextContent();
         }
         return errorMessage;
+    }
+
+    public static String getConfig(Document doc) {
+        if (doc == null) return "";
+        String configValue = "";
+
+        NodeList nList = doc.getElementsByTagName("result");
+        Node nNode = nList.item(0);
+
+        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element eElement = (Element) nNode;
+            configValue = eElement.getElementsByTagName("imports").item(0).getFirstChild().getFirstChild().getNodeValue();
+        }
+        return configValue;
     }
 
     public static String getDocumentTag(Document doc, String tag) {
