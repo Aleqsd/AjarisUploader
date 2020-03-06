@@ -6,11 +6,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Profiles">
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profiles_list"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-    </ListView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button"

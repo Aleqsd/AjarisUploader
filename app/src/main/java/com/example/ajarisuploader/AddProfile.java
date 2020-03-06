@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -25,7 +27,10 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.ExecutionException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -56,13 +61,21 @@ public class AddProfile extends AppCompatActivity {
         Button addButton = findViewById(R.id.button_add);
         Button cancelButton = findViewById(R.id.button_cancel);
 
-        List<Integer> spinnerArray = new ArrayList<>();
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
+        List<String> basesArray = new ArrayList<>();
+        ArrayAdapter<String> adapterBases = new ArrayAdapter<>(
                 AddProfile.this,
                 android.R.layout.simple_spinner_item,
-                spinnerArray
+                basesArray
         );
-        inputBase.setAdapter(adapter);
+        inputBase.setAdapter(adapterBases);
+
+        List<String> importsArray = new ArrayList<>();
+        ArrayAdapter<String> adapterImports = new ArrayAdapter<>(
+                AddProfile.this,
+                android.R.layout.simple_spinner_item,
+                importsArray
+        );
+        inputImport.setAdapter(adapterImports);
 
         inputUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if(!hasFocus) {
@@ -86,8 +99,14 @@ public class AddProfile extends AppCompatActivity {
                     if(this.credentialsAreValid(inputUrl.getText().toString(), inputLogin.getText().toString(), inputPwd.getText().toString())) {
                         this.isLogged = true;
                         addButton.setEnabled(true);
-                        spinnerArray.add(10);
-                        spinnerArray.add(11);
+                        List<String> bases = getMultipleDocumentTag(this.lastDocument, "bases");
+                        List<String> importProfile = getMultipleDocumentTag(this.lastDocument, "imports");
+                        for(int i = 0; i < bases.size(); i++) {
+                            basesArray.add(bases.get(i));
+                        }
+                        for(int i = 0; i < importProfile.size(); i++) {
+                            importsArray.add(importProfile.get(i));
+                        }
                     } else {
                         addButton.setEnabled(false);
                     }
@@ -101,8 +120,14 @@ public class AddProfile extends AppCompatActivity {
                     if(this.credentialsAreValid(inputUrl.getText().toString(), inputLogin.getText().toString(), inputPwd.getText().toString())) {
                         this.isLogged = true;
                         addButton.setEnabled(true);
-                        spinnerArray.add(10);
-                        spinnerArray.add(11);
+                        List<String> bases = getMultipleDocumentTag(this.lastDocument, "bases");
+                        List<String> importProfile = getMultipleDocumentTag(this.lastDocument, "imports");
+                        for(int i = 0; i < bases.size(); i++) {
+                            basesArray.add(bases.get(i));
+                        }
+                        for(int i = 0; i < importProfile.size(); i++) {
+                            importsArray.add(importProfile.get(i));
+                        }
                     } else {
                         addButton.setEnabled(false);
                     }
@@ -111,6 +136,9 @@ public class AddProfile extends AppCompatActivity {
         });
 
         addButton.setOnClickListener(v -> {
+            if(this.isLogged) {
+                // TODO: Logout
+            }
             Profile profile = new Profile(
                     inputName.getText().toString(),
                     inputLogin.getText().toString(),
@@ -172,7 +200,7 @@ public class AddProfile extends AppCompatActivity {
         if(xmlString == null) return null;
         xmlString = "<result>" + xmlString.split("<result>")[1];
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = null;
+        DocumentBuilder builder;
         try
         {
             builder = factory.newDocumentBuilder();
@@ -221,8 +249,23 @@ public class AddProfile extends AppCompatActivity {
     }
 
     private List<String> getMultipleDocumentTag(Document doc, String tag) {
-        // TODO: Return list items
-        return null;
+        List<String> results = new ArrayList<>();
+        try {
+            NodeList nList = doc.getElementsByTagName(tag);
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    for(int name = 0; name < eElement.getElementsByTagName("name").getLength(); name++) {
+                        //eElement.getAttribute("num");
+                        results.add(eElement.getElementsByTagName("name").item(name).getTextContent());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            results.clear();
+        }
+        return results;
     }
 
 }

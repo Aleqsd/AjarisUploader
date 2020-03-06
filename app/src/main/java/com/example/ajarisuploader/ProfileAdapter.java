@@ -4,31 +4,60 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class ProfileAdapter extends ArrayAdapter<Profile> {
-    public ProfileAdapter(Context context, ArrayList<Profile> users) {
-        super(context, 0, users);
+public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileHolder> {
+    private ArrayList<Profile> profileList;
+    private Context mContext;
+
+    public ProfileAdapter(Context context, ArrayList<Profile> contactsList) {
+        this.profileList = contactsList;
+        this.mContext = context;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
-        Profile profile = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_profile, parent, false);
+    public ProfileHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+
+        View view = layoutInflater.inflate(R.layout.item_profile, parent, false);
+        return new ProfileHolder(view);
+    }
+
+    @Override
+    public int getItemCount() {
+        return profileList == null ? 0 : profileList.size();
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ProfileHolder holder, final int position) {
+        final Profile profile = profileList.get(position);
+        holder.setProfileName(profile.getName());
+        holder.setProfileLogin(profile.getLogin());
+    }
+
+    public class ProfileHolder extends RecyclerView.ViewHolder {
+
+        private TextView profileName;
+        private TextView profileLogin;
+
+        public ProfileHolder(View itemView) {
+            super(itemView);
+
+            profileName = itemView.findViewById(R.id.name);
+            profileLogin = itemView.findViewById(R.id.login);
         }
-        // Lookup view for data population
-        TextView profileName = (TextView) convertView.findViewById(R.id.name);
-        TextView profileLogin = (TextView) convertView.findViewById(R.id.login);
-        // Populate the data into the template view using the data object
-        profileName.setText(profile.getName());
-        profileLogin.setText(profile.getLogin());
-        // Return the completed view to render on screen
-        return convertView;
+
+        public void setProfileName(String name) {
+            profileName.setText(name);
+        }
+
+        public void setProfileLogin(String login) {
+            profileLogin.setText(login);
+        }
     }
 }
