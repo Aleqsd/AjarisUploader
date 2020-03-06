@@ -31,4 +31,8 @@
     <string name="hint_login">Identifiant</string>
     <string name="hint_pwd">Mot de passe</string>
 
+    <!-- Strings used for delete profile -->
+    <string name="action_delete_profile">Profil supprimé</string>
+    <string name="action_delete_undo">ANNULER</string>
+
 </resources>

@@ -30,7 +30,25 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileH
 
     @Override
     public int getItemCount() {
-        return profileList == null ? 0 : profileList.size();
+        return this.profileList == null ? 0 : this.profileList.size();
+    }
+
+
+    public void removeItem(int position) {
+        Profile profile = this.profileList.get(position);
+        Preferences.removePreference(profile, this.mContext);
+        this.profileList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(Profile item, int position) {
+        this.profileList.add(position, item);
+        Preferences.addPreference(item, this.mContext);
+        notifyItemInserted(position);
+    }
+
+    public ArrayList<Profile> getData() {
+        return this.profileList;
     }
 
     @Override

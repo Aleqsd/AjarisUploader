@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Preferences {
@@ -17,7 +18,9 @@ public class Preferences {
         ArrayList<Profile> profiles = new ArrayList<>();
         String[] profilesString = sharedPref.getString(AjarisKEY, "").split(",");
         for (int i = 0; i < profilesString.length; i++) {
-            profiles.add(Profile.stringToProfile(profilesString[i]));
+            if(!Profile.stringToProfile(profilesString[i]).isEmpty()) {
+                profiles.add(Profile.stringToProfile(profilesString[i]));
+            }
         }
         return profiles;
     }
@@ -36,7 +39,9 @@ public class Preferences {
     public static void addPreference(Profile profile, Context context) {
         if(profile.isEmpty()) return;
         ArrayList<Profile> profiles = Preferences.getPreferences(context);
-        if(profiles.get(0).isEmpty()) {
+        if(profiles.isEmpty()) {
+            profiles.add(profile);
+        } else if(profiles.get(0).isEmpty()) {
             profiles.set(0, profile);
         } else {
             profiles.add(profile);
@@ -46,11 +51,19 @@ public class Preferences {
 
     public static void removePreference(Profile profile, Context context) {
         ArrayList<Profile> profiles = Preferences.getPreferences(context);
+        System.out.println(profiles);
         if(profiles.get(0).isEmpty()) {
             Preferences.removeAllPreferences(context);
         } else {
-            profiles.remove(profile);
+            for(int i = 0; i < profiles.size(); i++) {
+                if(profiles.get(i).equals(profile)) {
+                    profiles.remove(i);
+                    break;
+                }
+            }
         }
+        System.out.println(profile);
+        System.out.println(profiles);
         Preferences.savePreferences(profiles, context);
     }
 

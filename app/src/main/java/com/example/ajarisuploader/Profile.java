@@ -104,4 +104,13 @@ public class Profile {
         }
         return false;
     }
+
+    public boolean equals(Profile profile) {
+        return this.getName().equals(profile.getName()) &&
+               this.getLogin().equals(profile.getLogin()) &&
+                this.getUrl().equals(profile.getUrl()) &&
+                this.getPwd().equals(profile.getPwd()) &&
+                this.getImportProfile().equals(profile.getImportProfile()) &&
+                this.getBase() == profile.getBase();
+    }
 }
