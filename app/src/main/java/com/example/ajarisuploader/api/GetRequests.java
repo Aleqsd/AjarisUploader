@@ -20,7 +20,7 @@ public class GetRequests extends AsyncTask<String, Void, String> {
         String inputLine;
         try {
             URL url = new URL(stringUrl);
-            HttpURLConnection connection =(HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(REQUEST_METHOD);
             connection.setReadTimeout(READ_TIMEOUT);
             connection.setConnectTimeout(CONNECTION_TIMEOUT);
@@ -30,7 +30,7 @@ public class GetRequests extends AsyncTask<String, Void, String> {
             BufferedReader reader = new BufferedReader(streamReader);
             StringBuilder stringBuilder = new StringBuilder();
 
-            while((inputLine = reader.readLine()) != null){
+            while ((inputLine = reader.readLine()) != null) {
                 stringBuilder.append(inputLine);
             }
 
@@ -45,7 +45,7 @@ public class GetRequests extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String result){
+    protected void onPostExecute(String result) {
         super.onPostExecute(result);
     }
 }

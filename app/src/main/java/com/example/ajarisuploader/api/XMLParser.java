@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -76,8 +77,23 @@ public class XMLParser {
         return documentTag;
     }
 
-    public List<String> getMultipleDocumentTag(Document doc, String tag) {
-        // TODO: Return list items
-        return null;
+    public static List<String> getMultipleDocumentTag(Document doc, String tag) {
+        List<String> results = new ArrayList<>();
+        try {
+            NodeList nList = doc.getElementsByTagName(tag);
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    for (int name = 0; name < eElement.getElementsByTagName("name").getLength(); name++) {
+                        //eElement.getAttribute("num");
+                        results.add(eElement.getElementsByTagName("name").item(name).getTextContent());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            results.clear();
+        }
+        return results;
     }
 }

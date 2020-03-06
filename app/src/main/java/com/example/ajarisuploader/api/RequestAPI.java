@@ -40,7 +40,7 @@ public class RequestAPI {
             document = XMLParser.readXML(result);
             isValid = XMLParser.getErrorCode(document) == 0;
             if (!isValid) return null;
-        }  catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));
             return null;
         }
