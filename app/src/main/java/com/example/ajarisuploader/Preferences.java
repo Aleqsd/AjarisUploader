@@ -49,9 +49,32 @@ public class Preferences {
         Preferences.savePreferences(profiles, context);
     }
 
+    public static void addPreferenceToPosition(Profile profile, int position, Context context) {
+        if(profile.isEmpty()) return;
+        ArrayList<Profile> profiles = Preferences.getPreferences(context);
+        if(position > profiles.size()) return;
+        if(profiles.isEmpty()) {
+            profiles.add(profile);
+        } else if(position < profiles.size()){
+            ArrayList<Profile> p = new ArrayList<>();
+            for(int i = position; i < profiles.size(); i++) {
+                p.add(profiles.get(i));
+            }
+            profiles.set(position, profile);
+            for(int i = position + 1; i < profiles.size(); i++) {
+                profiles.remove(i);
+            }
+            for(int i = 0; i < p.size(); i++) {
+                profiles.add(p.get(i));
+            }
+        } else {
+            profiles.add(profile);
+        }
+        Preferences.savePreferences(profiles, context);
+    }
+
     public static void removePreference(Profile profile, Context context) {
         ArrayList<Profile> profiles = Preferences.getPreferences(context);
-        System.out.println(profiles);
         if(profiles.get(0).isEmpty()) {
             Preferences.removeAllPreferences(context);
         } else {
@@ -62,8 +85,16 @@ public class Preferences {
                 }
             }
         }
-        System.out.println(profile);
-        System.out.println(profiles);
+        Preferences.savePreferences(profiles, context);
+    }
+
+    public static void removePreferenceFromPosition(int position, Context context) {
+        ArrayList<Profile> profiles = Preferences.getPreferences(context);
+        if(profiles.get(0).isEmpty()) {
+            Preferences.removeAllPreferences(context);
+        } else {
+            profiles.remove(position);
+        }
         Preferences.savePreferences(profiles, context);
     }
 

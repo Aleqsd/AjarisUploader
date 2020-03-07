@@ -35,15 +35,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileH
 
 
     public void removeItem(int position) {
-        Profile profile = this.profileList.get(position);
-        Preferences.removePreference(profile, this.mContext);
+        Preferences.removePreferenceFromPosition(position, this.mContext);
         this.profileList.remove(position);
         notifyItemRemoved(position);
     }
 
     public void restoreItem(Profile item, int position) {
         this.profileList.add(position, item);
-        Preferences.addPreference(item, this.mContext);
+        Preferences.addPreferenceToPosition(item, position, this.mContext);
         notifyItemInserted(position);
     }
 

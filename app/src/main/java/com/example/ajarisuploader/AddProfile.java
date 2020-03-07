@@ -64,17 +64,14 @@ public class AddProfile extends AppCompatActivity {
                 } else {
                     inputLogin.setEnabled(false);
                     inputPwd.setEnabled(false);
-                    if (this.lastDocument != null) {
-                        Toast toast = Toast.makeText(AddProfile.this, XMLParser.getDocumentTag(this.lastDocument, "error-message"), Toast.LENGTH_LONG);
-                        toast.show();
-                    }
                 }
             }
         });
 
         inputLogin.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus && !inputPwd.getText().toString().equals("")) {
-                if (RequestAPI.getLoginInfos(inputUrl.getText().toString(), inputLogin.getText().toString(), inputPwd.getText().toString()) != null) {
+                this.lastDocument = RequestAPI.getLoginInfos(inputUrl.getText().toString(), inputLogin.getText().toString(), inputPwd.getText().toString());
+                if (this.lastDocument != null) {
                     this.isLogged = true;
                     addButton.setEnabled(true);
                     List<String> bases = XMLParser.getMultipleDocumentTag(this.lastDocument, "bases");
@@ -88,8 +85,9 @@ public class AddProfile extends AppCompatActivity {
         });
 
         inputPwd.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && !inputPwd.getText().toString().equals("")) {
-                if (RequestAPI.getLoginInfos(inputUrl.getText().toString(), inputLogin.getText().toString(), inputPwd.getText().toString()) != null) {
+            if (!hasFocus && !inputLogin.getText().toString().equals("")) {
+                this.lastDocument = RequestAPI.getLoginInfos(inputUrl.getText().toString(), inputLogin.getText().toString(), inputPwd.getText().toString());
+                if (this.lastDocument != null) {
                     this.isLogged = true;
                     addButton.setEnabled(true);
                     List<String> bases = XMLParser.getMultipleDocumentTag(this.lastDocument, "bases");
