@@ -2,6 +2,8 @@ package com.example.ajarisuploader.api;
 
 import android.util.Log;
 
+import com.example.ajarisuploader.Base;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -88,6 +90,26 @@ public class XMLParser {
                     for (int name = 0; name < eElement.getElementsByTagName("name").getLength(); name++) {
                         //eElement.getAttribute("num");
                         results.add(eElement.getElementsByTagName("name").item(name).getTextContent());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            results.clear();
+        }
+        return results;
+    }
+
+    public static List<Base> getBases(Document doc) {
+        List<Base> results = new ArrayList<>();
+        try {
+            NodeList nList = doc.getElementsByTagName("bases");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    for (int name = 0; name < eElement.getElementsByTagName("name").getLength(); name++) {
+                        results.add(new Base(Integer.parseInt(eElement.getElementsByTagName("name").item(name).getAttributes().getNamedItem("num").getNodeValue()),
+                                eElement.getElementsByTagName("name").item(name).getTextContent()));
                     }
                 }
             }

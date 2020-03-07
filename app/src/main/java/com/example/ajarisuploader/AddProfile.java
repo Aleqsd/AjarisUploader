@@ -23,6 +23,20 @@ public class AddProfile extends AppCompatActivity {
 
     private Document lastDocument = null;
     private boolean isLogged = false;
+    private List<Base> currentBases = new ArrayList<>();
+    List<String> importProfile = new ArrayList<>();
+
+    EditText inputName;
+    EditText inputUrl;
+    EditText inputLogin;
+    EditText inputPwd;
+    Spinner inputBase;
+    Spinner inputImport;
+    Button addButton;
+    Button cancelButton;
+
+    List<String> basesArray = new ArrayList<>();
+    List<String> importsArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,86 +45,71 @@ public class AddProfile extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        EditText inputName = findViewById(R.id.input_name);
-        EditText inputUrl = findViewById(R.id.input_url);
-        EditText inputLogin = findViewById(R.id.input_login);
-        EditText inputPwd = findViewById(R.id.input_pwd);
-        Spinner inputBase = findViewById(R.id.input_base);
-        Spinner inputImport = findViewById(R.id.input_import);
-        Button addButton = findViewById(R.id.button_add);
-        Button cancelButton = findViewById(R.id.button_cancel);
+        this.inputName = findViewById(R.id.input_name);
+        this.inputUrl = findViewById(R.id.input_url);
+        this.inputLogin = findViewById(R.id.input_login);
+        this.inputPwd = findViewById(R.id.input_pwd);
+        this.inputBase = findViewById(R.id.input_base);
+        this.inputImport = findViewById(R.id.input_import);
+        this.addButton = findViewById(R.id.button_add);
+        this.cancelButton = findViewById(R.id.button_cancel);
 
-        List<String> basesArray = new ArrayList<>();
         ArrayAdapter<String> adapterBases = new ArrayAdapter<>(
                 AddProfile.this,
                 android.R.layout.simple_spinner_item,
-                basesArray
+                this.basesArray
         );
-        inputBase.setAdapter(adapterBases);
+        this.inputBase.setAdapter(adapterBases);
 
-        List<String> importsArray = new ArrayList<>();
         ArrayAdapter<String> adapterImports = new ArrayAdapter<>(
                 AddProfile.this,
                 android.R.layout.simple_spinner_item,
-                importsArray
+                this.importsArray
         );
-        inputImport.setAdapter(adapterImports);
+        this.inputImport.setAdapter(adapterImports);
 
-        inputUrl.setOnFocusChangeListener((v, hasFocus) -> {
+        this.inputUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                if (RequestAPI.urlIsValid(inputUrl.getText().toString())) {
-                    inputLogin.setEnabled(true);
-                    inputPwd.setEnabled(true);
+                if (RequestAPI.urlIsValid(this.inputUrl.getText().toString())) {
+                    this.inputLogin.setEnabled(true);
+                    this.inputPwd.setEnabled(true);
                 } else {
-                    inputLogin.setEnabled(false);
-                    inputPwd.setEnabled(false);
+                    this.inputLogin.setEnabled(false);
+                    this.inputPwd.setEnabled(false);
                 }
             }
         });
 
-        inputLogin.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && !inputPwd.getText().toString().equals("")) {
-                this.lastDocument = RequestAPI.getLoginInfos(inputUrl.getText().toString(), inputLogin.getText().toString(), inputPwd.getText().toString());
-                if (this.lastDocument != null) {
-                    this.isLogged = true;
-                    addButton.setEnabled(true);
-                    List<String> bases = XMLParser.getMultipleDocumentTag(this.lastDocument, "bases");
-                    List<String> importProfile = XMLParser.getMultipleDocumentTag(this.lastDocument, "imports");
-                    basesArray.addAll(bases);
-                    importsArray.addAll(importProfile);
-                } else {
-                    addButton.setEnabled(false);
-                }
+        this.inputLogin.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && !this.inputPwd.getText().toString().equals("")) {
+                this.populateBasesAndImports();
             }
         });
 
-        inputPwd.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && !inputLogin.getText().toString().equals("")) {
-                this.lastDocument = RequestAPI.getLoginInfos(inputUrl.getText().toString(), inputLogin.getText().toString(), inputPwd.getText().toString());
-                if (this.lastDocument != null) {
-                    this.isLogged = true;
-                    addButton.setEnabled(true);
-                    List<String> bases = XMLParser.getMultipleDocumentTag(this.lastDocument, "bases");
-                    List<String> importProfile = XMLParser.getMultipleDocumentTag(this.lastDocument, "imports");
-                    basesArray.addAll(bases);
-                    importsArray.addAll(importProfile);
-                } else {
-                    addButton.setEnabled(false);
-                }
+        this.inputPwd.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && !this.inputLogin.getText().toString().equals("")) {
+                this.populateBasesAndImports();
             }
         });
 
-        addButton.setOnClickListener(v -> {
+        this.addButton.setOnClickListener(v -> {
             if (this.isLogged) {
                 // TODO: Logout
             }
+            Base base = new Base();
+            for(int i = 0; i < this.currentBases.size(); i++) {
+                if(this.currentBases.get(i).getName().equals(this.inputBase.toString())) {
+                    base.setNumber(this.currentBases.get(i).getNumber());
+                    base.setName(this.currentBases.get(i).getName());
+                }
+            }
             Profile profile = new Profile(
-                    inputName.getText().toString(),
-                    inputLogin.getText().toString(),
-                    inputPwd.getText().toString(),
-                    inputUrl.getText().toString(),
-                    0,
-                    " "
+                    this.inputName.getText().toString(),
+                    this.inputLogin.getText().toString(),
+                    this.inputPwd.getText().toString(),
+                    this.inputUrl.getText().toString(),
+                    base,
+                    this.inputImport.toString()
             );
             Preferences.addPreference(profile, AddProfile.this);
             Intent intent = new Intent(AddProfile.this, MainActivity.class);
@@ -119,11 +118,27 @@ public class AddProfile extends AppCompatActivity {
             AddProfile.this.finish();
         });
 
-        cancelButton.setOnClickListener(v -> {
+        this.cancelButton.setOnClickListener(v -> {
             if (this.isLogged) {
                 // TODO: Logout inside RequestAPI
             }
             finish();
         });
+    }
+
+    public void populateBasesAndImports() {
+        this.lastDocument = RequestAPI.getLoginInfos(this.inputUrl.getText().toString(), this.inputLogin.getText().toString(), this.inputPwd.getText().toString());
+        if (this.lastDocument != null) {
+            this.isLogged = true;
+            this.addButton.setEnabled(true);
+            this.currentBases = XMLParser.getBases(this.lastDocument);
+            this.importProfile = XMLParser.getMultipleDocumentTag(this.lastDocument, "imports");
+            for(int i = 0; i < this.currentBases.size(); i++) {
+                this.basesArray.add(this.currentBases.get(i).getName());
+            }
+            this.importsArray.addAll(importProfile);
+        } else {
+            this.addButton.setEnabled(false);
+        }
     }
 }

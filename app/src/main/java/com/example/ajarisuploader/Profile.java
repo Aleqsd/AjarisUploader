@@ -1,7 +1,5 @@
 package com.example.ajarisuploader;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 public class Profile {
@@ -9,11 +7,11 @@ public class Profile {
     private String login;
     private String pwd;
     private String url;
-    private int base;
+    private Base base;
     private String importProfile;
 
     public Profile() {
-        this.setBase(0);
+        this.setBase(new Base());
         this.setName("");
         this.setImportProfile("");
         this.setLogin("");
@@ -21,7 +19,7 @@ public class Profile {
         this.setUrl("");
     }
 
-    public Profile(String name, String login, String pwd, String url, int base, String importProfile) {
+    public Profile(String name, String login, String pwd, String url, Base base, String importProfile) {
         this.setBase(base);
         this.setName(name);
         this.setImportProfile(importProfile);
@@ -30,7 +28,7 @@ public class Profile {
         this.setUrl(url);
     }
 
-    public int getBase() {
+    public Base getBase() {
         return base;
     }
 
@@ -54,7 +52,7 @@ public class Profile {
         return url;
     }
 
-    public void setBase(int base) {
+    public void setBase(Base base) {
         this.base = base;
     }
 
@@ -81,7 +79,7 @@ public class Profile {
     @NonNull
     @Override
     public String toString() {
-        return this.getName() + ";" + this.getLogin() + ";" + this.getPwd() + ";" + this.getUrl() + ";" + Integer.toString(this.getBase()) + ";" + this.getImportProfile();
+        return this.getName() + ";" + this.getLogin() + ";" + this.getPwd() + ";" + this.getUrl() + ";" + this.getBase().toString() + ";" + this.getImportProfile();
     }
 
     public static Profile stringToProfile(String profile) {
@@ -93,16 +91,13 @@ public class Profile {
         String login = profileString[1];
         String pwd = profileString[2];
         String url = profileString[3];
-        int base = Integer.parseInt(profileString[4]);
+        Base base = Base.stringToBase(profileString[4]);
         String importProfile = profileString[5];
         return new Profile(name, login, pwd, url, base, importProfile);
     }
 
     public boolean isEmpty() {
-        if(this.getName().equals("") && this.getLogin().equals("") && this.getPwd().equals("") && this.getUrl().equals("") && this.getBase() == 0 && this.getImportProfile().equals("")) {
-            return true;
-        }
-        return false;
+        return this.getName().equals("") && this.getLogin().equals("") && this.getPwd().equals("") && this.getUrl().equals("") && this.getBase().isEmpty() && this.getImportProfile().equals("");
     }
 
     public boolean equals(Profile profile) {
@@ -111,6 +106,6 @@ public class Profile {
                 this.getUrl().equals(profile.getUrl()) &&
                 this.getPwd().equals(profile.getPwd()) &&
                 this.getImportProfile().equals(profile.getImportProfile()) &&
-                this.getBase() == profile.getBase();
+                this.getBase().equals(profile.getBase());
     }
 }
