@@ -1,0 +1,20 @@
+
+b
+java:S4830"@Enable server certificate validation on this SSL/TLS connection.(øŞäÍÿÿÿÿÿ8èºè‹‹.
+\
+java:S5527'"?Enable server hostname verification on this SSL/TLS connection.(§¼Éç8¥é‹‹.
+N
+java:S4423!",Change this code to use a stronger protocol.(êßö ûÿÿÿÿ8éĞè‹‹.
+]
+java:S4830"@Enable server certificate validation on this SSL/TLS connection.(ãë±ç8èºè‹‹.
+E	java:S108*")Either remove or fill this block of code.(”ı¾8Àºç‹‹.
+W
+java:S1118":Add a private constructor to hide the implicit public one.(±Âıá8Àºç‹‹.
+J
+java:S1604$"(Make this anonymous inner class a lambda(ï˜»ÿÿÿÿÿ8¥é‹‹.
+£
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(øŞäÍÿÿÿÿÿ8Àºç‹‹.
+
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ãë±ç8Àºç‹‹.
+…
+java:S1488"hImmediately return this expression instead of assigning it to the temporary variable "myTrustedAnchors".(êè—‡8Àºç‹‹.

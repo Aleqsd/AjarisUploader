@@ -1,7 +1,7 @@
 
-„
-java:S1128"bRemove this unused import 'com.google.android.material.floatingactionbutton.FloatingActionButton'.(ôˆêãÿÿÿÿÿ8Åæ­Š.
-P
-java:S1128".Remove this unused import 'android.view.View'.(Ø½­äşÿÿÿÿ8Åæ­Š.
-g
-java:S1128"JRemove this unused import 'com.google.android.material.snackbar.Snackbar'.(ë„ƒŠ8Åæ­Š.
+O
+java:S1135~"2Complete the task associated to this TODO comment.(«Éìø8³˜ıŠ.
+t
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 28 to the 15 allowed.(¨Œşÿÿÿÿ8³˜ıŠ.
+O
+java:S1135k"2Complete the task associated to this TODO comment.(•ƒ­8³˜ıŠ.

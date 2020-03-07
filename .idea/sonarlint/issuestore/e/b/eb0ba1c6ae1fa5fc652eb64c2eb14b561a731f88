@@ -1,0 +1,16 @@
+
+F
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ
+•
+java:S1319"sThe type of the "profiles" object should be an interface such as "List" rather than the implementation "ArrayList".(¸µû¯ùÿÿÿÿ8¦¶óüŠ.
+t	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(¥ëáŒÿÿÿÿÿ
+o	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Ó½¹­
+
+java:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(¨º“ó8¦¶óüŠ.
+7
+java:S1643"Use a StringBuilder instead.(¶®§ºüÿÿÿÿ
+H
+java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ
+U
+java:S1118
+":Add a private constructor to hide the implicit public one.(Ø¿§Şúÿÿÿÿ

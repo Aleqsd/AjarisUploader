@@ -1,33 +1,127 @@
 
-`
-java:S1128)">Remove this unused import 'javax.xml.parsers.DocumentBuilder'.(ƒ”¯¹ùÿÿÿÿ8˜á°¯Š.
 N
-java:S1128"1Remove this unused import 'org.w3c.dom.Document'.(Á§²“8˜á°¯Š.
-O
-java:S1128"-Remove this unused import 'org.w3c.dom.Node'.(ùŠÿËıÿÿÿÿ8˜á°¯Š.
-W
-java:S1128"5Remove this unused import 'android.view.MotionEvent'.(˜šËŞúÿÿÿÿ8òŒ®Š.
+java:S2440p",Remove this instantiation of "NukeSSLCerts".(æâ¯Öùÿÿÿÿ8¢‚š­‹.
+S
+java:S1128@"1Remove this unused import 'java.io.OutputStream'.(Ó ³ÿÿÿÿÿ8¢‚š­‹.
 U
-java:S1128"8Remove this unused import 'com.android.volley.Response'.(ˆïƒ 8ËüË®Š.
-n	java:S117’"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’±Ï8ÊË®Š.
-d
-java:S1128!"BRemove this unused import 'org.xmlpull.v1.XmlPullParserException'.(ã·§Çşÿÿÿÿ8ÑŠ¯Š.
-[
-java:S1128 "9Remove this unused import 'org.xmlpull.v1.XmlPullParser'.(úœÊ”ÿÿÿÿÿ8ÑŠ¯Š.
-s	java:S117“"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(—ıÓâøÿÿÿÿ8±¤²¯Š.
-R
-java:S1128$"0Remove this unused import 'java.io.IOException'.(ªº»Úıÿÿÿÿ8±¤²¯Š.
-b
-java:S1128""@Remove this unused import 'org.xmlpull.v1.XmlPullParserFactory'.(Öª‚ûÿÿÿÿ8±¤²¯Š.
-g
-java:S1128*"ERemove this unused import 'javax.xml.parsers.DocumentBuilderFactory'.(»·±Ñüÿÿÿÿ8±¤²¯Š.
-E
-java:S1172P"(Remove this unused method parameter "v".(¡é††8±¤²¯Š.
-m
-java:S1858`"K"response" is already a string, there's no need to call "toString()" on it.(‰”şüÿÿÿÿ8±¤²¯Š.
+java:S1135Ñ"2Complete the task associated to this TODO comment.(ÉŠ§áúÿÿÿÿ8õŠ¦­‹.
+Z
+java:S1144á"7Remove this unused private "uploadWithRetrofit" method.(Æ±Ñ–ıÿÿÿÿ8¢‚š­‹.
+F
+java:S1172Œ"(Remove this unused method parameter "v".(¡é††8¢‚š­‹.
+k
+java:S1192Ó"HDefine a constant instead of duplicating this literal "ajaupmo" 9 times.(õ©®Àÿÿÿÿÿ8ÉÌ™‹‹.
+b	java:S112¬"FDefine and throw a dedicated exception instead of using a generic one.(Ä“òb8¢‚š­‹.
+v	java:S115["ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(“ŒÃ€8¢‚š­‹.
+X
+java:S2696r"6Make the enclosing method "static" or remove this set.(°¯¨åüÿÿÿÿ8öñÇª‹.
+k
+java:S1192Ö"MDefine a constant instead of duplicating this literal "contribution" 4 times.(ÑÿÍ8¢‚š­‹.
+n	java:S117«"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ñ²ùÏ8¢‚š­‹.
+a
+java:S1128"?Remove this unused import 'com.android.volley.NetworkResponse'.(÷ÌÂñøÿÿÿÿ8×ƒ±¬‹.
+W
+java:S1874²"9Remove this use of "DefaultHttpClient"; it is deprecated.(è—ÄŒ8ª¤š­‹.
+U
+java:S1874º"2Remove this use of "StringBody"; it is deprecated.(ô‡½³üÿÿÿÿ8·à¥­‹.
+Y
+java:S1144Â"6Remove this unused private "upSetConfigImport" method.(ûËàÃùÿÿÿÿ8¢‚š­‹.
+Y	java:S125µ"<This block of commented-out lines of code should be removed.(’æó8¥³Ÿ­‹.
+S
+java:S2696s"6Make the enclosing method "static" or remove this set.(¬¤İ8¢‚š­‹.
+w
+java:S1192Ô"TDefine a constant instead of duplicating this literal "ContributionComment" 4 times.(Ò‹¾øÿÿÿÿ8³øœª‹.
+k
+java:S1192Ğ"MDefine a constant instead of duplicating this literal "filetoupload" 4 times.(İ½è­8“ÖÂŒ‹.
+^	java:S125Ó"<This block of commented-out lines of code should be removed.(çÅÔûÿÿÿÿ8õŠ¦­‹.
+{
+java:S3008d"^Rename this field "PERMISSIONS_STORAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±Ìä¯8¢‚š­‹.
+M
+java:S1128>"0Remove this unused import 'java.io.InputStream'.(¹»º8¢‚š­‹.
+n
+java:S1192Ñ"KDefine a constant instead of duplicating this literal "jsessionid" 4 times.(½ÒÍ„ıÿÿÿÿ8¢‚š­‹.
+Z
+java:S1854´"7Remove this useless assignment to local variable "bab".(±„»•üÿÿÿÿ8õŠ¦­‹.
 O
-java:S2755i"-Disable XML external entity (XXE) processing.(ÂÿÕ‹ÿÿÿÿÿ8±¤²¯Š.
-I
-java:S10683"'Remove this unused "TAG" private field.(¹¥¿Ùûÿÿÿÿ8±¤²¯Š.
-Y	java:S125›"<This block of commented-out lines of code should be removed.(ÁÊâû8±¤²¯Š.
-^	java:S125 "<This block of commented-out lines of code should be removed.(ç“Ğ˜ûÿÿÿÿ8±¤²¯Š.
+java:S1135…"2Complete the task associated to this TODO comment.(ìº•Z8õŠ¦­‹.
+m
+java:S1854Ş"JRemove this useless assignment to local variable "volleyMultipartRequest".(ÄÔ¦ïıÿÿÿÿ8õŠ¦­‹.
+W
+java:S2209p"5Change this instance-reference to a static reference.(æâ¯Öùÿÿÿÿ8¢‚š­‹.
+P
+java:S1874¾"2Remove this use of "StringBody"; it is deprecated.(ŠÒš¦8·à¥­‹.
+e
+java:S1192¾"GDefine a constant instead of duplicating this literal "ptoken" 5 times.(ÍØÂÆ8¢‚š­‹.
+S
+java:S1144ÿ"5Remove this unused private "uploadWithVolley" method.(Ú Îà8°‘§­‹.
+s	java:S117ª"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(—ıÓâøÿÿÿÿ8õŠ¦­‹.
+P
+java:S1874½"2Remove this use of "StringBody"; it is deprecated.(éƒ À8·à¥­‹.
+o
+java:S1192“"LDefine a constant instead of duplicating this literal "TestAndoird" 3 times.(“µØ ıÿÿÿÿ8¾Ö¡­‹.
+M
+java:S1128G"+Remove this unused import 'java.util.UUID'.(ÀãÄ£úÿÿÿÿ8¢‚š­‹.
+Q
+java:S1128<"5Remove this unused import 'java.io.FileOutputStream'.(˜«ªg8¢‚š­‹.
+F
+java:S1148¨"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¢‚š­‹.
+g
+java:S1128""ERemove this unused import 'com.example.ajarisuploader.api.AppHelper'.(Äˆ¾Íúÿÿÿÿ8½ßµ¬‹.
+U
+java:S1874»"2Remove this use of "StringBody"; it is deprecated.(öŞÑ§ûÿÿÿÿ8·à¥­‹.
+l
+java:S1192Õ"NDefine a constant instead of duplicating this literal "6 - Generique" 5 times.(€ÀĞ‹8Ï¨ª‹.
+[	java:S106É"9Replace this use of System.out or System.err by a logger.(ÉûÊÅüÿÿÿÿ8õŠ¦­‹.
+U
+java:S1874·"7Remove this use of "MultipartEntity"; it is deprecated.(Ö¦à±8¥³Ÿ­‹.
+U
+java:S1144Æ"2Remove this unused private "uploadWithAUS" method.(Øšô¬ıÿÿÿÿ8¢‚š­‹.
+O
+java:S1602æ",Remove useless curly braces around statement(°‚˜§üÿÿÿÿ8õŠ¦­‹.
+c
+java:S2147§"ECombine this catch with the one at line 293, which has the same body.(ï­£Ä8¢‚š­‹.
+a
+java:S1854ñ">Remove this useless assignment to local variable "finalImage".(õñœÊüÿÿÿÿ8¢‚š­‹.
+U
+java:S1135Í"2Complete the task associated to this TODO comment.(ÛÈê²øÿÿÿÿ8¢‚š­‹.
+O
+java:S1481ã"1Remove this unused "errorMessage" local variable.(‰Éƒæ8õŠ¦­‹.
+n	java:S117©"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’±Ï8õŠ¦­‹.
+r
+java:S1192Õ"TDefine a constant instead of duplicating this literal "Document_numbasedoc" 4 times.(€ÀĞ‹8¢‚š­‹.
+R
+java:S1144²"/Remove this unused private "disconnect" method.(Â‰úÿÿÿÿ8¢‚š­‹.
+{	java:S115Z"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(şë•éøÿÿÿÿ8‘É­üŠ.
+U
+java:S1874·"7Remove this use of "MultipartEntity"; it is deprecated.(Ö¦à±8¥³Ÿ­‹.
+\
+java:S4719Â"9Replace charset name argument with StandardCharsets.UTF_8(±Êİİùÿÿÿÿ8õŠ¦­‹.
+S
+java:S1144Ğ"0Remove this unused private "upImportDoc" method.(Ïïîëşÿÿÿÿ8õŠ¦­‹.
+U
+java:S1128 "8Remove this unused import 'com.android.volley.Response'.(ˆïƒ 8×ƒ±¬‹.
+S
+java:S1128"1Remove this unused import 'android.os.FileUtils'.(®¸¨ßşÿÿÿÿ8ıå¬‹.
+Y	java:S125²"<This block of commented-out lines of code should be removed.(ÁÊâû8õŠ¦­‹.
+K
+java:S1481´"(Remove this unused "bab" local variable.(±„»•üÿÿÿÿ8õŠ¦­‹.
+z
+java:S3252›"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(£Úµ¥ÿÿÿÿÿ8¢‚š­‹.
+R
+java:S1481ñ"/Remove this unused "finalImage" local variable.(õñœÊüÿÿÿÿ8¢‚š­‹.
+u	java:S115Y"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ù±Ó8‘É­üŠ.
+u
+java:S1450`"XRemove the "imageView" field and declare it as a local variable in the relevant methods.(øû¯8¢‚š­‹.
+F
+java:S1148¦"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¢‚š­‹.
+^	java:S125·"<This block of commented-out lines of code should be removed.(ç“Ğ˜ûÿÿÿÿ8õŠ¦­‹.
+U
+java:S1874¹"2Remove this use of "StringBody"; it is deprecated.(ıíÔËùÿÿÿÿ8Æ¿¤­‹.
+^
+java:S1481Ş";Remove this unused "volleyMultipartRequest" local variable.(ÄÔ¦ïıÿÿÿÿ8õŠ¦­‹.
+P
+java:S1874¼"2Remove this use of "StringBody"; it is deprecated.(Ğò¢ş8·à¥­‹.
+i
+java:S1192ç"KDefine a constant instead of duplicating this literal "text/plain" 6 times.(½âáŸ8¢‚š­‹.
+F
+java:S1148’"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8¸ª§­‹.

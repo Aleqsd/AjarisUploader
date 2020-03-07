@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -26,9 +27,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.ajarisuploader.api.AppHelper;
+import com.example.ajarisuploader.api.MultipartRequest;
 import com.example.ajarisuploader.api.NukeSSLCerts;
 import com.example.ajarisuploader.api.RequestAPI;
 import com.example.ajarisuploader.api.RequeteService;
@@ -36,16 +43,36 @@ import com.example.ajarisuploader.api.RestService;
 import com.example.ajarisuploader.api.VolleyMultipartRequest;
 import com.example.ajarisuploader.api.XMLParser;
 
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadService;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Document;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -85,6 +112,10 @@ public class UploadActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // Voir si il faut l'enlever
         new NukeSSLCerts().nuke();
+
+        UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
+        UploadService.NAMESPACE = "com.example.ajarisuploader";
+
         textView = findViewById(R.id.urisTextView);
         imageView = findViewById(R.id.imageView);
         Button buttonUpload = findViewById(R.id.buttonUpload);
@@ -111,7 +142,7 @@ public class UploadActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (RequestAPI.urlIsValid(demoUrl))
                     upLogin();
-                uploadWithRetrofit();
+                yesAnotherTry();
             }
         });
 
@@ -131,14 +162,13 @@ public class UploadActivity extends AppCompatActivity {
         }
     }
 
-    public String getPath(Uri uri)
-    {
-        String[] projection = { MediaStore.Images.Media.DATA };
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         if (cursor == null) return null;
-        int column_index =             cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
-        String s=cursor.getString(column_index);
+        String s = cursor.getString(column_index);
         cursor.close();
         return s;
     }
@@ -163,7 +193,34 @@ public class UploadActivity extends AppCompatActivity {
         return RequestAPI.isProfilValid(demoUrl, sessionid, ptoken, config);
     }
 
-    private void uploadWithRetrofit(){
+    private void uploadWithAUS() {
+        try {
+
+            File file = new File(uri.getPath());
+            if (file.exists())
+                Log.d(TAG, "File Exist");
+
+            //TODO arrayparameter et refactor
+            MultipartUploadRequest multipartUploadRequest = new MultipartUploadRequest(this, demoUrl + "/upImportDoc.do");
+            multipartUploadRequest
+                    .addFileToUpload(uri.getPath(), "filetoupload")
+                    .addParameter("jsessionid", sessionid)
+                    .addParameter("ptoken", ptoken)
+                    .addParameter("ajaupmo", "ajaupmo")
+                    .addParameter("ContributionComment", "TestAndroid")
+                    .addParameter("Document_numbasedoc", "6 - Generique")
+                    .addParameter("contribution", "true")
+                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setUtf8Charset()
+                    .setMaxRetries(2)
+                    .startUpload();
+            Log.d(TAG, "Upload request over");
+        } catch (FileNotFoundException | MalformedURLException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+        }
+    }
+
+    private void uploadWithRetrofit() {
         File image = new File(Objects.requireNonNull(getPath(uri)));
 
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), image);
@@ -178,7 +235,7 @@ public class UploadActivity extends AppCompatActivity {
 
 
         RequeteService requeteService = RestService.getClient().create(RequeteService.class);
-        Call<ResponseBody> call = requeteService.uploadProfilePicture(body, sess, ptok, ajau,cont, docu, contr );
+        Call<ResponseBody> call = requeteService.uploadProfilePicture(body, sess, ptok, ajau, cont, docu, contr);
         final File finalImage = image;
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -193,49 +250,114 @@ public class UploadActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadWithVolley(){
-
-        Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-        } catch (IOException e) {
-            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-        }
-
+    private void uploadWithVolley() {
         String url = "https://demo-interne.ajaris.com/Demo/upImportDoc.do";
-        Bitmap finalBitmap = bitmap;
 
-        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, response -> {
-            String resultResponse = new String(response.data);
-            textView.setText(resultResponse);
-        }, error -> {
-            textView.setText("Upload Error !");
-            //disconnect();
+        String filePath = getPath(uri);
+        if (filePath != null) {
+            Log.d("filePath", filePath);
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+                VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
+                        response -> textView.setText(new String(response.data)),
+                        error -> Log.e("VolleyError : ", "" + error.networkResponse.statusCode)
+
+                ) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("jsessionid", sessionid);
+                        params.put("ptoken", ptoken);
+                        params.put("ajaupmo", "test");
+                        params.put("ContributionComment", "TestAndroid");
+                        params.put("Document_numbasedoc", "6 - Generique");
+                        params.put("contribution", "true");
+                        return params;
+                    }
+
+                    @Override
+                    public Map<String, DataPart> getByteData() {
+                        Map<String, DataPart> params = new HashMap<>();
+                        long imagename = System.currentTimeMillis();
+                        params.put("filetoupload", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
+                        return params;
+                    }
+                };
+
+                Volley.newRequestQueue(this).add(volleyMultipartRequest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("jsessionid", sessionid);
-                params.put("ptoken", ptoken);
-                params.put("ajaupmo", "ajaupmo");
-                params.put("ContributionComment", "TestAndoird");
-                params.put("Document_numbasedoc", "6 - Generique");
-                params.put("contribution", "true");
-                return params;
-            }
+    }
 
-            @Override
-            public Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
-                // file name could found file base or direct access from real path
-                // for now just get bitmap data from ImageView
-                params.put("filetoupload", new DataPart("file_test.jpg", AppHelper.getFileDataFromDrawable(getBaseContext(), imageView.getDrawable()), "image/jpeg"));
-                return params;
-            }
-        };
+    public void executeMultipartPost() throws Exception {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            byte[] data = bos.toByteArray();
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost postRequest = new HttpPost(demoUrl + "/upImportDoc.do");
+            ByteArrayBody bab = new ByteArrayBody(data, "forest.jpg");
+            // File file= new File("/mnt/sdcard/forest.png");
+            // FileBody bin = new FileBody(file);
+            MultipartEntity reqEntity = new MultipartEntity(
+                    HttpMultipartMode.BROWSER_COMPATIBLE);
+            reqEntity.addPart("jsessionid", new StringBody(sessionid));
+            reqEntity.addPart("filetoupload", bab);
+            reqEntity.addPart("ptoken", new StringBody(ptoken));
+            reqEntity.addPart("ajaupmo", new StringBody("ajaupmo"));
+            reqEntity.addPart("ContributionComment", new StringBody("TestAndoird"));
+            reqEntity.addPart("Document_numbasedoc", new StringBody("6 - Generique"));
+            reqEntity.addPart("contribution", new StringBody("true"));
+            postRequest.setEntity(reqEntity);
+            HttpResponse response = httpClient.execute(postRequest);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    response.getEntity().getContent(), "UTF-8"));
+            String sResponse;
+            StringBuilder s = new StringBuilder();
 
-        Volley.newRequestQueue(this).add(multipartRequest);
+            while ((sResponse = reader.readLine()) != null) {
+                s = s.append(sResponse);
+            }
+            System.out.println("Response: " + s);
+        } catch (Exception e) {
+            // handle exception here
+            Log.e(e.getClass().getName(), e.getMessage());
+        }
+    }
+
+    public void yesAnotherTry() {
+        File file1 = new File(getPath(uri));
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("jsessionid", sessionid);
+        params.put("ptoken", ptoken);
+        params.put("ajaupmo", "test");
+        params.put("ContributionComment", "TestAndroid");
+        params.put("Document_numbasedoc", "6 - Generique");
+        params.put("contribution", "true");
+
+        HashMap<String, File> fileParams = new HashMap<>();
+        fileParams.put("filetoupload", file1);
+
+        Map<String, String> header = new HashMap<>();
+
+        MultipartRequest mMultipartRequest = new MultipartRequest("https://demo-interne.ajaris.com/Demo/upImportDoc.do",
+                error -> {
+                    // error handling
+                    Log.e(TAG, String.valueOf(error.networkResponse.statusCode));
+                },
+                response -> Log.i(TAG, response), fileParams, params, header
+        );
+        mMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        requestQueue.add(mMultipartRequest);
     }
 
     private void upImportDoc() {
@@ -258,7 +380,7 @@ public class UploadActivity extends AppCompatActivity {
                     Document doc = XMLParser.readXML(response.toString());
                     String errorCode = doc.getElementsByTagName("error-code").item(0).getTextContent();
                     String errorMessage = doc.getElementsByTagName("error-message").item(0).getTextContent();
-                    textView.setText("ImageUpload : "+errorCode);
+                    textView.setText("ImageUpload : " + errorCode);
                 },
                 error -> {
                     Log.e("GotError", "Upload" + error.getMessage());
@@ -291,7 +413,8 @@ public class UploadActivity extends AppCompatActivity {
 
     public byte[] getFileDataFromDrawable(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        //TODO Try ByteBuffer, plus rapide
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
 
