@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_profiles"
-        android:name="com.example.ajarisuploader.Profiles"
+        android:name="com.mistale.ajarisuploader.Profiles"
         android:label="@string/title_profiles"
         tools:layout="@layout/profiles_fragment" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.ajarisuploader.ui.dashboard.DashboardFragment"
+        android:name="com.mistale.ajarisuploader.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_about"
-        android:name="com.example.ajarisuploader.About"
+        android:name="com.mistale.ajarisuploader.About"
         android:label="@string/title_about"
         tools:layout="@layout/about_fragment" />
 </navigation>
