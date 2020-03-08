@@ -24,7 +24,7 @@
     <Button
         android:id="@+id/rate_button"
         android:onClick="rateOnPlayStore"
-        android:text="Noter l'application">
+        android:text="@string/app_rate">
     </Button>
 
 </GridLayout>

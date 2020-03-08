@@ -38,5 +38,6 @@
     <!-- Strings used for about activity -->
     <string name="app_version">Ajaris UpLoader Mobile 1.0</string>
     <string name="app_description">Ajaris est un produit <a href="http://www.orkis.com">orkis.com</a></string>
+    <string name="app_rate">Noter l'application</string>
 
 </resources>
