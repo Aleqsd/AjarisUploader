@@ -35,4 +35,8 @@
     <string name="action_delete_profile">Profil supprimé</string>
     <string name="action_delete_undo">ANNULER</string>
 
+    <!-- Strings used for about activity -->
+    <string name="app_version">Ajaris UpLoader Mobile 1.0</string>
+    <string name="app_description">Ajaris est un produit <a href="http://www.orkis.com">orkis.com</a></string>
+
 </resources>
