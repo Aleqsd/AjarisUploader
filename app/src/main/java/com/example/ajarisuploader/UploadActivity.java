@@ -19,7 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import android.os.FileUtils;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -31,10 +31,8 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.ajarisuploader.api.AppHelper;
 import com.example.ajarisuploader.api.MultipartRequest;
 import com.example.ajarisuploader.api.NukeSSLCerts;
 import com.example.ajarisuploader.api.RequestAPI;
@@ -42,6 +40,8 @@ import com.example.ajarisuploader.api.RequeteService;
 import com.example.ajarisuploader.api.RestService;
 import com.example.ajarisuploader.api.VolleyMultipartRequest;
 import com.example.ajarisuploader.api.XMLParser;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
@@ -61,22 +61,20 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -140,9 +138,9 @@ public class UploadActivity extends AppCompatActivity {
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (RequestAPI.urlIsValid(demoUrl))
-                    upLogin();
-                yesAnotherTry();
+                //if (RequestAPI.urlIsValid(demoUrl))
+                customConnexion();
+                //yesAnotherTry();
             }
         });
 
@@ -329,6 +327,48 @@ public class UploadActivity extends AppCompatActivity {
         }
     }
 
+    public void customConnexion() {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest getRequest = new StringRequest(Request.Method.POST, demoUrl+"/upLogin.do",
+                response -> {
+                    Log.d("Response", response);
+                    Document doc = XMLParser.readXML(response);
+                    if (doc == null) textView.setText("Error during login");
+                    textView.setText(MessageFormat.format("Session id : {0}", XMLParser.getDocumentTag(doc, "sessionid")));
+                    sessionid = XMLParser.getDocumentTag(doc, "sessionid");
+                    ptoken = XMLParser.getDocumentTag(doc, "ptoken");
+                    config = XMLParser.getConfig(doc);
+                    uploadWithRetrofit();
+                },
+                error -> {
+                    Log.d("ERROR","error => "+error.toString());
+                }
+
+        ) {
+            @Override
+            public Map<String, String> getParams() {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("pseudo", "mistale");
+                params.put("password", "software");
+                params.put("ajaupmo", "test");
+                return params;
+            }
+
+            @Override
+            protected com.android.volley.Response<String> parseNetworkResponse(NetworkResponse response) {
+                // since we don't know which of the two underlying network vehicles
+                // will Volley use, we have to handle and store session cookies manually
+                Log.i("response",response.headers.toString());
+                Map<String, String> responseHeaders = response.headers;
+                String rawCookies = responseHeaders.get("Set-Cookie");
+                Log.i("cookies",rawCookies);
+                return super.parseNetworkResponse(response);
+            }
+        };
+        queue.add(getRequest);
+    }
+
     public void yesAnotherTry() {
         File file1 = new File(getPath(uri));
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -345,10 +385,10 @@ public class UploadActivity extends AppCompatActivity {
         fileParams.put("filetoupload", file1);
 
         Map<String, String> header = new HashMap<>();
+        header.put("Set-Cookie","JSESSIONID="+sessionid+"; Path=/; Secure; HttpOnly");
 
         MultipartRequest mMultipartRequest = new MultipartRequest("https://demo-interne.ajaris.com/Demo/upImportDoc.do",
                 error -> {
-                    // error handling
                     Log.e(TAG, String.valueOf(error.networkResponse.statusCode));
                 },
                 response -> Log.i(TAG, response), fileParams, params, header
@@ -358,6 +398,66 @@ public class UploadActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         requestQueue.add(mMultipartRequest);
+    }
+
+    public void httpClientMaybe() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
+
+        File file1 = new File(getPath(uri));
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("jsessionid", sessionid)
+                .addFormDataPart("ptoken", ptoken)
+                .addFormDataPart("filetoupload", "fileNameTest",
+                        RequestBody.create(MediaType.parse("application/octet-stream"), file1))
+                .addFormDataPart("ContributionComment", "TestAndroid")
+                .addFormDataPart("Document_numbasedoc", "6 - Generique")
+                .addFormDataPart("contribution", "true")
+                .addFormDataPart("ajaupmo", "test")
+                .build();
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url("https://demo-interne.ajaris.com/Demo/upImportDoc.do")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            textView.setText(response.body().string());
+        } catch (IOException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+        }
+
+    }
+
+    public void unirestWhyNot() {
+        // RESULT EN SESSION EXPIREE
+        File file1 = new File(getPath(uri));
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+        Unirest.setTimeouts(0, 0);
+        try {
+            com.mashape.unirest.http.HttpResponse<String> response = Unirest.post("https://demo-interne.ajaris.com/Demo/upImportDoc.do")
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .header("contribution", "true")
+                    .field("jsessionid", sessionid)
+                    .field("ptoken", ptoken)
+                    .field("filetoupload", file1)
+                    .field("ContributionComment", "TestAndroid")
+                    .field("Document_numbasedoc", "6 - Generique")
+                    .field("ajaupmo", "test")
+                    .asString();
+            textView.setText(response.toString());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void upImportDoc() {
