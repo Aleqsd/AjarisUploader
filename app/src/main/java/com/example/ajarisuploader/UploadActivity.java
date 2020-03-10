@@ -66,6 +66,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -109,7 +110,7 @@ public class UploadActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Voir si il faut l'enlever
-        new NukeSSLCerts().nuke();
+        //new NukeSSLCerts().nuke();
 
         UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
         UploadService.NAMESPACE = "com.example.ajarisuploader";
@@ -138,9 +139,9 @@ public class UploadActivity extends AppCompatActivity {
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (RequestAPI.urlIsValid(demoUrl))
-                    customConnexion();
-                //yesAnotherTry();
+//                if (RequestAPI.urlIsValid(demoUrl))
+//                    customConnexion();
+                httpClientMaybe();
             }
         });
 
@@ -217,14 +218,14 @@ public class UploadActivity extends AppCompatActivity {
     private void uploadWithAUS() {
         try {
 
-            File file = new File(uri.getPath());
+            File file = new File(getPath(uri));
             if (file.exists())
                 Log.d(TAG, "File Exist");
 
             //TODO arrayparameter et refactor
             MultipartUploadRequest multipartUploadRequest = new MultipartUploadRequest(this, demoUrl + "/upImportDoc.do");
             multipartUploadRequest
-                    .addFileToUpload(uri.getPath(), "filetoupload")
+                    .addFileToUpload(file.getAbsolutePath(), "filetoupload")
                     .addParameter("jsessionid", sessionid)
                     .addParameter("ptoken", ptoken)
                     .addParameter("ajaupmo", "ajaupmo")
@@ -244,20 +245,17 @@ public class UploadActivity extends AppCompatActivity {
     private void uploadWithRetrofit() {
         File image = new File(Objects.requireNonNull(getPath(uri)));
 
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), image);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("filetoupload", image.getName(), requestFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("filetoupload", image.getName(), RequestBody.create(MediaType.parse("image/*"), image));
 
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
         RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
-        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "ajaupmo");
+        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "test");
         RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), "TestAndroid");
         RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), "6 - Generique");
         RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
 
-
         RequeteService requeteService = RestService.getClient().create(RequeteService.class);
         Call<ResponseBody> call = requeteService.uploadProfilePicture(body, sess, ptok, ajau, cont, docu, contr);
-        final File finalImage = image;
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -281,7 +279,10 @@ public class UploadActivity extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
                 VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
-                        response -> textView.setText(new String(response.data)),
+                        response -> {
+                            textView.setText(new String(response.data));
+                            Log.i(TAG, new String(response.data));
+                        },
                         error -> Log.e("VolleyError : ", "" + error.networkResponse.statusCode)
 
                 ) {
@@ -369,25 +370,25 @@ public class UploadActivity extends AppCompatActivity {
     public void customConnexion() {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest getRequest = new StringRequest(Request.Method.POST, demoUrl+"/upLogin.do",
+        StringRequest getRequest = new StringRequest(Request.Method.POST, demoUrl + "/upLogin.do",
                 response -> {
-                    Log.d("Response", response);
                     Document doc = XMLParser.readXML(response);
                     if (doc == null) textView.setText("Error during login");
                     textView.setText(MessageFormat.format("Session id : {0}", XMLParser.getDocumentTag(doc, "sessionid")));
                     sessionid = XMLParser.getDocumentTag(doc, "sessionid");
+                    Log.d(TAG, sessionid);
                     ptoken = XMLParser.getDocumentTag(doc, "ptoken");
                     config = XMLParser.getConfig(doc);
-                    uploadWithVolley();
+                    httpClientMaybe();
                 },
                 error -> {
-                    Log.d("ERROR","error => "+error.toString());
+                    Log.d("ERROR", "error => " + error.toString());
                 }
 
         ) {
             @Override
             public Map<String, String> getParams() {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("pseudo", "mistale");
                 params.put("password", "software");
                 params.put("ajaupmo", "test");
@@ -396,7 +397,7 @@ public class UploadActivity extends AppCompatActivity {
 
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String>  headers = new HashMap<String, String>();
+                Map<String, String> headers = new HashMap<String, String>();
                 headers.put("User-Agent", "PostmanRuntime/7.22.0");
                 headers.put("Accept", "*/*");
                 headers.put("Cache-Control", "no-cache");
@@ -411,10 +412,10 @@ public class UploadActivity extends AppCompatActivity {
 
             @Override
             protected com.android.volley.Response<String> parseNetworkResponse(NetworkResponse response) {
-                Log.i("response",response.headers.toString());
+                Log.i("response", response.headers.toString());
                 Map<String, String> responseHeaders = response.headers;
                 String rawCookies = responseHeaders.get("Set-Cookie");
-                Log.i("cookies",rawCookies);
+                Log.i("cookies", rawCookies);
                 return super.parseNetworkResponse(response);
             }
         };
@@ -428,80 +429,77 @@ public class UploadActivity extends AppCompatActivity {
         HashMap<String, String> params = new HashMap<>();
         params.put("jsessionid", sessionid);
         params.put("ptoken", ptoken);
-        params.put("ajaupmo", "test");
+        params.put("ajaupmo", "iOS:0.1:20064");
         params.put("ContributionComment", "TestAndroid");
-        params.put("Document_numbasedoc", "6 - Generique");
+        params.put("Document_numbasedoc", "6");
         params.put("contribution", "true");
 
         HashMap<String, File> fileParams = new HashMap<>();
         fileParams.put("filetoupload", file1);
 
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put("Content-Type", "multipart/form-data");
         header.put("User-Agent", "PostmanRuntime/7.22.0");
         header.put("Accept", "*/*");
-        header.put("Cache-Control", "no-cache");
-        header.put("Postman-Token", "d1f6364a-eaed-4420-a669-53c4b771352c");
+        //header.put("Cache-Control", "no-cache");
+        //header.put("Postman-Token", "d1f6364a-eaed-4420-a669-53c4b771352c");
         header.put("Host", "demo-interne.ajaris.com");
-        header.put("Accept-Encoding", "gzip, deflate, br");
-        header.put("Cookie", "JSESSIONID=" + sessionid);
-                //.addHeader("Content-Length", "27103")
+        header.put("Accept-Encoding", "gzip, deflate");
+        //header.put("Cookie", "JSESSIONID=" + sessionid);
+        //.addHeader("Content-Length", "27103")
         header.put("Connection", "keep-alive");
 
         MultipartRequest mMultipartRequest = new MultipartRequest("https://demo-interne.ajaris.com/Demo/upImportDoc.do",
                 error -> {
-                    Log.e(TAG,error.getMessage());
+                    Log.e(TAG, "error");
                 },
                 response -> Log.i(TAG, response), fileParams, params, header
         );
-        mMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(30000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
         requestQueue.add(mMultipartRequest);
     }
 
     public void httpClientMaybe() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
         StrictMode.setThreadPolicy(policy);
-
 
         File file1 = new File(getPath(uri));
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        try {
+
+        MediaType mediaType = MediaType.parse("multipart/form-data; boundary=--------------------------104913326104647324514494");
         RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("jsessionid", sessionid)
-                .addFormDataPart("ptoken", ptoken)
-                .addFormDataPart("filetoupload", "fileNameTest",
-                        RequestBody.create(MediaType.parse("application/octet-stream"), file1))
-                .addFormDataPart("ContributionComment", "TestAndroid")
-                .addFormDataPart("Document_numbasedoc", "6 - Generique")
-                .addFormDataPart("contribution", "true")
+                .addFormDataPart("jsessionid", "8B622062A330D8F5506912A38B671BDF")
+                .addFormDataPart("ptoken", "1NaRDpSj4w9woITLsRSui12hbmt3cDr4PxbvM28Cbw7muwyQuhUxihGpLyRHNUSez7OMVEaKzIUDwQjGyi3OCHXVwhNqZDNPEuOpOPo7Rq91MA")
                 .addFormDataPart("ajaupmo", "test")
+                .addFormDataPart("filetoupload","fileNameTest.png",
+                        RequestBody.create(MediaType.parse("application/octet-stream"),
+                                file1))
+                .addFormDataPart("ContributionComment", "TestAndroid")
+                .addFormDataPart("Document_numbasedoc", "6 ")
+                .addFormDataPart("contribution", "true")
                 .build();
+
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url("https://demo-interne.ajaris.com/Demo/upImportDoc.do")
                 .method("POST", body)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("User-Agent", "PostmanRuntime/7.22.0")
                 .addHeader("Accept", "*/*")
                 .addHeader("Cache-Control", "no-cache")
-                .addHeader("Postman-Token", "d1f6364a-eaed-4420-a669-53c4b771352c")
+                .addHeader("Postman-Token", "fe6fbe7b-13e2-4378-ab87-ef8e7c8c6734")
                 .addHeader("Host", "demo-interne.ajaris.com")
+                .addHeader("Content-Type", "multipart/form-data; boundary=--------------------------104913326104647324514494")
                 .addHeader("Accept-Encoding", "gzip, deflate, br")
-                .addHeader("Cookie", "JSESSIONID=" + sessionid)
-                //.addHeader("Content-Length", "27103")
+                .addHeader("Cookie", "JSESSIONID=8B622062A330D8F5506912A38B671BDF")
+                .addHeader("Content-Length", "24070")
                 .addHeader("Connection", "keep-alive")
                 .build();
-        try {
+
             Response response = client.newCall(request).execute();
             textView.setText(response.body().string());
         } catch (IOException e) {
-            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            Log.e(TAG+"httpClientMaybe", Objects.requireNonNull(e.getMessage()));
         }
-
     }
 
     public void unirestWhyNot() {
@@ -509,25 +507,34 @@ public class UploadActivity extends AppCompatActivity {
         File file1 = new File(getPath(uri));
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
         StrictMode.setThreadPolicy(policy);
+
         Unirest.setTimeouts(0, 0);
         try {
             com.mashape.unirest.http.HttpResponse<String> response = Unirest.post("https://demo-interne.ajaris.com/Demo/upImportDoc.do")
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .header("contribution", "true")
-                    .field("jsessionid", sessionid)
-                    .field("ptoken", ptoken)
-                    .field("filetoupload", file1)
-                    .field("ContributionComment", "TestAndroid")
-                    .field("Document_numbasedoc", "6 - Generique")
+                    .header("User-Agent", "PostmanRuntime/7.22.0")
+                    .header("Accept", "*/*")
+                    .header("Cache-Control", "no-cache")
+                    .header("Postman-Token", "de32fc9c-f12f-4909-b97f-ccfae09dcf83")
+                    .header("Host", "demo-interne.ajaris.com")
+                    .header("Content-Type", "multipart/form-data; boundary=--------------------------474870213230327860334835")
+                    .header("Accept-Encoding", "gzip, deflate, br")
+                    .header("Cookie", "JSESSIONID=8B622062A330D8F5506912A38B671BDF")
+                    .header("Content-Length", "24070")
+                    .header("Connection", "keep-alive")
+                    .field("jsessionid", "8B622062A330D8F5506912A38B671BDF")
+                    .field("ptoken", "1NaRDpSj4w9woITLsRSui12hbmt3cDr4PxbvM28Cbw7muwyQuhUxihGpLyRHNUSez7OMVEaKzIUDwQjGyi3OCHXVwhNqZDNPEuOpOPo7Rq91MA")
                     .field("ajaupmo", "test")
+                    .field("file", new File("/D:/Téléchargements/25-512.png"))
+                    .field("ContributionComment", "TestPostman")
+                    .field("Document_numbasedoc", "6 ")
+                    .field("contribution", "true")
                     .asString();
+
             textView.setText(response.toString());
         } catch (UnirestException e) {
             e.printStackTrace();
         }
-
     }
 
     private void upImportDoc() {
