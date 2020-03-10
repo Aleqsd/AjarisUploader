@@ -138,8 +138,8 @@ public class UploadActivity extends AppCompatActivity {
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //if (RequestAPI.urlIsValid(demoUrl))
-                customConnexion();
+                if (RequestAPI.urlIsValid(demoUrl))
+                    customConnexion();
                 //yesAnotherTry();
             }
         });
@@ -185,6 +185,29 @@ public class UploadActivity extends AppCompatActivity {
         sessionid = XMLParser.getDocumentTag(doc, "sessionid");
         ptoken = XMLParser.getDocumentTag(doc, "ptoken");
         config = XMLParser.getConfig(doc);
+        yesAnotherTry();
+    }
+
+    private void loginLikePostman() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url("https://demo-interne.ajaris.com/Demo/upLogin.do?pseudo=mistale&password=software&ajaupmo=test")
+                .method("POST", body)
+                .addHeader("Content-Type", "text/plain")
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            textView.setText(response.toString());
+            //uploadWithRetrofit();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean upSetConfigImport() {
@@ -281,6 +304,22 @@ public class UploadActivity extends AppCompatActivity {
                         params.put("filetoupload", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
                         return params;
                     }
+
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> header = new HashMap<>();
+                        header.put("Content-Type", "application/x-www-form-urlencoded");
+                        header.put("User-Agent", "PostmanRuntime/7.22.0");
+                        header.put("Accept", "*/*");
+                        header.put("Cache-Control", "no-cache");
+                        header.put("Postman-Token", "d1f6364a-eaed-4420-a669-53c4b771352c");
+                        header.put("Host", "demo-interne.ajaris.com");
+                        header.put("Accept-Encoding", "gzip, deflate, br");
+                        header.put("Cookie", "JSESSIONID=" + sessionid);
+                        //.addHeader("Content-Length", "27103")
+                        header.put("Connection", "keep-alive");
+                        return header;
+                    }
                 };
 
                 Volley.newRequestQueue(this).add(volleyMultipartRequest);
@@ -339,7 +378,7 @@ public class UploadActivity extends AppCompatActivity {
                     sessionid = XMLParser.getDocumentTag(doc, "sessionid");
                     ptoken = XMLParser.getDocumentTag(doc, "ptoken");
                     config = XMLParser.getConfig(doc);
-                    uploadWithRetrofit();
+                    uploadWithVolley();
                 },
                 error -> {
                     Log.d("ERROR","error => "+error.toString());
@@ -356,9 +395,22 @@ public class UploadActivity extends AppCompatActivity {
             }
 
             @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String>  headers = new HashMap<String, String>();
+                headers.put("User-Agent", "PostmanRuntime/7.22.0");
+                headers.put("Accept", "*/*");
+                headers.put("Cache-Control", "no-cache");
+                headers.put("Postman-Token", "9b6f114f-5479-4ea7-86ec-97895a266c37");
+                headers.put("Host", "demo-interne.ajaris.com");
+                headers.put("Accept-Encoding", "gzip, deflate, br");
+                //headers.put("Cookie", "JSESSIONID=AF99F6C9A67A9A0D85ECE63ED84E93F0");
+                //headers.put("Content-Length", "0");
+                headers.put("Connection", "keep-alive");
+                return headers;
+            }
+
+            @Override
             protected com.android.volley.Response<String> parseNetworkResponse(NetworkResponse response) {
-                // since we don't know which of the two underlying network vehicles
-                // will Volley use, we have to handle and store session cookies manually
                 Log.i("response",response.headers.toString());
                 Map<String, String> responseHeaders = response.headers;
                 String rawCookies = responseHeaders.get("Set-Cookie");
@@ -385,11 +437,20 @@ public class UploadActivity extends AppCompatActivity {
         fileParams.put("filetoupload", file1);
 
         Map<String, String> header = new HashMap<>();
-        header.put("Set-Cookie","JSESSIONID="+sessionid+"; Path=/; Secure; HttpOnly");
+        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put("User-Agent", "PostmanRuntime/7.22.0");
+        header.put("Accept", "*/*");
+        header.put("Cache-Control", "no-cache");
+        header.put("Postman-Token", "d1f6364a-eaed-4420-a669-53c4b771352c");
+        header.put("Host", "demo-interne.ajaris.com");
+        header.put("Accept-Encoding", "gzip, deflate, br");
+        header.put("Cookie", "JSESSIONID=" + sessionid);
+                //.addHeader("Content-Length", "27103")
+        header.put("Connection", "keep-alive");
 
         MultipartRequest mMultipartRequest = new MultipartRequest("https://demo-interne.ajaris.com/Demo/upImportDoc.do",
                 error -> {
-                    Log.e(TAG, String.valueOf(error.networkResponse.statusCode));
+                    Log.e(TAG,error.getMessage());
                 },
                 response -> Log.i(TAG, response), fileParams, params, header
         );
@@ -424,6 +485,15 @@ public class UploadActivity extends AppCompatActivity {
                 .url("https://demo-interne.ajaris.com/Demo/upImportDoc.do")
                 .method("POST", body)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("User-Agent", "PostmanRuntime/7.22.0")
+                .addHeader("Accept", "*/*")
+                .addHeader("Cache-Control", "no-cache")
+                .addHeader("Postman-Token", "d1f6364a-eaed-4420-a669-53c4b771352c")
+                .addHeader("Host", "demo-interne.ajaris.com")
+                .addHeader("Accept-Encoding", "gzip, deflate, br")
+                .addHeader("Cookie", "JSESSIONID=" + sessionid)
+                //.addHeader("Content-Length", "27103")
+                .addHeader("Connection", "keep-alive")
                 .build();
         try {
             Response response = client.newCall(request).execute();
