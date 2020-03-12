@@ -87,7 +87,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-                android:gravity="start" />
+                android:gravity="start"
+                android:visibility="invisible" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Import Profile Label -->
@@ -101,7 +102,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-                android:gravity="start" />
+                android:gravity="start"
+                android:visibility="invisible" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

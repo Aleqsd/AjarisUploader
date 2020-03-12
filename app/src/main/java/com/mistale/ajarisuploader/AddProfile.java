@@ -47,6 +47,7 @@ public class AddProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_profile);
+        getWindow().setBackgroundDrawableResource(R.drawable.ajaris_background) ;
         this.progressDialog = new ProgressDialog(AddProfile.this, R.style.Theme_AppCompat_DayNight_Dialog);
 
         this.inputName = findViewById(R.id.input_name);
@@ -130,10 +131,14 @@ public class AddProfile extends AppCompatActivity {
                 this.basesArray.add(this.currentBases.get(i).getName());
             }
             this.importsArray.addAll(importProfile);
+            this.inputBase.setVisibility(Spinner.VISIBLE);
+            this.inputImport.setVisibility(Spinner.VISIBLE);
         } else {
             this.basesArray.clear();
             this.importsArray.clear();
             this.addButton.setEnabled(false);
+            this.inputBase.setVisibility(Spinner.INVISIBLE);;
+            this.inputImport.setVisibility(Spinner.INVISIBLE);
         }
 
         ArrayAdapter<String> adapterBases = new ArrayAdapter<>(
