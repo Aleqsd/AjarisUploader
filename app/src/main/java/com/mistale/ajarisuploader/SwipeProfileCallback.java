@@ -30,10 +30,10 @@ public abstract class SwipeProfileCallback extends ItemTouchHelper.SimpleCallbac
         super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         mContext = context;
         mBackground = new ColorDrawable();
-        backgroundColor = Color.parseColor("#b80f0a");
+        backgroundColor = Color.parseColor("#ffff4444");
         mClearPaint = new Paint();
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        deleteDrawable = ContextCompat.getDrawable(mContext, R.drawable.delete_icon);
+        deleteDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_delete_white_24dp);
         intrinsicWidth = 80;
         intrinsicHeight = 80;
     }
