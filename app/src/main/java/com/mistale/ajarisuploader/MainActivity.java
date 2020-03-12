@@ -23,8 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_profiles, R.id.navigation_dashboard, R.id.navigation_about)
                 .build();
@@ -32,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        // Get intent, action and MIME type
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
@@ -56,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void rateOnPlayStore() {
+    public void rateOnPlayStore(View view) {
         Uri uri = Uri.parse("market://details?id=" + MainActivity.this.getPackageName());
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |

@@ -1,7 +1,10 @@
 package com.mistale.ajarisuploader;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,6 +12,7 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.mistale.ajarisuploader.api.RequestAPI;
 import com.mistale.ajarisuploader.api.XMLParser;
@@ -23,7 +27,8 @@ public class AddProfile extends AppCompatActivity {
     private Document lastDocument = null;
     private boolean isLogged = false;
     private List<Base> currentBases = new ArrayList<>();
-    List<String> importProfile = new ArrayList<>();
+    private List<String> importProfile = new ArrayList<>();
+    private ProgressDialog progressDialog;
 
     EditText inputName;
     EditText inputUrl;
@@ -40,9 +45,9 @@ public class AddProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_profile);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        this.progressDialog = new ProgressDialog(AddProfile.this, R.style.Theme_AppCompat_DayNight_Dialog);
 
         this.inputName = findViewById(R.id.input_name);
         this.inputUrl = findViewById(R.id.input_url);
@@ -53,25 +58,12 @@ public class AddProfile extends AppCompatActivity {
         this.addButton = findViewById(R.id.button_add);
         this.cancelButton = findViewById(R.id.button_cancel);
 
-        ArrayAdapter<String> adapterBases = new ArrayAdapter<>(
-                AddProfile.this,
-                android.R.layout.simple_spinner_item,
-                this.basesArray
-        );
-        this.inputBase.setAdapter(adapterBases);
-
-        ArrayAdapter<String> adapterImports = new ArrayAdapter<>(
-                AddProfile.this,
-                android.R.layout.simple_spinner_item,
-                this.importsArray
-        );
-        this.inputImport.setAdapter(adapterImports);
-
         this.inputUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                if (RequestAPI.urlIsValid(this.inputUrl.getText().toString())) {
+                if (RequestAPI.urlIsValid(this.inputUrl.getText().toString(), this.progressDialog)) {
                     this.inputLogin.setEnabled(true);
                     this.inputPwd.setEnabled(true);
+                    //this.dismissLoadingPopup();
                 } else {
                     this.inputLogin.setEnabled(false);
                     this.inputPwd.setEnabled(false);
@@ -126,18 +118,38 @@ public class AddProfile extends AppCompatActivity {
     }
 
     public void populateBasesAndImports() {
-        this.lastDocument = RequestAPI.getLoginInfos(this.inputUrl.getText().toString(), this.inputLogin.getText().toString(), this.inputPwd.getText().toString());
+        this.lastDocument = RequestAPI.getLoginInfos(this.inputUrl.getText().toString(), this.inputLogin.getText().toString(), this.inputPwd.getText().toString(), this.progressDialog);
         if (this.lastDocument != null) {
             this.isLogged = true;
             this.addButton.setEnabled(true);
             this.currentBases = XMLParser.getBases(this.lastDocument);
             this.importProfile = XMLParser.getMultipleDocumentTag(this.lastDocument, "imports");
+            this.basesArray.clear();
+            this.importsArray.clear();
             for(int i = 0; i < this.currentBases.size(); i++) {
                 this.basesArray.add(this.currentBases.get(i).getName());
             }
             this.importsArray.addAll(importProfile);
         } else {
+            this.basesArray.clear();
+            this.importsArray.clear();
             this.addButton.setEnabled(false);
         }
+
+        ArrayAdapter<String> adapterBases = new ArrayAdapter<>(
+                this,
+                R.layout.spinner_item,
+                this.basesArray
+        );
+        adapterBases.setDropDownViewResource(R.layout.spinner_item);
+        this.inputBase.setAdapter(adapterBases);
+
+        ArrayAdapter<String> adapterImports = new ArrayAdapter<>(
+                this,
+                R.layout.spinner_item,
+                this.importsArray
+        );
+        adapterImports.setDropDownViewResource(R.layout.spinner_item);
+        this.inputImport.setAdapter(adapterImports);
     }
 }

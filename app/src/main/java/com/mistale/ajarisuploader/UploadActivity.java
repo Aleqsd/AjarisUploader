@@ -1,19 +1,27 @@
 package com.mistale.ajarisuploader;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -29,8 +37,19 @@ import com.mistale.ajarisuploader.api.XMLParser;
 
 import org.w3c.dom.Document;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,8 +66,17 @@ public class UploadActivity extends AppCompatActivity {
     private static final String demoUrl = "https://demo-interne.ajaris.com/Demo";
     private static final String demoLogin = "mistale";
     private static final String demoPwd = "software";
+    private static final String upLoadServerUri = "https://demo-interne.ajaris.com/Demo/upImportDoc.do";
+    private int serverResponseCode = 0;
     private TextView textView;
     private Uri uri;
+    ProgressDialog dialog = null;
+    Document lastDocument = null;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +86,12 @@ public class UploadActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         textView = findViewById(R.id.urisTextView);
         Button buttonUpload = findViewById(R.id.buttonUpload);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
+        verifyStoragePermissions(this);
 
         Intent intent = getIntent();
         if (intent.getParcelableExtra("URI") != null) {
@@ -75,19 +109,34 @@ public class UploadActivity extends AppCompatActivity {
             Log.e("IntentError", "L'intent reçu est invalide");
 
 
-        buttonUpload.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (RequestAPI.urlIsValid(demoUrl))
-                    upLogin();
-            }
+        buttonUpload.setOnClickListener(v -> {
+            if (RequestAPI.urlIsValid(demoUrl, null))
+                upLogin();
         });
 
     }
 
+
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
     private void upLogin() {
-        Document doc = RequestAPI.getLoginInfos(demoUrl, demoLogin, demoPwd);
-        if (doc == null) textView.setText("Error during login");
-        textView.setText(MessageFormat.format("Session id : {0}", XMLParser.getDocumentTag(doc, "sessionid")));
+        this.lastDocument = RequestAPI.getLoginInfos(demoUrl, demoLogin, demoPwd, null);
+        if (this.lastDocument == null) textView.setText("Error during login");
+        textView.setText(MessageFormat.format("Session id : {0}", XMLParser.getDocumentTag(this.lastDocument, "sessionid")));
+        uploadFile(Objects.requireNonNull(uri).getEncodedPath());
     }
 
     private void upImportDoc() {
@@ -202,5 +251,234 @@ public class UploadActivity extends AppCompatActivity {
 
         notificationManager.notify(1, builder.build());
     }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public int uploadFile(String sourceFileUri) {
+        System.out.println("JE SUIS ICI");
+        String fileName = sourceFileUri;
+        HttpURLConnection conn = null;
+        DataOutputStream dos = null;
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "--***";
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+        File sdDir = Environment.getExternalStorageDirectory();
+        sourceFileUri = sourceFileUri.split("raw/")[1];
+        try {
+            sourceFileUri = URLDecoder.decode(sourceFileUri, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        /*File path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);*/
+        //System.out.println(path);
+        fileName = sourceFileUri;
+        File sourceFile = new File(sourceFileUri);
+        if (!sourceFile.isFile()) {
+            //dialog.dismiss();
+            Log.e("uploadFile", "Source File not exist :"
+                    + sourceFileUri);
+
+            String finalSourceFileUri = sourceFileUri;
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    System.out.println("Source File not exist :"
+                            + finalSourceFileUri);
+                }
+            });
+
+            return 0;
+
+        }
+        else
+        {
+            try {
+
+                System.out.println("JE SUIS UN FICHIER");
+
+                // open a URL connection to the Servlet
+                FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                URL url = new URL(upLoadServerUri);
+
+                // Open a HTTP  connection to  the URL
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setDoInput(true); // Allow Inputs
+                conn.setDoOutput(true); // Allow Outputs
+                conn.setUseCaches(false); // Don't use a Cached Copy
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Connection", "Keep-Alive");
+                //conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+                /*conn.setRequestProperty("filetoupload", fileName);
+                conn.setRequestProperty("ajaupmo", "ajaupmo");
+                conn.setRequestProperty("contribution", "true");
+                conn.setRequestProperty("jsessionid", XMLParser.getDocumentTag(this.lastDocument, "sessionid"));
+                conn.setRequestProperty("ptoken", XMLParser.getDocumentTag(this.lastDocument, "ptoken"));
+                conn.setRequestProperty("ContributionComment", "test");
+                conn.setRequestProperty("Document_numbasedoc", "6");
+                conn.setRequestProperty("filetoupload", "test.png");*/
+                dos = new DataOutputStream(conn.getOutputStream());
+
+                System.out.println("PARAMS OK");
+
+                System.out.println("PARAMS OK - 2");
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(boundary + lineEnd);
+                System.out.println(boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"ajaupmo\"");
+                System.out.println("Content-Disposition: form-data; name=\"ajaupmo\"");
+                dos.writeBytes(lineEnd);
+                System.out.println(lineEnd);
+                dos.writeBytes("ajaupmo");
+                System.out.println("ajaupmo");
+                dos.writeBytes(boundary + lineEnd);
+                System.out.println(boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"contribution\"");
+                System.out.println("Content-Disposition: form-data; name=\"contribution\"");
+                dos.writeBytes(lineEnd);
+                System.out.println(lineEnd);
+                dos.writeBytes("true");
+                System.out.println("true");
+                dos.writeBytes(boundary + lineEnd);
+                System.out.println(boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"ContributionComment\"");
+                System.out.println("Content-Disposition: form-data; name=\"ContributionComment\"");
+                dos.writeBytes(lineEnd);
+                System.out.println(lineEnd);
+                dos.writeBytes("testAndroid");
+                System.out.println("testAndroid");
+                dos.writeBytes(boundary + lineEnd);
+                System.out.println(boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"Document_numbasedoc\"");
+                System.out.println("Content-Disposition: form-data; name=\"Document_numbasedoc\"");
+                dos.writeBytes(lineEnd);
+                System.out.println(lineEnd);
+                dos.writeBytes("6");
+                System.out.println("6");
+                dos.writeBytes(boundary + lineEnd);
+                System.out.println(boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"jsessionid\"");
+                System.out.println("Content-Disposition: form-data; name=\"jsessionid\"");
+                dos.writeBytes(lineEnd);
+                System.out.println(lineEnd);
+                dos.writeBytes(XMLParser.getDocumentTag(this.lastDocument, "sessionid"));
+                System.out.println(XMLParser.getDocumentTag(this.lastDocument, "sessionid"));
+                dos.writeBytes(boundary + lineEnd);
+                System.out.println(boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=\"ptoken\"");
+                System.out.println("Content-Disposition: form-data; name=\"ptoken\"");
+                dos.writeBytes(lineEnd);
+                System.out.println(lineEnd);
+                dos.writeBytes(XMLParser.getDocumentTag(this.lastDocument, "ptoken"));
+                System.out.println(XMLParser.getDocumentTag(this.lastDocument, "ptoken"));
+                dos.writeBytes(boundary + lineEnd);
+                System.out.println(boundary + lineEnd);
+
+
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name=filetoupload;filename=\""
+                        + fileName + "\"" + lineEnd);
+                System.out.println("PARAMS OK - 3");
+
+                   dos.writeBytes(lineEnd);
+
+                   // create a buffer of  maximum size
+                   bytesAvailable = fileInputStream.available();
+                System.out.println("PARAMS OK - 4");
+
+                   bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                   buffer = new byte[bufferSize];
+
+                   // read file and write it into form...
+                   bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                System.out.println("JE SUIS ARRIVE LA");
+
+                   while (bytesRead > 0) {
+
+                     dos.write(buffer, 0, bufferSize);
+                     bytesAvailable = fileInputStream.available();
+                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                     bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                    }
+
+                   // send multipart form data necesssary after file data...
+                   dos.writeBytes(lineEnd);
+                   dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                System.out.println("PUIS LA");
+
+                   // Responses from the server (code and message)
+                   serverResponseCode = conn.getResponseCode();
+                   String serverResponseMessage = conn.getResponseMessage();
+
+                InputStreamReader streamReader = new InputStreamReader(conn.getInputStream());
+                BufferedReader reader = new BufferedReader(streamReader);
+                StringBuilder stringBuilder = new StringBuilder();
+                String inputLine;
+
+                while ((inputLine = reader.readLine()) != null) {
+                    stringBuilder.append(inputLine);
+                }
+
+                reader.close();
+                streamReader.close();
+
+                Log.i("uploadFile", "Input Stream is : "
+                        + stringBuilder.toString());
+
+                   Log.i("uploadFile", "HTTP Response is : "
+                           + serverResponseMessage + ": " + serverResponseCode);
+
+                   if(serverResponseCode == 200){
+
+                       runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(UploadActivity.this, "File Upload Complete.",
+                                             Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                   }
+                System.out.println("PUIS ICI");
+
+                   //close the streams //
+                   fileInputStream.close();
+                   dos.flush();
+                   dos.close();
+
+              } catch (MalformedURLException ex) {
+
+                  //dialog.dismiss();
+                  ex.printStackTrace();
+
+                  runOnUiThread(new Runnable() {
+                      public void run() {
+                          Toast.makeText(UploadActivity.this, "MalformedURLException",
+                                                              Toast.LENGTH_SHORT).show();
+                      }
+                  });
+
+                  Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+              } catch (Exception e) {
+
+                  //dialog.dismiss();
+                  e.printStackTrace();
+
+                  runOnUiThread(new Runnable() {
+                      public void run() {
+                          Toast.makeText(UploadActivity.this, "Got Exception : see logcat ",
+                                  Toast.LENGTH_SHORT).show();
+                      }
+                  });
+                  Log.e("Server Exception", "Exception : "
+                                                   + e.getMessage(), e);
+              }
+              //dialog.dismiss();
+              return serverResponseCode;
+
+           } // End else block
+         }
 
 }

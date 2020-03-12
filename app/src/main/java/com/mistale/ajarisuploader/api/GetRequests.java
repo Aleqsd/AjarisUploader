@@ -1,6 +1,11 @@
 package com.mistale.ajarisuploader.api;
 
+import android.app.Application;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.widget.ProgressBar;
+
+import com.mistale.ajarisuploader.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +17,19 @@ public class GetRequests extends AsyncTask<String, Void, String> {
     public static final String REQUEST_METHOD = "GET";
     public static final int READ_TIMEOUT = 15000;
     public static final int CONNECTION_TIMEOUT = 15000;
+    private ProgressDialog progressDialog;
+
+    public void setProgressDialog(ProgressDialog dialog, String msg) {
+        this.progressDialog = dialog;
+        this.progressDialog.setIndeterminate(true);
+        this.progressDialog.setMessage(msg);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        this.progressDialog.show();
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -47,5 +65,6 @@ public class GetRequests extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+        this.progressDialog.dismiss();
     }
 }

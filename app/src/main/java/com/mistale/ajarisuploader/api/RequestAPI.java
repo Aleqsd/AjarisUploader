@@ -1,6 +1,9 @@
 package com.mistale.ajarisuploader.api;
 
+import android.app.ProgressDialog;
 import android.util.Log;
+
+import com.mistale.ajarisuploader.R;
 
 import org.w3c.dom.Document;
 
@@ -15,11 +18,12 @@ public class RequestAPI {
     private static final String LOGOUT = "/upLogout.do";
     private static final String CONFIG_IMPORT = "/upSetConfigImport.do";
 
-    public static boolean urlIsValid(String url) {
+    public static boolean urlIsValid(String url, ProgressDialog progressDialog) {
         url = url.replaceAll("/$", "");
         boolean isValid;
         try {
             GetRequests getRequest = new GetRequests();
+            getRequest.setProgressDialog(progressDialog, "Vérification de l'url");
             String result = getRequest.execute(url + CHECK).get();
             Document lastDocument = XMLParser.readXML(result);
             isValid = XMLParser.getErrorCode(lastDocument) == 0;
@@ -30,12 +34,13 @@ public class RequestAPI {
         return isValid;
     }
 
-    public static Document getLoginInfos(String url, String login, String pwd) {
+    public static Document getLoginInfos(String url, String login, String pwd, ProgressDialog progressDialog) {
         url = url.replaceAll("/$", "");
         Document document = null;
         boolean isValid;
         try {
             GetRequests getRequest = new GetRequests();
+            getRequest.setProgressDialog(progressDialog, "Récupération du profil");
             String result = getRequest.execute(url + LOGIN + "?pseudo=" + login + "&password=" + pwd + "&ajaupmo=ajaupmo").get();
             document = XMLParser.readXML(result);
             isValid = XMLParser.getErrorCode(document) == 0;
