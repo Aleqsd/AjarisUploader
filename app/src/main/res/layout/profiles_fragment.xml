@@ -23,7 +23,7 @@
         app:maxImageSize="50dp"
         app:backgroundTint="@color/colorAccent"
         android:tint="@android:color/white"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_add_black_24dp"
         android:adjustViewBounds="true"
         android:scaleType="center"
         android:elevation="3dp"
