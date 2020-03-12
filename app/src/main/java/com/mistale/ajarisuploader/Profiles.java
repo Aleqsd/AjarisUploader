@@ -45,16 +45,6 @@ public class Profiles extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ProfilesViewModel.class);
 
-
-        /********************* For tests purposes *********************/
-        /*Profile profile = new Profile("Adrien CANINO", "Cadrew", "test", "test", 1, "test");
-        Profile profile2 = new Profile("Alexandre DO-O ALMEIDA", "Thulium", "test", "test", 1, "test");
-        Preferences.removeAllPreferences(getContext());
-        Preferences.addPreference(profile, getContext());
-        Preferences.addPreference(profile2, getContext());*/
-        /*************************************************************/
-
-
         ArrayList<Profile> profiles;
         this.profilesLayout = this.view.findViewById(R.id.profilesLayout);
         this.recyclerView = this.view.findViewById(R.id.profiles_list);
