@@ -12,10 +12,10 @@
         tools:layout="@layout/profiles_fragment" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.mistale.ajarisuploader.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_history"
+        android:name="com.mistale.ajarisuploader.History"
+        android:label="@string/title_history"
+        tools:layout="@layout/history_fragment" />
 
     <fragment
         android:id="@+id/navigation_about"

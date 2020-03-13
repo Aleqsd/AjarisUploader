@@ -17,8 +17,6 @@ import android.view.ViewGroup;
 
 public class About extends Fragment {
 
-    private AboutViewModel mViewModel;
-
     public static About newInstance() {
         return new About();
     }
@@ -32,8 +30,6 @@ public class About extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(AboutViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

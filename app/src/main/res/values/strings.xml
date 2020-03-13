@@ -2,9 +2,7 @@
     <string name="app_name">AjarisUploader</string>
     <string name="title_profiles">Profils</string>
     <string name="title_about">À propos</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_history">Historique</string>
     <string name="title_activity_upload">Envoi</string>
     <string name="title_activity_add_profile">Ajouter un profil</string>
     <string name="prompt_email">Email</string>
@@ -42,5 +40,8 @@
     <string name="app_version">Ajaris UpLoader Mobile 1.0</string>
     <string name="app_description">Ajaris est un produit <a href="http://www.orkis.com">orkis.com</a></string>
     <string name="app_rate">Noter l\'application</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

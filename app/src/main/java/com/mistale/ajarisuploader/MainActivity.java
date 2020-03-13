@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setBackgroundDrawableResource(R.drawable.ajaris_background) ;
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_profiles, R.id.navigation_dashboard, R.id.navigation_about)
+                R.id.navigation_profiles, R.id.navigation_history, R.id.navigation_about)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

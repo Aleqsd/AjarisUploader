@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 public class Profiles extends Fragment {
 
-    private ProfilesViewModel mViewModel;
     private View view;
     ProfileAdapter adapter;
     RecyclerView recyclerView;
@@ -43,7 +42,6 @@ public class Profiles extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ProfilesViewModel.class);
 
         ArrayList<Profile> profiles;
         this.profilesLayout = this.view.findViewById(R.id.profilesLayout);

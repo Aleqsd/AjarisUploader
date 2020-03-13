@@ -7,9 +7,9 @@
         android:title="@string/title_profiles" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_history"
         android:icon="@drawable/ic_history_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:title="@string/title_history" />
 
     <item
         android:id="@+id/navigation_about"
