@@ -8,15 +8,14 @@
     android:layout_margin="8dp"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="2dp">
-
-
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="8dp"
         android:paddingLeft="8dp"
-        android:paddingRight="8dp">
+        android:paddingRight="8dp"
+        android:background="@drawable/cardview_gradient">
     <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
@@ -33,6 +32,14 @@
         android:padding="10dip"
         android:gravity="bottom|right"
         android:textSize="10dip" />
+
+    <ImageView
+        android:src="@drawable/icon_ajaris"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignLeft="@id/login"
+        android:layout_alignBottom="@id/login"
+        android:scaleType="centerCrop"/>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
