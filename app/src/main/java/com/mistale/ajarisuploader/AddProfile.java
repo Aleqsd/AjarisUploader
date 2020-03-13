@@ -47,7 +47,7 @@ public class AddProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_profile);
-        getWindow().setBackgroundDrawableResource(R.drawable.ajaris_background) ;
+        getWindow().setBackgroundDrawableResource(R.drawable.ajaris_background_alt) ;
         this.progressDialog = new ProgressDialog(AddProfile.this, R.style.Theme_AppCompat_DayNight_Dialog);
 
         this.inputName = findViewById(R.id.input_name);
@@ -64,7 +64,6 @@ public class AddProfile extends AppCompatActivity {
                 if (RequestAPI.urlIsValid(this.inputUrl.getText().toString(), this.progressDialog)) {
                     this.inputLogin.setEnabled(true);
                     this.inputPwd.setEnabled(true);
-                    //this.dismissLoadingPopup();
                 } else {
                     this.inputLogin.setEnabled(false);
                     this.inputPwd.setEnabled(false);
@@ -146,7 +145,7 @@ public class AddProfile extends AppCompatActivity {
                 R.layout.spinner_item,
                 this.basesArray
         );
-        adapterBases.setDropDownViewResource(R.layout.spinner_item);
+        adapterBases.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         this.inputBase.setAdapter(adapterBases);
 
         ArrayAdapter<String> adapterImports = new ArrayAdapter<>(
@@ -154,7 +153,7 @@ public class AddProfile extends AppCompatActivity {
                 R.layout.spinner_item,
                 this.importsArray
         );
-        adapterImports.setDropDownViewResource(R.layout.spinner_item);
+        adapterImports.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         this.inputImport.setAdapter(adapterImports);
     }
 }
