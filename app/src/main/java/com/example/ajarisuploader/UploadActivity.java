@@ -140,8 +140,8 @@ public class UploadActivity extends AppCompatActivity {
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 //                if (RequestAPI.urlIsValid(demoUrl))
-//                    customConnexion();
-                httpClientMaybe();
+                    customConnexion();
+                //httpClientMaybe();
             }
         });
 
@@ -469,14 +469,14 @@ public class UploadActivity extends AppCompatActivity {
 
         MediaType mediaType = MediaType.parse("multipart/form-data; boundary=--------------------------104913326104647324514494");
         RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("jsessionid", "8B622062A330D8F5506912A38B671BDF")
-                .addFormDataPart("ptoken", "1NaRDpSj4w9woITLsRSui12hbmt3cDr4PxbvM28Cbw7muwyQuhUxihGpLyRHNUSez7OMVEaKzIUDwQjGyi3OCHXVwhNqZDNPEuOpOPo7Rq91MA")
+                .addFormDataPart("jsessionid", sessionid)
+                .addFormDataPart("ptoken", ptoken)
                 .addFormDataPart("ajaupmo", "test")
                 .addFormDataPart("filetoupload","fileNameTest.png",
                         RequestBody.create(MediaType.parse("application/octet-stream"),
                                 file1))
                 .addFormDataPart("ContributionComment", "TestAndroid")
-                .addFormDataPart("Document_numbasedoc", "6 ")
+                .addFormDataPart("Document_numbasedoc", "6")
                 .addFormDataPart("contribution", "true")
                 .build();
 
@@ -490,7 +490,7 @@ public class UploadActivity extends AppCompatActivity {
                 .addHeader("Host", "demo-interne.ajaris.com")
                 .addHeader("Content-Type", "multipart/form-data; boundary=--------------------------104913326104647324514494")
                 .addHeader("Accept-Encoding", "gzip, deflate, br")
-                .addHeader("Cookie", "JSESSIONID=8B622062A330D8F5506912A38B671BDF")
+                .addHeader("Cookie", "JSESSIONID="+sessionid)
                 .addHeader("Content-Length", "24070")
                 .addHeader("Connection", "keep-alive")
                 .build();
@@ -499,6 +499,9 @@ public class UploadActivity extends AppCompatActivity {
             textView.setText(response.body().string());
         } catch (IOException e) {
             Log.e(TAG+"httpClientMaybe", Objects.requireNonNull(e.getMessage()));
+        }
+        finally {
+            disconnect();
         }
     }
 
@@ -512,25 +515,21 @@ public class UploadActivity extends AppCompatActivity {
         Unirest.setTimeouts(0, 0);
         try {
             com.mashape.unirest.http.HttpResponse<String> response = Unirest.post("https://demo-interne.ajaris.com/Demo/upImportDoc.do")
-                    .header("User-Agent", "PostmanRuntime/7.22.0")
+                    .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:73.0) Gecko/20100101 Firefox/73.0")
                     .header("Accept", "*/*")
-                    .header("Cache-Control", "no-cache")
-                    .header("Postman-Token", "de32fc9c-f12f-4909-b97f-ccfae09dcf83")
-                    .header("Host", "demo-interne.ajaris.com")
-                    .header("Content-Type", "multipart/form-data; boundary=--------------------------474870213230327860334835")
-                    .header("Accept-Encoding", "gzip, deflate, br")
-                    .header("Cookie", "JSESSIONID=8B622062A330D8F5506912A38B671BDF")
-                    .header("Content-Length", "24070")
+                    .header("Accept-Language", "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3")
+                    .header("Accept-Encoding", "gzip, deflate")
+                    .header("Content-Type", "multipart/form-data")
+                    .header("Cookie", "JSESSIONID=" + sessionid)
                     .header("Connection", "keep-alive")
-                    .field("jsessionid", "8B622062A330D8F5506912A38B671BDF")
-                    .field("ptoken", "1NaRDpSj4w9woITLsRSui12hbmt3cDr4PxbvM28Cbw7muwyQuhUxihGpLyRHNUSez7OMVEaKzIUDwQjGyi3OCHXVwhNqZDNPEuOpOPo7Rq91MA")
-                    .field("ajaupmo", "test")
-                    .field("file", new File("/D:/Téléchargements/25-512.png"))
-                    .field("ContributionComment", "TestPostman")
-                    .field("Document_numbasedoc", "6 ")
                     .field("contribution", "true")
+                    .field("jsessionid", sessionid)
+                    .field("ptoken", ptoken)
+                    .field("filetoupload", file1)
+                    .field("ContributionComment", "Test envoi Android")
+                    .field("Document_numbasedoc", "6")
+                    .field("ajaupmo", "test")
                     .asString();
-
             textView.setText(response.toString());
         } catch (UnirestException e) {
             e.printStackTrace();
