@@ -54,6 +54,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
 
             contributionId = itemView.findViewById(R.id.identifiant);
             contributionLength = itemView.findViewById(R.id.length);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: display dialog info
+                }
+            });
         }
 
         public void setProfileName(String name) {

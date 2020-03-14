@@ -69,12 +69,10 @@ public class Upload {
     public static Upload stringToUpload(String upload) {
         DateFormat date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         String[] uploadString = upload.split("&upload");
-        System.out.println(uploadString.length);
         if(uploadString.length != 4) {
             return new Upload();
         }
         try {
-            System.out.println(uploadString[1]);
             return new Upload(uploadString[0], date.parse(uploadString[1]), uploadString[2], Profile.stringToProfile(uploadString[3]));
         } catch(ParseException error) {
             return new Upload();

@@ -16,7 +16,6 @@ public class UploadHistory {
         String[] contributionsString = sharedPref.getString(HistoryKEY, "").split(",");
         for (int i = 0; i < contributionsString.length; i++) {
             if(!Contribution.stringToContribution(contributionsString[i]).isEmpty()) {
-                System.out.println("JE SUIS ICI");
                 contributions.add(Contribution.stringToContribution(contributionsString[i]));
             }
         }
