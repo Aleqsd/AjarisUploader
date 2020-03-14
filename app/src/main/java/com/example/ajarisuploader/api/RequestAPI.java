@@ -52,7 +52,7 @@ public class RequestAPI {
         boolean isValid;
         try {
             GetRequests getRequest = new GetRequests();
-            String result = getRequest.execute(url + CONFIG_IMPORT + "?jsessionid=" + jsessionid + "&ptoken=" + ptoken + "&config" + config +"&ajaupmo=ajaupmo").get();
+            String result = getRequest.execute(url + CONFIG_IMPORT + "?jsessionid=" + jsessionid + "&ptoken=" + ptoken + "&config" + config + "&ajaupmo=ajaupmo").get();
             Document lastDocument = XMLParser.readXML(result);
             isValid = XMLParser.getErrorCode(lastDocument) == 0;
         } catch (InterruptedException | ExecutionException e) {

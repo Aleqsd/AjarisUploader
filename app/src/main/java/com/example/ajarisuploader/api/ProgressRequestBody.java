@@ -13,7 +13,6 @@ import okio.BufferedSink;
 
 public class ProgressRequestBody extends RequestBody {
     private File mFile;
-    private String mPath;
     private UploadCallbacks mListener;
     private String content_type;
 
@@ -21,22 +20,18 @@ public class ProgressRequestBody extends RequestBody {
 
     public interface UploadCallbacks {
         void onProgressUpdate(int percentage);
-
-        void onError();
-
-        void onFinish();
     }
-    public ProgressRequestBody(final File file, String content_type,  final  UploadCallbacks listener) {
+
+    public ProgressRequestBody(final File file, String content_type, final UploadCallbacks listener) {
         this.content_type = content_type;
         mFile = file;
         mListener = listener;
     }
 
 
-
     @Override
     public MediaType contentType() {
-        return MediaType.parse(content_type+"/*");
+        return MediaType.parse(content_type + "/*");
     }
 
     @Override
@@ -67,6 +62,7 @@ public class ProgressRequestBody extends RequestBody {
     private class ProgressUpdater implements Runnable {
         private long mUploaded;
         private long mTotal;
+
         public ProgressUpdater(long uploaded, long total) {
             mUploaded = uploaded;
             mTotal = total;
@@ -74,7 +70,7 @@ public class ProgressRequestBody extends RequestBody {
 
         @Override
         public void run() {
-            mListener.onProgressUpdate((int)(100 * mUploaded / mTotal));
+            mListener.onProgressUpdate((int) (100 * mUploaded / mTotal));
         }
     }
 }
