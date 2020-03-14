@@ -35,6 +35,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.ajarisuploader.api.MultipartRequest;
 import com.example.ajarisuploader.api.NukeSSLCerts;
+import com.example.ajarisuploader.api.ProgressRequestBody;
 import com.example.ajarisuploader.api.RequestAPI;
 import com.example.ajarisuploader.api.RequeteService;
 import com.example.ajarisuploader.api.RestService;
@@ -70,6 +71,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -84,7 +86,7 @@ import retrofit2.Callback;
 /***
  * Activité visée à s'ouvrir par l'intent du share
  */
-public class UploadActivity extends AppCompatActivity {
+public class UploadActivity extends AppCompatActivity implements ProgressRequestBody.UploadCallbacks {
 
     private static final String TAG = "UPL";
     private static final String demoUrl = "https://demo-interne.ajaris.com/Demo";
@@ -96,6 +98,8 @@ public class UploadActivity extends AppCompatActivity {
     private TextView textView;
     private ImageView imageView;
     private Uri uri;
+    private NotificationCompat.Builder builder;
+    private NotificationManagerCompat notificationManager;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -140,7 +144,7 @@ public class UploadActivity extends AppCompatActivity {
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 //                if (RequestAPI.urlIsValid(demoUrl))
-                    customConnexion();
+                customConnexion();
                 //httpClientMaybe();
             }
         });
@@ -226,26 +230,32 @@ public class UploadActivity extends AppCompatActivity {
             MultipartUploadRequest multipartUploadRequest = new MultipartUploadRequest(this, demoUrl + "/upImportDoc.do");
             multipartUploadRequest
                     .addFileToUpload(file.getAbsolutePath(), "filetoupload")
+                    .addHeader("Cookie","JSESSIONID="+sessionid)
                     .addParameter("jsessionid", sessionid)
                     .addParameter("ptoken", ptoken)
                     .addParameter("ajaupmo", "ajaupmo")
                     .addParameter("ContributionComment", "TestAndroid")
-                    .addParameter("Document_numbasedoc", "6 - Generique")
+                    .addParameter("Document_numbasedoc", "6")
                     .addParameter("contribution", "true")
                     .setNotificationConfig(new UploadNotificationConfig())
                     .setUtf8Charset()
                     .setMaxRetries(2)
                     .startUpload();
             Log.d(TAG, "Upload request over");
+            disconnect();
         } catch (FileNotFoundException | MalformedURLException e) {
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            disconnect();
         }
     }
 
     private void uploadWithRetrofit() {
         File image = new File(Objects.requireNonNull(getPath(uri)));
 
-        MultipartBody.Part body = MultipartBody.Part.createFormData("filetoupload", image.getName(), RequestBody.create(MediaType.parse("image/*"), image));
+        //TODO Replace type image
+        ProgressRequestBody fileBody = new ProgressRequestBody(image, "image/*",this);
+
+        MultipartBody.Part body = MultipartBody.Part.createFormData("filetoupload", image.getName(), fileBody);
 
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
         RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
@@ -254,17 +264,29 @@ public class UploadActivity extends AppCompatActivity {
         RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), "6 - Generique");
         RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
 
+        String sessionIdCookie = "JSESSIONID="+sessionid;
+
         RequeteService requeteService = RestService.getClient().create(RequeteService.class);
-        Call<ResponseBody> call = requeteService.uploadProfilePicture(body, sess, ptok, ajau, cont, docu, contr);
+        Call<ResponseBody> call = requeteService.uploadProfilePicture(sessionIdCookie, body, sess, ptok, ajau, cont, docu, contr);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                 Log.v("Upload", "success");
+                builder.setContentText("Download complete")
+                        .setProgress(0,0,false);
+
+                notificationManager.notify(1, builder.build());
+                disconnect();
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("Upload error:", t.getMessage());
+                builder.setContentText("Upload error")
+                        .setProgress(0,0,false);
+
+                notificationManager.notify(1, builder.build());
+                disconnect();
             }
         });
     }
@@ -282,8 +304,12 @@ public class UploadActivity extends AppCompatActivity {
                         response -> {
                             textView.setText(new String(response.data));
                             Log.i(TAG, new String(response.data));
+                            disconnect();
                         },
-                        error -> Log.e("VolleyError : ", "" + error.networkResponse.statusCode)
+                        error -> {
+                            Log.e("VolleyError : ", "" + error.networkResponse.statusCode);
+                            disconnect();
+                        }
 
                 ) {
                     @Override
@@ -293,7 +319,7 @@ public class UploadActivity extends AppCompatActivity {
                         params.put("ptoken", ptoken);
                         params.put("ajaupmo", "test");
                         params.put("ContributionComment", "TestAndroid");
-                        params.put("Document_numbasedoc", "6 - Generique");
+                        params.put("Document_numbasedoc", "6");
                         params.put("contribution", "true");
                         return params;
                     }
@@ -309,23 +335,20 @@ public class UploadActivity extends AppCompatActivity {
                     @Override
                     public Map<String, String> getHeaders() {
                         Map<String, String> header = new HashMap<>();
-                        header.put("Content-Type", "application/x-www-form-urlencoded");
-                        header.put("User-Agent", "PostmanRuntime/7.22.0");
-                        header.put("Accept", "*/*");
-                        header.put("Cache-Control", "no-cache");
-                        header.put("Postman-Token", "d1f6364a-eaed-4420-a669-53c4b771352c");
-                        header.put("Host", "demo-interne.ajaris.com");
-                        header.put("Accept-Encoding", "gzip, deflate, br");
                         header.put("Cookie", "JSESSIONID=" + sessionid);
-                        //.addHeader("Content-Length", "27103")
-                        header.put("Connection", "keep-alive");
                         return header;
                     }
                 };
+                volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        1000000000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
                 Volley.newRequestQueue(this).add(volleyMultipartRequest);
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                disconnect();
             }
         }
     }
@@ -379,7 +402,7 @@ public class UploadActivity extends AppCompatActivity {
                     Log.d(TAG, sessionid);
                     ptoken = XMLParser.getDocumentTag(doc, "ptoken");
                     config = XMLParser.getConfig(doc);
-                    httpClientMaybe();
+                    uploadWithRetrofit();
                 },
                 error -> {
                     Log.d("ERROR", "error => " + error.toString());
@@ -463,44 +486,39 @@ public class UploadActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         File file1 = new File(getPath(uri));
-        OkHttpClient client = new OkHttpClient().newBuilder()
+        //TODO Change timeout
+        OkHttpClient client = new OkHttpClient()
+                .newBuilder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
         try {
 
-        MediaType mediaType = MediaType.parse("multipart/form-data; boundary=--------------------------104913326104647324514494");
-        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("jsessionid", sessionid)
-                .addFormDataPart("ptoken", ptoken)
-                .addFormDataPart("ajaupmo", "test")
-                .addFormDataPart("filetoupload","fileNameTest.png",
-                        RequestBody.create(MediaType.parse("application/octet-stream"),
-                                file1))
-                .addFormDataPart("ContributionComment", "TestAndroid")
-                .addFormDataPart("Document_numbasedoc", "6")
-                .addFormDataPart("contribution", "true")
-                .build();
+            MediaType mediaType = MediaType.parse("multipart/form-data; boundary=--------------------------104913326104647324514494");
+            RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                    .addFormDataPart("jsessionid", sessionid)
+                    .addFormDataPart("ptoken", ptoken)
+                    .addFormDataPart("ajaupmo", "test")
+                    .addFormDataPart("filetoupload", "fileNameTest.png",
+                            RequestBody.create(MediaType.parse("application/octet-stream"),
+                                    file1))
+                    .addFormDataPart("ContributionComment", "TestAndroid")
+                    .addFormDataPart("Document_numbasedoc", "6")
+                    .addFormDataPart("contribution", "true")
+                    .build();
 
-        okhttp3.Request request = new okhttp3.Request.Builder()
-                .url("https://demo-interne.ajaris.com/Demo/upImportDoc.do")
-                .method("POST", body)
-                .addHeader("User-Agent", "PostmanRuntime/7.22.0")
-                .addHeader("Accept", "*/*")
-                .addHeader("Cache-Control", "no-cache")
-                .addHeader("Postman-Token", "fe6fbe7b-13e2-4378-ab87-ef8e7c8c6734")
-                .addHeader("Host", "demo-interne.ajaris.com")
-                .addHeader("Content-Type", "multipart/form-data; boundary=--------------------------104913326104647324514494")
-                .addHeader("Accept-Encoding", "gzip, deflate, br")
-                .addHeader("Cookie", "JSESSIONID="+sessionid)
-                .addHeader("Content-Length", "24070")
-                .addHeader("Connection", "keep-alive")
-                .build();
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url("https://demo-interne.ajaris.com/Demo/upImportDoc.do")
+                    .method("POST", body)
+                    .addHeader("Cookie", "JSESSIONID=" + sessionid)
+                    .build();
 
             Response response = client.newCall(request).execute();
-            textView.setText(response.body().string());
+            Log.i(TAG, response.body().string());
         } catch (IOException e) {
-            Log.e(TAG+"httpClientMaybe", Objects.requireNonNull(e.getMessage()));
-        }
-        finally {
+            Log.e(TAG + "httpClientMaybe", Objects.requireNonNull(e.getMessage()));
+        } finally {
             disconnect();
         }
     }
@@ -613,35 +631,47 @@ public class UploadActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager = NotificationManagerCompat.from(this);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Ajaris")
+        builder = new NotificationCompat.Builder(this, "Ajaris")
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle("Ajaris Upload")
-                .setContentText("Upload in progress...")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
         // Issue the initial notification with zero progress
-        int PROGRESS_MAX = 100;
-        int PROGRESS_CURRENT = 50;
-        builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false);
+        builder.setProgress(100, 0, false);
         notificationManager.notify(1, builder.build());
 
         // Do the job here that tracks the progress.
         // Usually, this should be in a
         // worker thread
         // To show progress, update PROGRESS_CURRENT and update the notification with:
-        // builder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false);
-        // notificationManager.notify(notificationId, builder.build());
 
         //// When done, update the notification one more time to remove the progress bar
-        //        builder.setContentText("Download complete")
-        //                .setProgress(0,0,false);
 
+    }
+
+    @Override
+    public void onProgressUpdate(int percentage) {
+        Log.i(TAG,String.valueOf(percentage));
+        if (percentage == 30)
+            Log.i(TAG,String.valueOf(percentage));
+        if (percentage == 80)
+            Log.i(TAG,String.valueOf(percentage));
+        builder.setProgress(100, percentage, false);
         notificationManager.notify(1, builder.build());
     }
 
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onFinish() {
+        Log.i(TAG,"finished");
+    }
 }
