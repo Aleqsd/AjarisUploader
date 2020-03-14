@@ -26,18 +26,16 @@ public class Contribution {
         }
         String uploadString = "";
         for (Upload upload : this.getUploads()) {
-            uploadString += upload.toString() + ";";
+            uploadString += upload.toString() + "&contribution";
         }
-        uploadString.replaceAll(";$", "");
-        return Integer.toString(this.getId()) + ";" + uploadString;
+        uploadString.replaceAll("&contribution$", "");
+        return Integer.toString(this.getId()) + "&contribution" + uploadString;
     }
 
     public static Contribution stringToContribution(String contribution) {
-        String[] contributionString = contribution.split(";");
-        if(contributionString.length < 1) {
+        String[] contributionString = contribution.split("&contribution");
+        if(contributionString.length <= 1) {
             return new Contribution();
-        } else if(contributionString.length == 1) {
-            return new Contribution(Integer.parseInt(contributionString[0]), null);
         }
         ArrayList<Upload> uploads = new ArrayList<>();
         for(int i = 1; i < contributionString.length; i++) {
@@ -72,5 +70,14 @@ public class Contribution {
 
     public boolean isEmpty() {
         return this.getId() == -1 && this.getUploads() == null;
+    }
+
+    private static Contribution getContributionById(ArrayList<Contribution> contributions, int id) {
+        for(int i = 0; i < contributions.size(); i++) {
+            if(contributions.get(i).getId() == id) {
+                return contributions.get(i);
+            }
+        }
+        return null;
     }
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="wrap_content"
+    android:layout_height="84dp"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="2dp">
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:background="@drawable/cardview_gradient">
+        <TextView
+            android:id="@+id/identifiant"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dip"
+            android:textSize="16dip"
+            android:textStyle="bold"
+            android:gravity="top|left" />
+
+        <TextView
+            android:id="@+id/length"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dip"
+            android:gravity="bottom|right"
+            android:textSize="10dip" />
+
+        <ImageView
+            android:src="@drawable/icon_ajaris"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignLeft="@id/length"
+            android:layout_alignBottom="@id/length"
+            android:scaleType="centerCrop"/>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

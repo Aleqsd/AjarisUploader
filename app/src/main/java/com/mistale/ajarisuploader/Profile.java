@@ -79,11 +79,11 @@ public class Profile {
     @NonNull
     @Override
     public String toString() {
-        return this.getName() + ";" + this.getLogin() + ";" + this.getPwd() + ";" + this.getUrl() + ";" + this.getBase().toString() + ";" + this.getImportProfile();
+        return this.getName() + "&profile" + this.getLogin() + "&profile" + this.getPwd() + "&profile" + this.getUrl() + "&profile" + this.getBase().toString() + "&profile" + this.getImportProfile();
     }
 
     public static Profile stringToProfile(String profile) {
-        String[] profileString = profile.split(";");
+        String[] profileString = profile.split("&profile");
         if(profileString.length != 6) {
             return new Profile();
         }

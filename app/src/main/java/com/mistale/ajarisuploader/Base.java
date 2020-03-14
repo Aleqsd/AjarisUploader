@@ -31,11 +31,11 @@ public class Base {
     }
 
     public String toString() {
-        return Integer.toString(this.getNumber()) + "&" + this.getName();
+        return Integer.toString(this.getNumber()) + "&base" + this.getName();
     }
 
     public static Base stringToBase(String base) {
-        String[] baseString = base.split("&");
+        String[] baseString = base.split("&base");
         if(baseString.length != 2) {
             return new Base();
         }

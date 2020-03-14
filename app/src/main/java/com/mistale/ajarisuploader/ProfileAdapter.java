@@ -15,8 +15,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileH
     private ArrayList<Profile> profileList;
     private Context mContext;
 
-    public ProfileAdapter(Context context, ArrayList<Profile> contactsList) {
-        this.profileList = contactsList;
+    public ProfileAdapter(Context context, ArrayList<Profile> profileList) {
+        this.profileList = profileList;
         this.mContext = context;
     }
 

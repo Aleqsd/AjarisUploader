@@ -15,7 +15,8 @@ public class UploadHistory {
         ArrayList<Contribution> contributions = new ArrayList<>();
         String[] contributionsString = sharedPref.getString(HistoryKEY, "").split(",");
         for (int i = 0; i < contributionsString.length; i++) {
-            if(!Profile.stringToProfile(contributionsString[i]).isEmpty()) {
+            if(!Contribution.stringToContribution(contributionsString[i]).isEmpty()) {
+                System.out.println("JE SUIS ICI");
                 contributions.add(Contribution.stringToContribution(contributionsString[i]));
             }
         }
@@ -41,7 +42,18 @@ public class UploadHistory {
         } else if(contributions.get(0).isEmpty()) {
             contributions.set(0, contribution);
         } else {
-            contributions.add(contribution);
+            int position = -1;
+            for(int i = 0; i < contributions.size(); i++) {
+                if(contributions.get(i).getId() == contribution.getId()) {
+                    position = i;
+                    break;
+                }
+            }
+            if(position > -1) {
+                contributions.set(position, contribution);
+            } else {
+                contributions.add(contribution);
+            }
         }
         UploadHistory.savePreferences(contributions, context);
     }
@@ -86,13 +98,13 @@ public class UploadHistory {
     }
 
     public static void removePreferenceFromPosition(int position, Context context) {
-        ArrayList<Profile> profiles = Preferences.getPreferences(context);
-        if(profiles.get(0).isEmpty()) {
+        ArrayList<Contribution> contributions = UploadHistory.getPreferences(context);
+        if(contributions.get(0).isEmpty()) {
             Preferences.removeAllPreferences(context);
         } else {
-            profiles.remove(position);
+            contributions.remove(position);
         }
-        Preferences.savePreferences(profiles, context);
+        UploadHistory.savePreferences(contributions, context);
     }
 
     public static void removeAllPreferences(Context context) {
