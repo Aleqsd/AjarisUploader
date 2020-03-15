@@ -22,11 +22,11 @@ import androidx.core.app.NotificationManagerCompat;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -41,8 +41,8 @@ import org.w3c.dom.Document;
 
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -68,6 +68,8 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private TextView textView;
     private ImageView imageView;
     private Uri uri;
+    private List<Uri> uris;
+    private int filesToUpload;
     private NotificationCompat.Builder builder;
     private NotificationManagerCompat notificationManager;
 
@@ -88,14 +90,17 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         imageView = findViewById(R.id.imageView);
         Button buttonUpload = findViewById(R.id.buttonUpload);
 
+        filesToUpload = 0;
         Intent intent = getIntent();
         if (intent.getParcelableExtra("URI") != null) {
             uri = intent.getParcelableExtra("URI");
             textView.setText(Objects.requireNonNull(uri).getPath());
             imageView.setImageURI(uri);
+            filesToUpload = 1;
         } else if (intent.getParcelableArrayListExtra("URI") != null) {
             StringBuilder urisString = new StringBuilder();
-            ArrayList<Uri> uris = intent.getParcelableArrayListExtra("URI");
+            uris = intent.getParcelableArrayListExtra("URI");
+            filesToUpload = uris.size();
             for (Uri singleUri : Objects.requireNonNull(uris))
                 urisString.append(singleUri.getPath());
             textView.setText(urisString);
@@ -145,13 +150,72 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             textView.setText("Still connected :/");
     }
 
+    public static String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
+
+
+    private void uploadMultipleWithRetrofit() {
+        for (Uri uri : uris) {
+            File image = new File(Objects.requireNonNull(getPath(uri)));
+            //TODO Replace type image
+
+            String mime = getMimeType(uri.toString());
+
+            ProgressRequestBody fileBody = new ProgressRequestBody(image, mime, this);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("filetoupload", image.getName(), fileBody);
+
+            RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
+            RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
+            RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "test");
+            RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), "TestAndroid");
+            RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), "6 - Generique");
+            RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
+
+            String sessionIdCookie = "JSESSIONID=" + sessionid;
+
+            RequeteService requeteService = RestService.getClient().create(RequeteService.class);
+            Call<ResponseBody> call = requeteService.uploadSingleFile(sessionIdCookie, body, sess, ptok, ajau, cont, docu, contr);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    Log.v("Upload", "success");
+                    if (filesToUpload > 1) {
+                        builder.setProgress(100, 100 / filesToUpload, false);
+                        notificationManager.notify(1, builder.build());
+                    } else {
+                        builder.setContentText("Download complete")
+                                .setProgress(0, 0, false);
+                        notificationManager.notify(1, builder.build());
+                        disconnect();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.e("Upload error:", t.getMessage());
+                    builder.setContentText("Upload error")
+                            .setProgress(0, 0, false);
+
+                    notificationManager.notify(1, builder.build());
+                    disconnect();
+                }
+            });
+            filesToUpload -= 1;
+        }
+    }
+
+
     private void uploadWithRetrofit() {
-        setupUploadNotification();
         File image = new File(Objects.requireNonNull(getPath(uri)));
+        String mime = getMimeType(uri.toString());
 
-        //TODO Replace type image
-        ProgressRequestBody fileBody = new ProgressRequestBody(image, "image/*", this);
-
+        ProgressRequestBody fileBody = new ProgressRequestBody(image, mime, this);
         MultipartBody.Part body = MultipartBody.Part.createFormData("filetoupload", image.getName(), fileBody);
 
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
@@ -164,7 +228,8 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         String sessionIdCookie = "JSESSIONID=" + sessionid;
 
         RequeteService requeteService = RestService.getClient().create(RequeteService.class);
-        Call<ResponseBody> call = requeteService.uploadProfilePicture(sessionIdCookie, body, sess, ptok, ajau, cont, docu, contr);
+
+        Call<ResponseBody> call = requeteService.uploadSingleFile(sessionIdCookie, body, sess, ptok, ajau, cont, docu, contr);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -186,6 +251,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 disconnect();
             }
         });
+
     }
 
     public void customConnexion() {
@@ -200,7 +266,11 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                     Log.d(TAG, sessionid);
                     ptoken = XMLParser.getDocumentTag(doc, "ptoken");
                     config = XMLParser.getConfig(doc);
-                    uploadWithRetrofit();
+                    setupUploadNotification();
+                    if (filesToUpload > 1)
+                        uploadMultipleWithRetrofit();
+                    else
+                        uploadWithRetrofit();
                 },
                 error -> {
                     Log.d("ERROR", "error => " + error.toString());
@@ -213,15 +283,6 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 params.put("password", demoPwd);
                 params.put("ajaupmo", "test");
                 return params;
-            }
-
-            @Override
-            protected com.android.volley.Response<String> parseNetworkResponse(NetworkResponse response) {
-                Log.i("response", response.headers.toString());
-                Map<String, String> responseHeaders = response.headers;
-                String rawCookies = responseHeaders.get("Set-Cookie");
-                Log.i("cookies", Objects.requireNonNull(rawCookies));
-                return super.parseNetworkResponse(response);
             }
         };
         queue.add(getRequest);
@@ -244,6 +305,8 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         // Create an explicit intent for an Activity in your app
         Intent intent = new Intent(this, UploadActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        //TODO modifier par l'intent de l'historique
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         notificationManager = NotificationManagerCompat.from(this);
@@ -252,14 +315,12 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle("Ajaris Upload")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                 .setVibrate(new long[]{0L})
                 .setOnlyAlertOnce(true)
                 .setAutoCancel(true);
 
-        // Issue the initial notification with zero progress
         builder.setProgress(100, 0, false);
         notificationManager.notify(1, builder.build());
     }

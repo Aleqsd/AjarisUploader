@@ -26,7 +26,7 @@ import retrofit2.http.Url;
 public interface RequeteService {
     @Multipart
     @POST("upImportDoc.do")
-    Call<ResponseBody> uploadProfilePicture(
+    Call<ResponseBody> uploadSingleFile(
             @Header("Cookie") String sessionid,
             @Part MultipartBody.Part file,
             @Part("jsessionid") RequestBody jsessionid,
