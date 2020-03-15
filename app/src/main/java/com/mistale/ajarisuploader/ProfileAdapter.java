@@ -1,12 +1,17 @@
 package com.mistale.ajarisuploader;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -14,6 +19,7 @@ import java.util.ArrayList;
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileHolder> {
     private ArrayList<Profile> profileList;
     private Context mContext;
+    private FragmentActivity activity;
 
     public ProfileAdapter(Context context, ArrayList<Profile> profileList) {
         this.profileList = profileList;
@@ -31,6 +37,10 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileH
     @Override
     public int getItemCount() {
         return this.profileList == null ? 0 : this.profileList.size();
+    }
+
+    public void setActivity(@NonNull FragmentActivity activity) {
+        this.activity = activity;
     }
 
 
@@ -67,6 +77,15 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileH
 
             profileName = itemView.findViewById(R.id.name);
             profileLogin = itemView.findViewById(R.id.login);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: display dialog profile
+                    ProfileDialogInfo dialog = new ProfileDialogInfo();
+                    dialog.show(activity.getSupportFragmentManager(), "dialog");
+                }
+            });
         }
 
         public void setProfileName(String name) {

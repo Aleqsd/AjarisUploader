@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class Profiles extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         profiles = Preferences.getPreferences(getContext());
         this.adapter = new ProfileAdapter(getContext(), profiles);
+        this.adapter.setActivity(getActivity());
         recyclerView.setAdapter(this.adapter);
         this.adapter.notifyDataSetChanged();
 
@@ -78,5 +80,4 @@ public class Profiles extends Fragment {
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
         itemTouchhelper.attachToRecyclerView(recyclerView);
     }
-
 }
