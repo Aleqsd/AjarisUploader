@@ -41,7 +41,10 @@ import com.mistale.ajarisuploader.api.XMLParser;
 import org.w3c.dom.Document;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +74,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private Uri uri;
     private List<Uri> uris;
     private int filesToUpload;
+    private Profile profile;
     private ProgressDialog progressDialog;
     private NotificationCompat.Builder builder;
     private NotificationManagerCompat notificationManager;
@@ -193,7 +197,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                         builder.setProgress(100, 100 / filesToUpload, false);
                         notificationManager.notify(1, builder.build());
                     } else {
-                        builder.setContentText("Download complete")
+                        builder.setContentText("Upload complete")
                                 .setProgress(0, 0, false);
                         notificationManager.notify(1, builder.build());
                         disconnect();
@@ -222,6 +226,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         ProgressRequestBody fileBody = new ProgressRequestBody(image, mime, this);
         MultipartBody.Part body = MultipartBody.Part.createFormData("filetoupload", image.getName(), fileBody);
 
+        //TODO Changer les paramètres fixes
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
         RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
         RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "test");
@@ -237,8 +242,9 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                //writeInUploadHistory();
                 Log.v("Upload", "success");
-                builder.setContentText("Download complete")
+                builder.setContentText("Upload complete")
                         .setProgress(0, 0, false);
 
                 notificationManager.notify(1, builder.build());
@@ -255,6 +261,30 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 disconnect();
             }
         });
+
+    }
+
+    public void writeInUploadHistory(retrofit2.Response<ResponseBody> response, String comment, Profile profile){
+        try {
+            String xmlResponse = response.body().string();
+            Document document = XMLParser.readUploadXML(xmlResponse);
+            int code = XMLParser.getUploadCode(document);
+            int contributionId = XMLParser.getContributionId(document);
+            Date date = new Date();
+            //TODO Name file ?
+            Upload myUpload = new Upload("Ajaris", new Date(), comment, profile);
+            ArrayList<Contribution> allContributions = UploadHistory.getPreferences(this);
+            Contribution myContribution = Contribution.getContributionById(allContributions, contributionId);
+            if (myContribution != null)
+            {
+                ArrayList<Upload> myUploads = myContribution.getUploads();
+                myUploads.add(myUpload);
+                myContribution.setUploads(myUploads);
+                UploadHistory.addPreference(myContribution, this);
+            }
+        } catch (IOException e) {
+            Log.e(TAG,e.getMessage());
+        }
 
     }
 

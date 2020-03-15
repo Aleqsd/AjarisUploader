@@ -72,7 +72,7 @@ public class Contribution {
         return this.getId() == -1 && this.getUploads() == null;
     }
 
-    private static Contribution getContributionById(ArrayList<Contribution> contributions, int id) {
+    static Contribution getContributionById(ArrayList<Contribution> contributions, int id) {
         for(int i = 0; i < contributions.size(); i++) {
             if(contributions.get(i).getId() == id) {
                 return contributions.get(i);
