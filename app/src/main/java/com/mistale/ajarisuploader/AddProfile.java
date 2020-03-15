@@ -89,7 +89,7 @@ public class AddProfile extends AppCompatActivity {
             }
             Base base = new Base();
             for(int i = 0; i < this.currentBases.size(); i++) {
-                if(this.currentBases.get(i).getName().equals(this.inputBase.toString())) {
+                if(this.currentBases.get(i).getName().equals(this.inputBase.getSelectedItem().toString())) {
                     base.setNumber(this.currentBases.get(i).getNumber());
                     base.setName(this.currentBases.get(i).getName());
                 }
@@ -100,7 +100,7 @@ public class AddProfile extends AppCompatActivity {
                     this.inputPwd.getText().toString(),
                     this.inputUrl.getText().toString(),
                     base,
-                    this.inputImport.toString()
+                    this.inputImport.getSelectedItem().toString()
             );
             Preferences.addPreference(profile, AddProfile.this);
             Intent intent = new Intent(AddProfile.this, MainActivity.class);

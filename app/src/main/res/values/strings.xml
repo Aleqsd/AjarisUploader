@@ -41,7 +41,11 @@
     <string name="app_description">Ajaris est un produit <a href="http://www.orkis.com">orkis.com</a></string>
     <string name="app_rate">Noter l\'application</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Strings used for dialogs -->
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_login">Pseudo</string>
+    <string name="dialog_url">URL</string>
+    <string name="dialog_base">Base</string>
+    <string name="dialog_import">Profile d\'import</string>
 
 </resources>

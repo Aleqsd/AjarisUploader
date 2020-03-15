@@ -1,6 +1,7 @@
 package com.mistale.ajarisuploader;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -83,6 +81,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileH
                 public void onClick(View v) {
                     // TODO: display dialog profile
                     ProfileDialogInfo dialog = new ProfileDialogInfo();
+                    Bundle bundle = new Bundle();
+                    Profile profile = profileList.get(getLayoutPosition());
+                    bundle.putString("name", profile.getName());
+                    bundle.putString("login", profile.getLogin());
+                    bundle.putString("url", profile.getUrl());
+                    bundle.putString("base", profile.getBase().getName());
+                    bundle.putString("import", profile.getImportProfile());
+                    dialog.setArguments(bundle);
                     dialog.show(activity.getSupportFragmentManager(), "dialog");
                 }
             });

@@ -2,32 +2,58 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-    <ImageView
-        android:src="@drawable/icon_ajaris"
+    <TextView
+        android:id="@+id/dialog_name"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:scaleType="center"
-        android:background="#FFFFBB33"
-        android:contentDescription="@string/app_name" />
-    <EditText
-        android:id="@+id/username"
-        android:inputType="textEmailAddress"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        android:text="Name"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"/>
+    <TextView
+        android:id="@+id/dialog_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
-        android:hint="@string/hint_login" />
-    <EditText
-        android:id="@+id/password"
-        android:inputType="textPassword"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="URL" />
+    <TextView
+        android:id="@+id/dialog_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="sans-serif"
-        android:hint="@string/hint_pwd"/>
+        android:layout_marginBottom="4dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Login" />
+    <TextView
+        android:id="@+id/dialog_base"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Base" />
+    <TextView
+        android:id="@+id/dialog_import"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Import Profile" />
 </LinearLayout>
