@@ -1,12 +1,14 @@
 package com.mistale.ajarisuploader;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryHolder> {
     private ArrayList<Contribution> contributionList;
     private Context mContext;
+    private FragmentActivity activity;
 
     public HistoryAdapter(Context context, ArrayList<Contribution> contributionList) {
         this.contributionList = contributionList;
@@ -31,6 +34,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public int getItemCount() {
         return this.contributionList == null ? 0 : this.contributionList.size();
+    }
+
+    public void setActivity(@NonNull FragmentActivity activity) {
+        this.activity = activity;
     }
 
     public ArrayList<Contribution> getData() {
@@ -55,11 +62,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             contributionId = itemView.findViewById(R.id.identifiant);
             contributionLength = itemView.findViewById(R.id.length);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: display dialog info
-                }
+            itemView.setOnClickListener(v -> {
+                HistoryDialogInfo dialog = new HistoryDialogInfo();
+                Bundle bundle = new Bundle();
+                Contribution contribution = contributionList.get(getLayoutPosition());
+                bundle.putString("contribution", contribution.toString());
+                dialog.setArguments(bundle);
+                dialog.show(activity.getSupportFragmentManager(), "dialog");
             });
         }
 

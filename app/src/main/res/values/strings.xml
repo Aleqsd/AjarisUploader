@@ -46,6 +46,7 @@
     <string name="dialog_login">Pseudo</string>
     <string name="dialog_url">URL</string>
     <string name="dialog_base">Base</string>
-    <string name="dialog_import">Profile d\'import</string>
+    <string name="dialog_import">Profil d\'import</string>
+    <string name="dialog_contribution_id">Contribution</string>
 
 </resources>

@@ -76,21 +76,17 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileH
             profileName = itemView.findViewById(R.id.name);
             profileLogin = itemView.findViewById(R.id.login);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: display dialog profile
-                    ProfileDialogInfo dialog = new ProfileDialogInfo();
-                    Bundle bundle = new Bundle();
-                    Profile profile = profileList.get(getLayoutPosition());
-                    bundle.putString("name", profile.getName());
-                    bundle.putString("login", profile.getLogin());
-                    bundle.putString("url", profile.getUrl());
-                    bundle.putString("base", profile.getBase().getName());
-                    bundle.putString("import", profile.getImportProfile());
-                    dialog.setArguments(bundle);
-                    dialog.show(activity.getSupportFragmentManager(), "dialog");
-                }
+            itemView.setOnClickListener(v -> {
+                ProfileDialogInfo dialog = new ProfileDialogInfo();
+                Bundle bundle = new Bundle();
+                Profile profile = profileList.get(getLayoutPosition());
+                bundle.putString("name", profile.getName());
+                bundle.putString("login", profile.getLogin());
+                bundle.putString("url", profile.getUrl());
+                bundle.putString("base", profile.getBase().getName());
+                bundle.putString("import", profile.getImportProfile());
+                dialog.setArguments(bundle);
+                dialog.show(activity.getSupportFragmentManager(), "dialog");
             });
         }
 

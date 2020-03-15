@@ -58,6 +58,7 @@ public class History extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         contributions = UploadHistory.getPreferences(getContext());
         this.adapter = new HistoryAdapter(getContext(), contributions);
+        this.adapter.setActivity(getActivity());
         recyclerView.setAdapter(this.adapter);
         this.adapter.notifyDataSetChanged();
     }
