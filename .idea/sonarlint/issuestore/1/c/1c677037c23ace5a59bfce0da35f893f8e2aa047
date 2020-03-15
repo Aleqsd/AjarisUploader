@@ -1,17 +1,7 @@
 
-Y
-java:S1128"7Remove this unused import 'android.widget.ProgressBar'.(³ñÿŸùÿÿÿÿ8ó•‡Š.
-O
-java:S1128"3Remove this unused import 'android.content.Intent'.(³ğ‹G8ó•‡Š.
-Z
-java:S1128"8Remove this unused import 'android.widget.ArrayAdapter'.( €ŠÑÿÿÿÿÿ8ó•‡Š.
 v
-java:S1450"YRemove the "mViewModel" field and declare it as a local variable in the relevant methods.(Âíâ’8ó•‡Š.
-c
-java:S18545"ARemove this useless assignment to local variable "savedProfiles".(ÚÊ–ÿÿÿÿÿÿ8ó•‡Š.
-v
-java:S2293,"YReplace the type specification in this constructor call with the diamond operator ("<>").(—ô‹û8ó•‡Š.
-{
-java:S22935"YReplace the type specification in this constructor call with the diamond operator ("<>").(ÚÊ–ÿÿÿÿÿÿ8ó•‡Š.
+java:S1450"YRemove the "mViewModel" field and declare it as a local variable in the relevant methods.(Âíâ’8ïîÈıŠ.
+T
+java:S1135D"2Complete the task associated to this TODO comment.(ˆ†ÆÈıÿÿÿÿ8ïîÈıŠ.
 K
-java:S1068".Remove this unused "mViewModel" private field.(Âíâ’8ó•‡Š.
+java:S1068".Remove this unused "mViewModel" private field.(Âíâ’8ïîÈıŠ.
