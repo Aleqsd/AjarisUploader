@@ -47,8 +47,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, final int position) {
         final Contribution contribution = contributionList.get(position);
-        holder.setProfileName(Integer.toString(contribution.getId()));
-        holder.setProfileLogin(Integer.toString(contribution.getNumberOfUploads()));
+        holder.setId(Integer.toString(contribution.getId()));
+        holder.setLogin(Integer.toString(contribution.getNumberOfUploads()));
     }
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
@@ -72,11 +72,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             });
         }
 
-        public void setProfileName(String name) {
-            contributionId.setText(name);
+        public void setId(String id) {
+            contributionId.setText(id);
         }
 
-        public void setProfileLogin(String login) {
+        public void setLogin(String login) {
             contributionLength.setText(login);
         }
     }
