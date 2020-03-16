@@ -24,8 +24,13 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -44,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -69,12 +75,17 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private String sessionid;
     private String ptoken;
     private String config;
-    private TextView textView;
+    private TextView uploadTextMessage;
     private ImageView imageView;
+    private Button buttonUpload;
+    private Button createProfileButton;
+    private EditText editTextDescription;
+    private Spinner profileSpinner;
+    private Profile selectedProfile;
     private Uri uri;
     private List<Uri> uris;
     private int filesToUpload;
-    private Profile profile;
+    private ArrayList<Profile> profiles;
     private ProgressDialog progressDialog;
     private NotificationCompat.Builder builder;
     private NotificationManagerCompat notificationManager;
@@ -92,17 +103,23 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        textView = findViewById(R.id.urisTextView);
+        uploadTextMessage = findViewById(R.id.uploadTextMessage);
         imageView = findViewById(R.id.imageView);
-        Button buttonUpload = findViewById(R.id.buttonUpload);
+        buttonUpload = findViewById(R.id.buttonUpload);
+        createProfileButton = findViewById(R.id.createProfileButton);
+        editTextDescription = findViewById(R.id.editTextDescription);
+        profileSpinner = findViewById(R.id.profileSpinner);
 
         progressDialog = new ProgressDialog(UploadActivity.this, R.style.Theme_AppCompat_DayNight_Dialog);
+
+        profiles = Preferences.getPreferences(this);
+        setupUI();
 
         filesToUpload = 0;
         Intent intent = getIntent();
         if (intent.getParcelableExtra("URI") != null) {
             uri = intent.getParcelableExtra("URI");
-            textView.setText(Objects.requireNonNull(uri).getPath());
+            uploadTextMessage.setText(Objects.requireNonNull(uri).getPath());
             imageView.setImageURI(uri);
             filesToUpload = 1;
         } else if (intent.getParcelableArrayListExtra("URI") != null) {
@@ -111,19 +128,58 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             filesToUpload = uris.size();
             for (Uri singleUri : Objects.requireNonNull(uris))
                 urisString.append(singleUri.getPath());
-            textView.setText(urisString);
+            uploadTextMessage.setText(urisString);
         } else
             Log.e("IntentError", "L'intent reçu est invalide");
 
         verifyStoragePermissions(this);
 
-        buttonUpload.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (RequestAPI.urlIsValid(demoUrl, progressDialog))
-                    customConnexion();
-            }
+        buttonUpload.setOnClickListener(v -> {
+            if (RequestAPI.urlIsValid(demoUrl, progressDialog))
+                customConnexion();
         });
 
+    }
+
+    private void setupUI() {
+        if (profiles.isEmpty()) {
+            profileSpinner.setVisibility(View.INVISIBLE);
+            editTextDescription.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.INVISIBLE);
+            buttonUpload.setVisibility(View.INVISIBLE);
+            createProfileButton.setEnabled(true);
+            createProfileButton.setOnClickListener(v -> {
+                //TODO A tester
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            });
+            uploadTextMessage.setText("Vous devez d'abord créer un profil");
+        } else {
+            profileSpinner.setEnabled(true);
+            createProfileButton.setVisibility(View.INVISIBLE);
+            uploadTextMessage.setText("Sélectionnez votre profil");
+            Map<String, Profile> nameProfileMap = new HashMap<>();
+            List<String> profileNames = new ArrayList<>();
+            for (Profile profile : profiles) {
+                nameProfileMap.put(profile.getName(), profile);
+                profileNames.add(profile.getName());
+            }
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, profileNames);
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            profileSpinner.setAdapter(arrayAdapter);
+            profileSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String profileNameSelected = parent.getItemAtPosition(position).toString();
+                    selectedProfile = nameProfileMap.get(profileNameSelected);
+                    Log.i(TAG, "Selected Profile : " + selectedProfile.getName());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        }
     }
 
     public static void verifyStoragePermissions(Activity activity) {
@@ -153,9 +209,11 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
     private void disconnect() {
         if (RequestAPI.isLoggedOut(demoUrl, sessionid, progressDialog))
-            textView.setText("Disconnected !");
+            uploadTextMessage.setText("Disconnected !");
         else
-            textView.setText("Still connected :/");
+            uploadTextMessage.setText("Still connected");
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     public static String getMimeType(String url) {
@@ -171,7 +229,6 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private void uploadMultipleWithRetrofit() {
         for (Uri uri : uris) {
             File image = new File(Objects.requireNonNull(getPath(uri)));
-            //TODO Replace type image
 
             String mime = getMimeType(uri.toString());
 
@@ -181,8 +238,10 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
             RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
             RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "test");
-            RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), "TestAndroid");
-            RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), "6 - Generique");
+            //TODO Faire un ensemble de check, genre si la description est pas nulle, le setimport, etc.
+            String description = editTextDescription.getText().toString();
+            RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), description);
+            RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), selectedProfile.getBase().getName());
             RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
 
             String sessionIdCookie = "JSESSIONID=" + sessionid;
@@ -192,6 +251,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    writeInUploadHistory(response, description, selectedProfile, image.getName());
                     Log.v("Upload", "success");
                     if (filesToUpload > 1) {
                         builder.setProgress(100, 100 / filesToUpload, false);
@@ -226,12 +286,14 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         ProgressRequestBody fileBody = new ProgressRequestBody(image, mime, this);
         MultipartBody.Part body = MultipartBody.Part.createFormData("filetoupload", image.getName(), fileBody);
 
-        //TODO Changer les paramètres fixes
+        //TODO Gestion URL
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
         RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
         RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "test");
-        RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), "TestAndroid");
-        RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), "6 - Generique");
+        //TODO Faire un ensemble de check, genre si la description est pas nulle, le setimport, etc.
+        String description = editTextDescription.getText().toString();
+        RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), description);
+        RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), selectedProfile.getBase().getName());
         RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
 
         String sessionIdCookie = "JSESSIONID=" + sessionid;
@@ -242,7 +304,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                //writeInUploadHistory();
+                writeInUploadHistory(response, description, selectedProfile, image.getName());
                 Log.v("Upload", "success");
                 builder.setContentText("Upload complete")
                         .setProgress(0, 0, false);
@@ -264,26 +326,30 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
     }
 
-    public void writeInUploadHistory(retrofit2.Response<ResponseBody> response, String comment, Profile profile){
+    public void writeInUploadHistory(retrofit2.Response<ResponseBody> response, String comment, Profile profile, String fileName) {
         try {
             String xmlResponse = response.body().string();
             Document document = XMLParser.readUploadXML(xmlResponse);
+            //TODO Check quelque part si code != 0 ?
             int code = XMLParser.getUploadCode(document);
             int contributionId = XMLParser.getContributionId(document);
-            Date date = new Date();
-            //TODO Name file ?
-            Upload myUpload = new Upload("Ajaris", new Date(), comment, profile);
+            Date date = Calendar.getInstance().getTime();
+            Upload myUpload = new Upload(fileName, date, comment, profile);
             ArrayList<Contribution> allContributions = UploadHistory.getPreferences(this);
             Contribution myContribution = Contribution.getContributionById(allContributions, contributionId);
-            if (myContribution != null)
-            {
+            if (myContribution != null) {
                 ArrayList<Upload> myUploads = myContribution.getUploads();
                 myUploads.add(myUpload);
                 myContribution.setUploads(myUploads);
                 UploadHistory.addPreference(myContribution, this);
+            } else {
+                ArrayList<Upload> myUploads = new ArrayList<>();
+                myUploads.add(myUpload);
+                myContribution = new Contribution(contributionId, myUploads);
+                UploadHistory.addPreference(myContribution, this);
             }
         } catch (IOException e) {
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
 
     }
@@ -294,8 +360,8 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         StringRequest getRequest = new StringRequest(Request.Method.POST, demoUrl + "/upLogin.do",
                 response -> {
                     Document doc = XMLParser.readXML(response);
-                    if (doc == null) textView.setText("Error during login");
-                    textView.setText(MessageFormat.format("Session id : {0}", XMLParser.getDocumentTag(doc, "sessionid")));
+                    if (doc == null) uploadTextMessage.setText("Error during login");
+                    uploadTextMessage.setText(MessageFormat.format("Session id : {0}", XMLParser.getDocumentTag(doc, "sessionid")));
                     sessionid = XMLParser.getDocumentTag(doc, "sessionid");
                     Log.d(TAG, sessionid);
                     ptoken = XMLParser.getDocumentTag(doc, "ptoken");
@@ -362,6 +428,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     @Override
     public void onProgressUpdate(int percentage) {
         builder.setProgress(100, percentage, false);
+        uploadTextMessage.setText("Upload progress : " + percentage + "%");
         notificationManager.notify(1, builder.build());
     }
 }
