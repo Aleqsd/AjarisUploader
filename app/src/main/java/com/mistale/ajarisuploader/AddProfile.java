@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -36,6 +37,7 @@ public class AddProfile extends AppCompatActivity {
     EditText inputPwd;
     Spinner inputBase;
     Spinner inputImport;
+    Button validateLogin;
     Button addButton;
     Button cancelButton;
 
@@ -56,6 +58,7 @@ public class AddProfile extends AppCompatActivity {
         this.inputPwd = findViewById(R.id.input_pwd);
         this.inputBase = findViewById(R.id.input_base);
         this.inputImport = findViewById(R.id.input_import);
+        this.validateLogin = findViewById(R.id.input_validate_login);
         this.addButton = findViewById(R.id.button_add);
         this.cancelButton = findViewById(R.id.button_cancel);
 
@@ -67,6 +70,7 @@ public class AddProfile extends AppCompatActivity {
                 } else {
                     this.inputLogin.setEnabled(false);
                     this.inputPwd.setEnabled(false);
+                    this.displayError(getString(R.string.wrong_url));
                 }
             }
         });
@@ -83,9 +87,17 @@ public class AddProfile extends AppCompatActivity {
             }
         });
 
+        this.validateLogin.setOnClickListener(v -> {
+            if (!this.inputLogin.getText().toString().equals("") && !this.inputLogin.getText().toString().equals("")) {
+                this.populateBasesAndImports();
+            } else {
+                this.displayError(getString(R.string.missing_fields));
+            }
+        });
+
         this.addButton.setOnClickListener(v -> {
             if (this.isLogged) {
-                // TODO: Logout
+                // TODO: Logout inside RequestAPI
             }
             Base base = new Base();
             for(int i = 0; i < this.currentBases.size(); i++) {
@@ -132,12 +144,15 @@ public class AddProfile extends AppCompatActivity {
             this.importsArray.addAll(importProfile);
             this.inputBase.setVisibility(Spinner.VISIBLE);
             this.inputImport.setVisibility(Spinner.VISIBLE);
+            this.validateLogin.setVisibility(Button.INVISIBLE);
         } else {
             this.basesArray.clear();
             this.importsArray.clear();
             this.addButton.setEnabled(false);
             this.inputBase.setVisibility(Spinner.INVISIBLE);;
             this.inputImport.setVisibility(Spinner.INVISIBLE);
+            this.validateLogin.setVisibility(Button.VISIBLE);
+            this.displayError(getString(R.string.wrong_login));
         }
 
         ArrayAdapter<String> adapterBases = new ArrayAdapter<>(
@@ -155,5 +170,9 @@ public class AddProfile extends AppCompatActivity {
         );
         adapterImports.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         this.inputImport.setAdapter(adapterImports);
+    }
+
+    public void displayError(String msg) {
+        Toast.makeText(AddProfile.this, msg, Toast.LENGTH_LONG).show();
     }
 }

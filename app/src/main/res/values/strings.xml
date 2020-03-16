@@ -49,4 +49,10 @@
     <string name="dialog_import">Profil d\'import</string>
     <string name="dialog_contribution_id">Contribution</string>
 
+    <!-- Strings used for error messages -->
+    <string name="missing_fields">Veuillez renseigner tous les champs</string>
+    <string name="wrong_url">URL incorrecte</string>
+    <string name="wrong_login">Identifiant ou mot de passe incorrect</string>
+
+
 </resources>

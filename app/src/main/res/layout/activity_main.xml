@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
-        android:theme="@style/Theme.MaterialComponents"
+        android:theme="@style/Theme.MaterialComponents.Light.Bridge"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

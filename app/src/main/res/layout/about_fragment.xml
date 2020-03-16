@@ -53,13 +53,15 @@
             android:id="@+id/rate_button"
             android:onClick="rateOnPlayStore"
             android:text="@string/app_rate"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="5dp"
             android:padding="12dp"
             android:textColor="@android:color/white"
-            android:theme="@style/Theme.MaterialComponents"/>
+            android:theme="@style/Theme.MaterialComponents"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/colorAccent"/>
 
     </LinearLayout>
 </ScrollView>
