@@ -149,7 +149,6 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             buttonUpload.setVisibility(View.INVISIBLE);
             createProfileButton.setEnabled(true);
             createProfileButton.setOnClickListener(v -> {
-                //TODO A tester
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             });
@@ -227,6 +226,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
 
     private void uploadMultipleWithRetrofit() {
+        //TODO remplacer image android par image1 + un indicateur de nombre
         for (Uri uri : uris) {
             File image = new File(Objects.requireNonNull(getPath(uri)));
 
@@ -280,6 +280,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
 
     private void uploadWithRetrofit() {
+        //TODO Check si fichier pas trop gros
         File image = new File(Objects.requireNonNull(getPath(uri)));
         String mime = getMimeType(uri.toString());
 
@@ -428,6 +429,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     @Override
     public void onProgressUpdate(int percentage) {
         builder.setProgress(100, percentage, false);
+        //TODO mettre une progress bar plutot que la texView
         uploadTextMessage.setText("Upload progress : " + percentage + "%");
         notificationManager.notify(1, builder.build());
     }
