@@ -9,8 +9,6 @@ R
 "app/src/main/res/values/dimens.xml,c\3\c3c1811dec2dbad2deeafb9aad505ca9631da740
 R
 "app/src/main/res/values/styles.xml,f\7\f79cc2688e29fcbc286fda14ae07b27c9e83690f
-S
-#app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e
 a
 1app/src/main/res/navigation/mobile_navigation.xml,5\0\50c7987ff387678f825775665976b5fc8ed47989
 b
