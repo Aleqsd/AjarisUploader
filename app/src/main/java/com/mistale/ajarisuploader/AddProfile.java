@@ -97,7 +97,7 @@ public class AddProfile extends AppCompatActivity {
 
         this.addButton.setOnClickListener(v -> {
             if (this.isLogged) {
-                // TODO: Logout inside RequestAPI
+                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog);
             }
             Base base = new Base();
             for(int i = 0; i < this.currentBases.size(); i++) {
@@ -123,7 +123,7 @@ public class AddProfile extends AppCompatActivity {
 
         this.cancelButton.setOnClickListener(v -> {
             if (this.isLogged) {
-                // TODO: Logout inside RequestAPI
+                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog);
             }
             finish();
         });
@@ -146,6 +146,9 @@ public class AddProfile extends AppCompatActivity {
             this.inputImport.setVisibility(Spinner.VISIBLE);
             this.validateLogin.setVisibility(Button.INVISIBLE);
         } else {
+            if (this.isLogged) {
+                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog);
+            }
             this.basesArray.clear();
             this.importsArray.clear();
             this.addButton.setEnabled(false);
