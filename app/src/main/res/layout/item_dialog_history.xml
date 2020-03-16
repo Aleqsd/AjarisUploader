@@ -23,6 +23,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_gravity="right"
+        android:layout_marginRight="10dp"
         android:paddingTop="10dp">
         <TextView
             android:id="@+id/dialog_upload_date"

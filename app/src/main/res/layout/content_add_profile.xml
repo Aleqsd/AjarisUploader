@@ -142,7 +142,7 @@
             android:padding="12dp"
             android:textColor="@android:color/white"
             android:text="@string/cancel_profile"
-            android:backgroundTint="@android:color/holo_red_light"
+            android:backgroundTint="@android:color/holo_blue_light"
             android:theme="@style/Theme.MaterialComponents.Light"/>
 
     </LinearLayout>
