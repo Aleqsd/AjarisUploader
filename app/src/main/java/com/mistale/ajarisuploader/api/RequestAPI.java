@@ -72,7 +72,7 @@ public class RequestAPI {
         boolean isValid;
         try {
             GetRequests getRequest = new GetRequests();
-            getRequest.setProgressDialog(progressDialog, "Discconect");
+            getRequest.setProgressDialog(progressDialog, "Clôture de la session");
             String result = getRequest.execute(url + LOGOUT + "?jsessionid=" + jsessionid).get();
             Document lastDocument = XMLParser.readXML(result);
             isValid = XMLParser.getCode(lastDocument) == 0;

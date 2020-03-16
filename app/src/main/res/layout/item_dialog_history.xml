@@ -16,6 +16,7 @@
         android:id="@+id/dialog_upload_filename"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:maxWidth="160dp"
         android:paddingTop="10dp"
         android:text="File name" />
     <GridLayout

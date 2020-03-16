@@ -251,7 +251,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                    writeInUploadHistory(response, description, selectedProfile, image.getName());
+                    writeInUploadHistory(response, description, selectedProfile, getPath(uri));
                     Log.v("Upload", "success");
                     if (filesToUpload > 1) {
                         builder.setProgress(100, 100 / filesToUpload, false);
@@ -304,7 +304,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                writeInUploadHistory(response, description, selectedProfile, image.getName());
+                writeInUploadHistory(response, description, selectedProfile, getPath(uri));
                 Log.v("Upload", "success");
                 builder.setContentText("Upload complete")
                         .setProgress(0, 0, false);

@@ -45,7 +45,7 @@ public class UploadAdapter extends RecyclerView.Adapter<UploadAdapter.UploadHold
     @Override
     public void onBindViewHolder(@NonNull UploadHolder holder, final int position) {
         final Upload upload = uploadList.get(position);
-        holder.setFileName(upload.getFile());
+        holder.setFileName(upload.getFile().split("/")[upload.getFile().split("/").length - 1]);
         DateFormat date = new SimpleDateFormat("dd/MM/yyyy");
         holder.setDate(date.format(upload.getDate()));
         holder.setProfile(upload.getProfile().getName());
