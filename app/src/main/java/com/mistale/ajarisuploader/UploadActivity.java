@@ -251,7 +251,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                    writeInUploadHistory(response, description, selectedProfile, image.getName());
+                    writeInUploadHistory(response, description, selectedProfile, image.getName(), uri);
                     Log.v("Upload", "success");
                     if (filesToUpload > 1) {
                         builder.setProgress(100, 100 / filesToUpload, false);
@@ -304,7 +304,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                writeInUploadHistory(response, description, selectedProfile, image.getName());
+                writeInUploadHistory(response, description, selectedProfile, image.getName(), uri);
                 Log.v("Upload", "success");
                 builder.setContentText("Upload complete")
                         .setProgress(0, 0, false);
@@ -326,7 +326,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
     }
 
-    public void writeInUploadHistory(retrofit2.Response<ResponseBody> response, String comment, Profile profile, String fileName) {
+    public void writeInUploadHistory(retrofit2.Response<ResponseBody> response, String comment, Profile profile, String fileName, Uri uri) {
         try {
             String xmlResponse = response.body().string();
             Document document = XMLParser.readUploadXML(xmlResponse);
@@ -334,7 +334,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             int code = XMLParser.getUploadCode(document);
             int contributionId = XMLParser.getContributionId(document);
             Date date = Calendar.getInstance().getTime();
-            Upload myUpload = new Upload(fileName, date, comment, profile);
+            Upload myUpload = new Upload(fileName, date, comment, profile, getPath(uri));
             ArrayList<Contribution> allContributions = UploadHistory.getPreferences(this);
             Contribution myContribution = Contribution.getContributionById(allContributions, contributionId);
             if (myContribution != null) {

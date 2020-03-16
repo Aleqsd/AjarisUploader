@@ -1,6 +1,4 @@
 
-Y
-)app/src/main/res/menu/bottom_nav_menu.xml,b\2\b2bdb93c5506261fbedb574044fb21ea44be597a
 b
 2app/src/main/res/layout/fragment_notifications.xml,8\7\8731159a9e23e0b407066a25322caa8c70b6906f
 R
@@ -11,10 +9,6 @@ R
 "app/src/main/res/values/styles.xml,f\7\f79cc2688e29fcbc286fda14ae07b27c9e83690f
 a
 1app/src/main/res/navigation/mobile_navigation.xml,5\0\50c7987ff387678f825775665976b5fc8ed47989
-b
-2app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml,8\e\8e27ba16c655f421171956147d0fde89b7d25d17
-h
-8app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml,6\e\6ec7d34b130497a10dc92abcde9b313d370a89df
 v
 Fapp/src/main/java/com/example/ajarisuploader/ui/home/HomeFragment.java,8\d\8d376be61259a3a31483678fd6227479d6b0237a
 w

@@ -44,10 +44,10 @@ public class History extends Fragment {
         ArrayList<Upload> uploads = new ArrayList<>();
         DateFormat date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         //UploadHistory.removeAllPreferences(getContext());
-        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile()));
-        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile()));
-        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile()));
-        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile()));
+        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile(),""));
+        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile(),""));
+        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile(),""));
+        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile(),""));
         Contribution contribution = new Contribution(1245, uploads);
         UploadHistory.addPreference(contribution, getContext());
         /****************************************************************/
