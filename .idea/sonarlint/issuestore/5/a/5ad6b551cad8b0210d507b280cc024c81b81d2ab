@@ -1,0 +1,9 @@
+
+G
+java:S1068",Remove this unused "mContext" private field.(»úÅ¾øÿÿÿÿ
+–
+java:S1319"{The type of the "contributionList" object should be an interface such as "List" rather than the implementation "ArrayList".(à­‰¬ıÿÿÿÿ
+m
+java:S1450"WRemove the "activity" field and declare it as a local variable in the relevant methods.( §¶Ş
+†
+java:S1319+"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(—‹›

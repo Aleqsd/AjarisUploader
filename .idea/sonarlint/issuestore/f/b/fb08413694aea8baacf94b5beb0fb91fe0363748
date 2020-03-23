@@ -1,0 +1,9 @@
+
+H
+java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ
+S
+java:S1117F"8Rename "view" which hides the field declared at line 27.(ÆÂôžüÿÿÿÿ
+]
+java:S1128"BRemove this unused import 'androidx.lifecycle.ViewModelProviders'.(ê· ºÿÿÿÿÿ
+}
+java:S3252E"gUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_LONG".(«ö‘Ù

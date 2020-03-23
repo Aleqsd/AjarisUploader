@@ -87,12 +87,8 @@ public class UploadAdapter extends RecyclerView.Adapter<UploadAdapter.UploadHold
 
         public void setImage(String imagePath) {
             File testFile = new File(imagePath);
-            if (!imagePath.equals("") && testFile.exists())
-            {
-                final int THUMBSIZE = 64;
-
-                Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePath),
-                        THUMBSIZE, THUMBSIZE);
+            if (!imagePath.equals("") && testFile.exists()) {
+                Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePath), 64, 64);
                 image.setImageBitmap(thumbImage);
             }
         }

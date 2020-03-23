@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        getWindow().setBackgroundDrawableResource(R.drawable.ajaris_background) ;
+        getWindow().setBackgroundDrawableResource(R.drawable.ajaris_background);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_profiles, R.id.navigation_history, R.id.navigation_about)
@@ -31,17 +31,22 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
+        
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
+
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            if (extras.containsKey("UPLOAD_SUCCESS"))
+                navView.setSelectedItemId(R.id.navigation_history);
+        }
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             Intent uploadIntent = new Intent(this, UploadActivity.class);
             Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
             uploadIntent.putExtra("URI", imageUri);
             startActivity(uploadIntent);
-
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
             Intent uploadIntent = new Intent(this, UploadActivity.class);
             ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);

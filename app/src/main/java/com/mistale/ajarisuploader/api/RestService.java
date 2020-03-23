@@ -18,11 +18,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestService {
 
-    private static final String URL = "https://demo-interne.ajaris.com/Demo/";
     private static Retrofit retrofit = null;
 
-
-    public static Retrofit getClient() {
+    public static Retrofit getClient(String URL) {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(URL)

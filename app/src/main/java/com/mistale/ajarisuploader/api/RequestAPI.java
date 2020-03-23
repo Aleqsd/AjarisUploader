@@ -34,6 +34,21 @@ public class RequestAPI {
         return isValid;
     }
 
+    public static boolean urlIsValid(String url) {
+        url = url.replaceAll("/$", "");
+        boolean isValid;
+        try {
+            GetRequestsWithoutDialog getRequest = new GetRequestsWithoutDialog();
+            String result = getRequest.execute(url + CHECK).get();
+            Document lastDocument = XMLParser.readXML(result);
+            isValid = XMLParser.getErrorCode(lastDocument) == 0;
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            isValid = false;
+        }
+        return isValid;
+    }
+
     public static Document getLoginInfos(String url, String login, String pwd, ProgressDialog progressDialog) {
         url = url.replaceAll("/$", "");
         Document document = null;
@@ -52,14 +67,15 @@ public class RequestAPI {
         return document;
     }
 
-    public static boolean isProfilValid(String url, String jsessionid, String ptoken, String config) {
+    public static boolean isLoggedOut(String url, String jsessionid, ProgressDialog progressDialog) {
         url = url.replaceAll("/$", "");
         boolean isValid;
         try {
             GetRequests getRequest = new GetRequests();
-            String result = getRequest.execute(url + CONFIG_IMPORT + "?jsessionid=" + jsessionid + "&ptoken=" + ptoken + "&config" + config + "&ajaupmo=ajaupmo").get();
+            getRequest.setProgressDialog(progressDialog, "Clôture de la session");
+            String result = getRequest.execute(url + LOGOUT + "?jsessionid=" + jsessionid).get();
             Document lastDocument = XMLParser.readXML(result);
-            isValid = XMLParser.getErrorCode(lastDocument) == 0;
+            isValid = XMLParser.getCode(lastDocument) == 0;
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));
             isValid = false;
@@ -67,12 +83,11 @@ public class RequestAPI {
         return isValid;
     }
 
-    public static boolean isLoggedOut(String url, String jsessionid, ProgressDialog progressDialog) {
+    public static boolean isLoggedOut(String url, String jsessionid) {
         url = url.replaceAll("/$", "");
         boolean isValid;
         try {
-            GetRequests getRequest = new GetRequests();
-            getRequest.setProgressDialog(progressDialog, "Clôture de la session");
+            GetRequestsWithoutDialog getRequest = new GetRequestsWithoutDialog();
             String result = getRequest.execute(url + LOGOUT + "?jsessionid=" + jsessionid).get();
             Document lastDocument = XMLParser.readXML(result);
             isValid = XMLParser.getCode(lastDocument) == 0;

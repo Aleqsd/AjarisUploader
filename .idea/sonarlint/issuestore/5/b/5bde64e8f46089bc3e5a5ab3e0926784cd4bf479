@@ -1,0 +1,7 @@
+
+k
+java:S1201R"UEither override Object.equals(Object), or rename the method to prevent any confusion.(¼‘ŒÕ
+e
+java:S1192B"HDefine a constant instead of duplicating this literal "&upload" 4 times.(ÒôÛ8”‰›š.
+U
+java:S1117A"8Rename "date" which hides the field declared at line 12.(Õé¸ë8”‰›š.

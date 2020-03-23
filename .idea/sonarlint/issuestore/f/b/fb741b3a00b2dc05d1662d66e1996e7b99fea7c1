@@ -1,0 +1,37 @@
+
+¤
+java:S1186Î"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¹Æº×şÿÿÿÿ8õªÀ™.
+|
+java:S2293õ"YReplace the type specification in this constructor call with the diamond operator ("<>").(ô›Óíüÿÿÿÿ8õªÀ™.
+k
+java:S1117Š"HRename "notificationManager" which hides the field declared at line 105.(ıì×íûÿÿÿÿ8õªÀ™.
+z
+java:S3252±"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(£Úµ¥ÿÿÿÿÿ8õªÀ™.
+ƒ
+java:S1450Y"aRemove the "textViewFileNumber" field and declare it as a local variable in the relevant methods.(”âúÿÿÿÿ8èıÅ•.
+j
+java:S1192Â"LDefine a constant instead of duplicating this literal "text/plain" 12 times.(½âáŸ8™•À™.
+{
+java:S3008l"^Rename this field "PERMISSIONS_STORAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±Ìä¯8×ßÃ’.
+[
+java:S1854å"8Remove this useless assignment to local variable "code".(§ÚÇäüÿÿÿÿ8õªÀ™.
+}
+java:S1192"ZDefine a constant instead of duplicating this literal "Erreur de profil d'import" 3 times.(òÚÛÿÿÿÿÿ8õªÀ™.
+X	java:S125M"<This block of commented-out lines of code should be removed.(²±…é8ªë•.
+n	java:S117¨"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ñ²ùÏ8õªÀ™.
+]
+java:S1117„"?Rename "description" which hides the field declared at line 83.(ù±ˆ8õªÀ™.
+o
+java:S1192®"LDefine a constant instead of duplicating this literal "JSESSIONID=" 3 times.(êÑªéúÿÿÿÿ8õªÀ™.
+U
+java:S1117ò"7Rename "uri" which hides the field declared at line 99.(úÜÆ˜8õªÀ™.
+u
+java:S2259Œ"W"NullPointerException" will be thrown when invoking method "setupThumbnailImageView()".(ß§ùÛ8õªÀ™.
+o
+java:S1128,"RRemove this unused import 'com.google.android.material.textfield.TextInputLayout'.(¾¸‰ˆ8ƒú¿™.
+b
+java:S1117Š"?Rename "description" which hides the field declared at line 83.(Ï¹ÜÏùÿÿÿÿ8õªÀ™.
+L
+java:S1481å")Remove this unused "code" local variable.(§ÚÇäüÿÿÿÿ8õªÀ™.
+u
+java:S2259•"W"NullPointerException" will be thrown when invoking method "setupThumbnailImageView()".(óáá­8õªÀ™.
