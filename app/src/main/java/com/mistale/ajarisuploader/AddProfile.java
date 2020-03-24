@@ -106,11 +106,16 @@ public class AddProfile extends AppCompatActivity {
                     base.setName(this.currentBases.get(i).getName());
                 }
             }
+
+            String url = this.inputUrl.getText().toString();
+            if (!url.substring(url.length() - 1).equals("/"))
+                url = url + "/";
+
             Profile profile = new Profile(
                     this.inputName.getText().toString(),
                     this.inputLogin.getText().toString(),
                     this.inputPwd.getText().toString(),
-                    this.inputUrl.getText().toString(),
+                    url,
                     base,
                     this.inputImport.getSelectedItem().toString()
             );

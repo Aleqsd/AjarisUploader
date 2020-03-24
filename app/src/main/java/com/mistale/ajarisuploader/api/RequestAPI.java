@@ -1,9 +1,12 @@
 package com.mistale.ajarisuploader.api;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mistale.ajarisuploader.R;
+import com.mistale.ajarisuploader.UploadActivity;
 
 import org.w3c.dom.Document;
 
@@ -34,7 +37,7 @@ public class RequestAPI {
         return isValid;
     }
 
-    public static boolean urlIsValid(String url) {
+    public static boolean urlIsValid(String url, Context context) {
         url = url.replaceAll("/$", "");
         boolean isValid;
         try {
@@ -43,6 +46,7 @@ public class RequestAPI {
             Document lastDocument = XMLParser.readXML(result);
             isValid = XMLParser.getErrorCode(lastDocument) == 0;
         } catch (InterruptedException | ExecutionException e) {
+            Toast.makeText(context, "URL du profil non valide", Toast.LENGTH_LONG).show();
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));
             isValid = false;
         }

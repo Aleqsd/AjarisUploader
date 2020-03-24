@@ -90,6 +90,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private Button buttonUpload;
     private Button createProfileButton;
     private EditText textDescription;
+    private TextInputLayout textInputLayoutDescription;
     private Spinner profileSpinner;
     private ProgressBar progressBar;
     private TextView textViewPercentage;
@@ -123,6 +124,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         buttonUpload = findViewById(R.id.buttonUpload);
         createProfileButton = findViewById(R.id.createProfileButton);
         textDescription = findViewById(R.id.textDescription);
+        textInputLayoutDescription = findViewById(R.id.textInputLayoutDescription);
         profileSpinner = findViewById(R.id.profileSpinner);
         progressBar = findViewById(R.id.progressBar);
         textViewPercentage = findViewById(R.id.textViewPercentage);
@@ -160,7 +162,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         buttonUpload.setOnClickListener(v -> {
             description = textDescription.getText().toString();
             if (isRequestValid()) {
-                if (RequestAPI.urlIsValid(selectedProfile.getUrl()))
+                if (RequestAPI.urlIsValid(selectedProfile.getUrl(),this))
                     connexion();
                 else
                     Toast.makeText(UploadActivity.this, "URL du profil non valide", Toast.LENGTH_LONG).show();
@@ -176,6 +178,9 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             textDescription.setVisibility(View.INVISIBLE);
             imageView.setVisibility(View.INVISIBLE);
             buttonUpload.setVisibility(View.INVISIBLE);
+            textViewFileNumber.setVisibility(View.INVISIBLE);
+            textDescription.setVisibility(View.INVISIBLE);
+            textInputLayoutDescription.setVisibility(View.INVISIBLE);
             createProfileButton.setEnabled(true);
             createProfileButton.setOnClickListener(v -> {
                 Intent intent = new Intent(this, MainActivity.class);
@@ -185,6 +190,13 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         } else {
             profileSpinner.setEnabled(true);
             createProfileButton.setVisibility(View.INVISIBLE);
+            profileSpinner.setVisibility(View.VISIBLE);
+            textDescription.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+            buttonUpload.setVisibility(View.VISIBLE);
+            textViewFileNumber.setVisibility(View.VISIBLE);
+            textDescription.setVisibility(View.VISIBLE);
+            textInputLayoutDescription.setVisibility(View.VISIBLE);
             Map<String, Profile> nameProfileMap = new HashMap<>();
             List<String> profileNames = new ArrayList<>();
             for (Profile profile : profiles) {
