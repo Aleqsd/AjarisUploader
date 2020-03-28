@@ -203,8 +203,8 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 nameProfileMap.put(profile.getName(), profile);
                 profileNames.add(profile.getName());
             }
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, profileNames);
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, profileNames);
+            arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
             profileSpinner.setAdapter(arrayAdapter);
             profileSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -351,7 +351,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 textViewPercentage.setVisibility(View.INVISIBLE);
                 textViewSize.setVisibility(View.INVISIBLE);
                 Log.v("Upload", "success");
-                builder.setContentText("Upload complete")
+                builder.setContentText("Envoi terminé")
                         .setProgress(0, 0, false);
 
                 notificationManager.notify(1, builder.build());
@@ -425,7 +425,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
                     uploadMultipleWithRetrofit(uris.get(current + 1), current + 1);
                 } else {
-                    builder.setContentText("Upload complete")
+                    builder.setContentText("Envoi terminé")
                             .setProgress(0, 0, false);
                     progressBar.setVisibility(View.INVISIBLE);
                     textViewPercentage.setVisibility(View.INVISIBLE);
@@ -460,7 +460,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     }
 
     private void uploadSuccessAction() {
-        Toast.makeText(UploadActivity.this, "Upload terminé", Toast.LENGTH_LONG).show();
+        Toast.makeText(UploadActivity.this, "Envoi terminé", Toast.LENGTH_LONG).show();
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             Intent intent = new Intent(UploadActivity.this, MainActivity.class);

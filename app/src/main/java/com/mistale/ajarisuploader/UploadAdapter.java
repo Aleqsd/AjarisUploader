@@ -54,6 +54,7 @@ public class UploadAdapter extends RecyclerView.Adapter<UploadAdapter.UploadHold
         DateFormat date = new SimpleDateFormat("dd/MM/yyyy");
         holder.setDate(date.format(upload.getDate()));
         holder.setProfile(upload.getProfile().getName());
+        holder.setComment(upload.getComment());
         holder.setImage(upload.getFile());
     }
 
@@ -63,6 +64,7 @@ public class UploadAdapter extends RecyclerView.Adapter<UploadAdapter.UploadHold
         private TextView date;
         private TextView profile;
         private ImageView image;
+        private TextView comment;
 
         public UploadHolder(View itemView) {
             super(itemView);
@@ -71,6 +73,7 @@ public class UploadAdapter extends RecyclerView.Adapter<UploadAdapter.UploadHold
             date = itemView.findViewById(R.id.dialog_upload_date);
             profile = itemView.findViewById(R.id.dialog_upload_profile);
             image = itemView.findViewById(R.id.dialog_upload_file);
+            comment = itemView.findViewById(R.id.dialog_upload_comment);
         }
 
         public void setFileName(String f) {
@@ -83,6 +86,10 @@ public class UploadAdapter extends RecyclerView.Adapter<UploadAdapter.UploadHold
 
         public void setProfile(String p) {
             profile.setText(p);
+        }
+
+        public void setComment(String p) {
+            comment.setText(p);
         }
 
         public void setImage(String imagePath) {

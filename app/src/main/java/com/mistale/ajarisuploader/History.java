@@ -12,11 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class History extends Fragment {
 
@@ -39,18 +35,6 @@ public class History extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        /********************** For tests purpose ***********************/
-        ArrayList<Upload> uploads = new ArrayList<>();
-        DateFormat date = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        //UploadHistory.removeAllPreferences(getContext());
-        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile()));
-        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile()));
-        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile()));
-        uploads.add(new Upload("test.png", Calendar.getInstance().getTime(), "test comment", new Profile()));
-        Contribution contribution = new Contribution(1245, uploads);
-        UploadHistory.addPreference(contribution, getContext());
-        /****************************************************************/
 
         ArrayList<Contribution> contributions;
         this.recyclerView = this.view.findViewById(R.id.history_list);

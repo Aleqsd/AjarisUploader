@@ -12,13 +12,34 @@
         android:layout_margin="5dp"
         android:layout_marginRight="10dp"
         android:src="@drawable/ic_insert_drive_file_black_24dp" />
-    <TextView
-        android:id="@+id/dialog_upload_filename"
+    <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:maxWidth="160dp"
-        android:paddingTop="10dp"
-        android:text="File name" />
+        android:orientation="vertical"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp"
+        android:paddingTop="10dp">
+        <TextView
+            android:id="@+id/dialog_upload_filename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="160dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:layout_gravity="center|start"
+            android:text="File name" />
+        <TextView
+            android:id="@+id/dialog_upload_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="160dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="italic"
+            android:layout_gravity="center|start|top"
+            android:text="Comment" />
+    </GridLayout>
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -36,7 +57,7 @@
             android:id="@+id/dialog_upload_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|end"
+            android:layout_gravity="center|end|top"
             android:text="Profile name" />
 
     </GridLayout>

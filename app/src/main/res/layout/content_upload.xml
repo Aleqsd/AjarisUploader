@@ -74,13 +74,12 @@
 
         <EditText
             android:id="@+id/textDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description de l'upload"
-            android:inputType="textUri"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="200dp"
+            android:inputType="textMultiLine|textNoSuggestions"
             android:textColor="@android:color/white" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <Spinner
         android:id="@+id/profileSpinner"
@@ -89,7 +88,7 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:padding="5dp"
-        android:textColor="#FF0000"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
