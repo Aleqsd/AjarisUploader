@@ -49,10 +49,9 @@ public class UploadHistory {
                 }
             }
             if(position > -1) {
-                contributions.set(position, contribution);
-            } else {
-                contributions.add(contribution);
+                contributions.remove(position);
             }
+            contributions.add(contribution);
         }
         UploadHistory.savePreferences(contributions, context);
     }
