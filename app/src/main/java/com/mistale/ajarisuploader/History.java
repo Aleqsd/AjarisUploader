@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class History extends Fragment {
 
@@ -41,6 +42,7 @@ public class History extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         contributions = UploadHistory.getPreferences(getContext());
+        Collections.reverse(contributions);
         this.adapter = new HistoryAdapter(getContext(), contributions);
         this.adapter.setActivity(getActivity());
         recyclerView.setAdapter(this.adapter);
