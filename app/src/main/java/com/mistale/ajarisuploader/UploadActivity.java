@@ -6,6 +6,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -138,16 +139,16 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         if (intent.getParcelableExtra("URI") != null) { // Un seul fichier
             uri = intent.getParcelableExtra("URI");
 
-            String mime = getMimeType(uri.toString());
+            String mime = getMimeType(uri);
             setupThumbnailImageView(mime, uri);
 
             filesToUpload = 1;
-        } else if (intent.getParcelableArrayListExtra("URI") != null) { // Plusieurs fichiers
+        } else if (intent.getParcelableArrayListExtra("URIS") != null) { // Plusieurs fichiers
             StringBuilder urisString = new StringBuilder();
-            uris = intent.getParcelableArrayListExtra("URI");
+            uris = intent.getParcelableArrayListExtra("URIS");
             filesToUpload = uris.size();
 
-            String mime = getMimeType(uris.get(0).toString());
+            String mime = getMimeType(uris.get(0));
             setupThumbnailImageView(mime, uris.get(0));
             textViewFileNumber.setText(" +" + (uris.size() - 1));
 
@@ -162,7 +163,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         buttonUpload.setOnClickListener(v -> {
             description = textDescription.getText().toString();
             if (isRequestValid()) {
-                if (RequestAPI.urlIsValid(selectedProfile.getUrl(),this))
+                if (RequestAPI.urlIsValid(selectedProfile.getUrl(), this))
                     connexion();
                 else
                     Toast.makeText(UploadActivity.this, "URL du profil non valide", Toast.LENGTH_LONG).show();
@@ -222,13 +223,17 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     }
 
     private void setupThumbnailImageView(String mime, Uri firstUri) {
-        if (mime.contains("video")) {
+        if (mime == null)
+            imageView.setVisibility(ImageView.INVISIBLE);
+        else if (mime.contains("video")) {
             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(getPath(firstUri), MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
             Matrix matrix = new Matrix();
             Bitmap bitmap = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(), thumb.getHeight(), matrix, true);
             imageView.setImageBitmap(bitmap);
-        } else
+        } else if (mime.contains("image"))
             imageView.setImageURI(firstUri);
+        else
+            imageView.setVisibility(ImageView.INVISIBLE);
     }
 
     // ======================================= API FUNCTIONS =======================================
@@ -321,7 +326,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private void uploadWithRetrofit() {
         File image = new File(Objects.requireNonNull(getPath(uri)));
         if (!isFileSizeOk(image)) return;
-        String mime = getMimeType(uri.toString());
+        String mime = getMimeType(uri);
 
         buttonUpload.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
@@ -390,7 +395,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private void uploadMultipleWithRetrofit(Uri currentUri, int current) {
 
         File image = new File(Objects.requireNonNull(getPath(currentUri)));
-        String mime = getMimeType(currentUri.toString());
+        String mime = getMimeType(currentUri);
 
         buttonUpload.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
@@ -469,13 +474,18 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         }, 2000);
     }
 
-    public static String getMimeType(String url) {
-        String type = null;
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+    public String getMimeType(Uri uri) {
+        String mimeType;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = this.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
         }
-        return type;
+        return mimeType;
     }
 
     // ====================================== UTILS FUNCTIONS ======================================

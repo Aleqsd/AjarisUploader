@@ -3,8 +3,10 @@ package com.mistale.ajarisuploader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,9 +98,22 @@ public class UploadAdapter extends RecyclerView.Adapter<UploadAdapter.UploadHold
         public void setImage(String imagePath) {
             File testFile = new File(imagePath);
             if (!imagePath.equals("") && testFile.exists()) {
-                Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePath), 64, 64);
-                image.setImageBitmap(thumbImage);
+                String mimeType = URLConnection.guessContentTypeFromName(imagePath);
+                if (mimeType != null && mimeType.startsWith("image"))
+                {
+                    Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePath), 64, 64);
+                    image.setImageBitmap(thumbImage);
+                }
+                else
+                {
+                    Bitmap thumb = ThumbnailUtils.createVideoThumbnail(imagePath, MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
+                    Matrix matrix = new Matrix();
+                    Bitmap bitmap = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(), thumb.getHeight(), matrix, true);
+                    image.setImageBitmap(bitmap);
+                }
+
             }
         }
+
     }
 }

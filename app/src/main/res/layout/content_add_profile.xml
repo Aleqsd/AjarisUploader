@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
+        android:orientation="vertical"
         android:paddingLeft="24dp"
+        android:paddingTop="56dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/logo_uploader_alt"
+        <ImageView
             android:layout_width="100dp"
             android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />
+            android:src="@drawable/logo_uploader_alt" />
 
         <!-- URL Label -->
         <com.google.android.material.textfield.TextInputLayout
@@ -25,13 +27,14 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:textColorHint="#8fb7d1">
+
             <EditText
                 android:id="@+id/input_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/hint_url"
                 android:inputType="textUri"
-                android:textColor="@android:color/white"
-                android:hint="@string/hint_url" />
+                android:textColor="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Profile Name Label -->
@@ -41,13 +44,14 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:textColorHint="#8fb7d1">
+
             <EditText
                 android:id="@+id/input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:hint="@string/hint_name"
                 android:inputType="textPersonName"
-                android:hint="@string/hint_name" />
+                android:textColor="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Login Label -->
@@ -57,14 +61,15 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:textColorHint="#8fb7d1">
+
             <EditText
                 android:id="@+id/input_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:enabled="false"
                 android:hint="@string/hint_login"
                 android:inputType="text"
-                android:enabled="false" />
+                android:textColor="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Label -->
@@ -73,51 +78,74 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:textColorHint="#8fb7d1">
-            <EditText
+            android:textColorHint="#8fb7d1"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_pwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:enabled="false"
                 android:hint="@string/hint_pwd"
                 android:inputType="textPassword"
-                android:enabled="false" />
+                android:textColor="@android:color/white" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/input_validate_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:theme="@style/Theme.MaterialComponents.Light"
-                android:text="@string/dialog_ok"/>
+                android:text="@string/dialog_ok"
+                android:theme="@style/Theme.MaterialComponents.Light" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Bases Label -->
+
+        <TextView
+            android:id="@+id/text_base"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Numéro de Base"
+            android:textColor="#8fb7d1"
+            android:visibility="invisible" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
+
             <Spinner
                 android:id="@+id/input_base"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="textStart"
                 android:gravity="start"
+                android:textAlignment="textStart"
                 android:visibility="invisible" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Import Profile Label -->
+
+        <TextView
+            android:id="@+id/text_profil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profil d'import"
+            android:textColor="#8fb7d1"
+            android:visibility="invisible" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
+
             <Spinner
                 android:id="@+id/input_import"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="textStart"
                 android:gravity="start"
+                android:textAlignment="textStart"
                 android:visibility="invisible" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -127,11 +155,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="5dp"
-            android:padding="12dp"
-            android:textColor="@android:color/white"
-            android:text="@string/add_profile"
             android:enabled="false"
-            android:theme="@style/Theme.MaterialComponents.Light"/>
+            android:padding="12dp"
+            android:text="@string/add_profile"
+            android:textColor="@android:color/white"
+            android:theme="@style/Theme.MaterialComponents.Light" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_cancel"
@@ -139,11 +167,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:textColor="@android:color/white"
-            android:text="@string/cancel_profile"
             android:backgroundTint="@android:color/holo_blue_light"
-            android:theme="@style/Theme.MaterialComponents.Light"/>
+            android:padding="12dp"
+            android:text="@string/cancel_profile"
+            android:textColor="@android:color/white"
+            android:theme="@style/Theme.MaterialComponents.Light" />
 
     </LinearLayout>
 </ScrollView>

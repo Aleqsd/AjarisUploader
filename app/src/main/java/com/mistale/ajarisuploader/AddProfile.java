@@ -2,6 +2,7 @@ package com.mistale.ajarisuploader;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +37,8 @@ public class AddProfile extends AppCompatActivity {
     EditText inputUrl;
     EditText inputLogin;
     EditText inputPwd;
+    TextView textBase;
+    TextView textProfil;
     Spinner inputBase;
     Spinner inputImport;
     Button validateLogin;
@@ -49,13 +53,15 @@ public class AddProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_profile);
-        getWindow().setBackgroundDrawableResource(R.drawable.ajaris_background_alt) ;
+        getWindow().setBackgroundDrawableResource(R.drawable.ajaris_background_alt);
         this.progressDialog = new ProgressDialog(AddProfile.this, R.style.Theme_AppCompat_DayNight_Dialog);
 
         this.inputName = findViewById(R.id.input_name);
         this.inputUrl = findViewById(R.id.input_url);
         this.inputLogin = findViewById(R.id.input_login);
         this.inputPwd = findViewById(R.id.input_pwd);
+        this.textBase = findViewById(R.id.text_base);
+        this.textProfil = findViewById(R.id.text_profil);
         this.inputBase = findViewById(R.id.input_base);
         this.inputImport = findViewById(R.id.input_import);
         this.validateLogin = findViewById(R.id.input_validate_login);
@@ -99,17 +105,29 @@ public class AddProfile extends AppCompatActivity {
             if (this.isLogged) {
                 RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog);
             }
-            Base base = new Base();
-            for(int i = 0; i < this.currentBases.size(); i++) {
-                if(this.currentBases.get(i).getName().equals(this.inputBase.getSelectedItem().toString())) {
-                    base.setNumber(this.currentBases.get(i).getNumber());
-                    base.setName(this.currentBases.get(i).getName());
-                }
-            }
 
             String url = this.inputUrl.getText().toString();
             if (!url.substring(url.length() - 1).equals("/"))
                 url = url + "/";
+
+            Base base = new Base();
+            if (currentBases.size() == 1) {
+                base.setNumber(this.currentBases.get(0).getNumber());
+                base.setName(this.currentBases.get(0).getName());
+            } else {
+                for (int i = 0; i < this.currentBases.size(); i++) {
+                    if (this.currentBases.get(i).getName().equals(this.inputBase.getSelectedItem().toString())) {
+                        base.setNumber(this.currentBases.get(i).getNumber());
+                        base.setName(this.currentBases.get(i).getName());
+                    }
+                }
+            }
+
+            String profilImport;
+            if (importProfile.size() == 1)
+                profilImport = importProfile.get(0);
+            else
+                profilImport = this.inputImport.getSelectedItem().toString();
 
             Profile profile = new Profile(
                     this.inputName.getText().toString(),
@@ -117,7 +135,7 @@ public class AddProfile extends AppCompatActivity {
                     this.inputPwd.getText().toString(),
                     url,
                     base,
-                    this.inputImport.getSelectedItem().toString()
+                    profilImport
             );
             Preferences.addPreference(profile, AddProfile.this);
             Intent intent = new Intent(AddProfile.this, MainActivity.class);
@@ -143,12 +161,26 @@ public class AddProfile extends AppCompatActivity {
             this.importProfile = XMLParser.getMultipleDocumentTag(this.lastDocument, "imports");
             this.basesArray.clear();
             this.importsArray.clear();
-            for(int i = 0; i < this.currentBases.size(); i++) {
-                this.basesArray.add(this.currentBases.get(i).getName());
+
+            if (currentBases.size() == 1) {
+                this.basesArray.add("Par défaut");
+                this.inputBase.setBackground(Drawable.createFromPath("@null"));
+            } else {
+                for (int i = 0; i < this.currentBases.size(); i++) {
+                    this.basesArray.add(this.currentBases.get(i).getName());
+                }
             }
-            this.importsArray.addAll(importProfile);
+
+            if (importProfile.size() == 1) {
+                this.importsArray.add("Par défaut");
+                this.inputImport.setBackground(Drawable.createFromPath("@null"));
+            } else
+                this.importsArray.addAll(importProfile);
+
             this.inputBase.setVisibility(Spinner.VISIBLE);
             this.inputImport.setVisibility(Spinner.VISIBLE);
+            this.textBase.setVisibility(TextView.VISIBLE);
+            this.textProfil.setVisibility(TextView.VISIBLE);
             this.validateLogin.setVisibility(Button.INVISIBLE);
         } else {
             if (this.isLogged) {
@@ -157,8 +189,10 @@ public class AddProfile extends AppCompatActivity {
             this.basesArray.clear();
             this.importsArray.clear();
             this.addButton.setEnabled(false);
-            this.inputBase.setVisibility(Spinner.INVISIBLE);;
+            this.inputBase.setVisibility(Spinner.INVISIBLE);
             this.inputImport.setVisibility(Spinner.INVISIBLE);
+            this.textBase.setVisibility(TextView.INVISIBLE);
+            this.textProfil.setVisibility(TextView.INVISIBLE);
             this.validateLogin.setVisibility(Button.VISIBLE);
             this.displayError(getString(R.string.wrong_login));
         }

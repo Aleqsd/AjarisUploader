@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -31,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-        
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
             Intent uploadIntent = new Intent(this, UploadActivity.class);
             ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-            uploadIntent.putExtra("URI", imageUris);
+            uploadIntent.putExtra("URIS", imageUris);
             startActivity(uploadIntent);
         }
     }
