@@ -47,20 +47,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, final int position) {
         final Contribution contribution = contributionList.get(position);
-        holder.setId(Integer.toString(contribution.getId()));
+        holder.setIdAndComment(contribution.getId() + " : " +contribution.getUploads().get(0).getComment());
         holder.setLogin(Integer.toString(contribution.getNumberOfUploads()));
+        holder.setProfile(contribution.getUploads().get(0).getProfile().getName());
     }
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
 
         private TextView contributionId;
         private TextView contributionLength;
+        private TextView contributionProfile;
 
         public HistoryHolder(View itemView) {
             super(itemView);
 
             contributionId = itemView.findViewById(R.id.identifiant);
             contributionLength = itemView.findViewById(R.id.length);
+            contributionProfile = itemView.findViewById(R.id.profile);
 
             itemView.setOnClickListener(v -> {
                 HistoryDialogInfo dialog = new HistoryDialogInfo();
@@ -72,12 +75,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
             });
         }
 
-        public void setId(String id) {
-            contributionId.setText(id);
+        public void setIdAndComment(String idAndComment) {
+            contributionId.setText(idAndComment);
         }
 
         public void setLogin(String login) {
             contributionLength.setText(login);
         }
+
+        public void setProfile(String profile) {
+            contributionProfile.setText(profile);
+        }
+
     }
 }

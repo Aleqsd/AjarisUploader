@@ -11,7 +11,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
@@ -85,6 +87,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private int uploadmaxfilesize;
     private int fileSize;
     private int totalFileSize;
+    private Bitmap imagePreview;
 
     private ImageView imageView;
     private TextView textViewFileNumber;
@@ -222,18 +225,62 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         }
     }
 
+    private static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
+
+    private Bitmap adaptRotation(Uri uri, String mime) {
+        ExifInterface ei = null;
+        try {
+            ei = new ExifInterface(getPath(uri));
+        } catch (IOException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+        }
+        int orientation = 0;
+        if (ei != null) {
+            orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+        }
+        Bitmap rotatedBitmap;
+        Bitmap bitmap;
+
+        if (mime.contains("video")) {
+            Bitmap thumb = ThumbnailUtils.createVideoThumbnail(getPath(uri), MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
+            Matrix matrix = new Matrix();
+            bitmap = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(), thumb.getHeight(), matrix, true);
+        } else if (mime.contains("image"))
+            bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(getPath(uri)), 1000, 1000);
+        else
+            return null;
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotatedBitmap = rotateImage(bitmap, 90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotatedBitmap = rotateImage(bitmap, 180);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotatedBitmap = rotateImage(bitmap, 270);
+                break;
+            case ExifInterface.ORIENTATION_NORMAL:
+            default:
+                rotatedBitmap = bitmap;
+        }
+        return rotatedBitmap;
+    }
+
     private void setupThumbnailImageView(String mime, Uri firstUri) {
         if (mime == null)
             imageView.setVisibility(ImageView.INVISIBLE);
-        else if (mime.contains("video")) {
-            Bitmap thumb = ThumbnailUtils.createVideoThumbnail(getPath(firstUri), MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
-            Matrix matrix = new Matrix();
-            Bitmap bitmap = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(), thumb.getHeight(), matrix, true);
-            imageView.setImageBitmap(bitmap);
-        } else if (mime.contains("image"))
-            imageView.setImageURI(firstUri);
-        else
+        imagePreview = adaptRotation(firstUri, mime);
+        if (imagePreview == null)
             imageView.setVisibility(ImageView.INVISIBLE);
+        else
+            imageView.setImageBitmap(imagePreview);
     }
 
     // ======================================= API FUNCTIONS =======================================
@@ -250,6 +297,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                     ptoken = XMLParser.getDocumentTag(doc, "ptoken");
                     uploadmaxfilesize = Integer.parseInt(removeLastChar(XMLParser.getDocumentTag(doc, "uploadmaxfilesize")));
                     config = XMLParser.getConfig(doc);
+                    //TODO Verification profile et base avant le checkImport, afficher un popup avec une liste et un choix et update le profil dans les preferences? voire 3.2
                     checkImport();
                 },
                 error -> {
@@ -259,7 +307,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         ) {
             @Override
             public Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("pseudo", selectedProfile.getLogin());
                 params.put("password", selectedProfile.getPwd());
                 params.put("ajaupmo", "androidUpload");
@@ -338,9 +386,9 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
         RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
-        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "test");
+        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "androidUpload");
         RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), description);
-        RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), selectedProfile.getBase().getName());
+        RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedProfile.getBase().getNumber()));
         RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
 
         String sessionIdCookie = "JSESSIONID=" + sessionid;
@@ -407,10 +455,10 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
         RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
-        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "test");
+        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "androidUpload");
         String description = textDescription.getText().toString();
         RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), description);
-        RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), selectedProfile.getBase().getName());
+        RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedProfile.getBase().getNumber()));
         RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
 
         String sessionIdCookie = "JSESSIONID=" + sessionid;

@@ -18,30 +18,43 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:background="@drawable/cardview_gradient">
+
         <TextView
             android:id="@+id/identifiant"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="top|left"
             android:padding="10dip"
             android:textSize="16dip"
-            android:textStyle="bold"
-            android:gravity="top|left" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/length"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dip"
             android:gravity="bottom|right"
+            android:padding="10dip"
             android:textSize="10dip" />
 
         <ImageView
-            android:src="@drawable/icon_ajaris"
+            android:id="@+id/imageViewLogo"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignLeft="@id/length"
             android:layout_alignBottom="@id/length"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_ajaris" />
+
+        <TextView
+            android:id="@+id/profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/imageViewLogo"
+            android:layout_toRightOf="@id/imageViewLogo"
+            android:paddingLeft="5dp"
+            android:textColor="#8fb7d1"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

@@ -26,7 +26,7 @@
     <!-- Strings used for add profile form -->
     <string name="hint_name">Nom du profil</string>
     <string name="hint_url">URL</string>
-    <string name="hint_login">Identifiant</string>
+    <string name="hint_login">Pseudo</string>
     <string name="hint_pwd">Mot de passe</string>
     <string name="profile_adding">Ajout du profil</string>
     <string name="profile_checking">Vérification de l\'url</string>
@@ -42,7 +42,7 @@
     <string name="app_rate">Noter l\'application</string>
 
     <!-- Strings used for dialogs -->
-    <string name="dialog_ok">OK</string>
+    <string name="dialog_ok">Continuer</string>
     <string name="dialog_login">Pseudo</string>
     <string name="dialog_url">URL</string>
     <string name="dialog_base">Base</string>

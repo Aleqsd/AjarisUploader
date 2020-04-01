@@ -165,6 +165,7 @@ public class AddProfile extends AppCompatActivity {
             if (currentBases.size() == 1) {
                 this.basesArray.add("Par défaut");
                 this.inputBase.setBackground(Drawable.createFromPath("@null"));
+                this.inputBase.setEnabled(false);
             } else {
                 for (int i = 0; i < this.currentBases.size(); i++) {
                     this.basesArray.add(this.currentBases.get(i).getName());
@@ -174,6 +175,7 @@ public class AddProfile extends AppCompatActivity {
             if (importProfile.size() == 1) {
                 this.importsArray.add("Par défaut");
                 this.inputImport.setBackground(Drawable.createFromPath("@null"));
+                this.inputImport.setEnabled(false);
             } else
                 this.importsArray.addAll(importProfile);
 
