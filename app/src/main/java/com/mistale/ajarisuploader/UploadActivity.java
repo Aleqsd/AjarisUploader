@@ -87,6 +87,10 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private int uploadmaxfilesize;
     private int fileSize;
     private int totalFileSize;
+    private List<Integer> fileSizes;
+    private int percentageMax;
+    private int changePercentageMax;
+    private boolean uploadFinished;
     private Bitmap imagePreview;
 
     private ImageView imageView;
@@ -134,6 +138,10 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         textViewPercentage = findViewById(R.id.textViewPercentage);
         textViewSize = findViewById(R.id.textViewSize);
 
+        fileSizes = new ArrayList<>();
+        changePercentageMax = 0;
+        uploadFinished = false;
+
         profiles = Preferences.getPreferences(this);
         setupUI();
 
@@ -172,6 +180,17 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                     Toast.makeText(UploadActivity.this, "URL du profil non valide", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (uploadFinished)
+        {
+            Intent intent = new Intent(UploadActivity.this, MainActivity.class);
+            intent.putExtra("UPLOAD_SUCCESS", true);
+            startActivity(intent);
+        }
     }
 
     // ======================================= UI FUNCTIONS =======================================
@@ -404,10 +423,8 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 textViewPercentage.setVisibility(View.INVISIBLE);
                 textViewSize.setVisibility(View.INVISIBLE);
                 Log.v("Upload", "success");
-                builder.setContentText("Envoi terminé")
-                        .setProgress(0, 0, false);
+                notificationManager.cancel(1);
 
-                notificationManager.notify(1, builder.build());
                 disconnect(true);
             }
 
@@ -436,6 +453,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             File image = new File(Objects.requireNonNull(getPath(uri)));
             if (!isFileSizeOk(image)) return;
             totalFileSize += fileSize;
+            fileSizes.add(fileSize);
         }
         uploadMultipleWithRetrofit(uris.get(current), current);
     }
@@ -478,12 +496,11 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
                     uploadMultipleWithRetrofit(uris.get(current + 1), current + 1);
                 } else {
-                    builder.setContentText("Envoi terminé")
-                            .setProgress(0, 0, false);
+                    notificationManager.cancel(1);
+
                     progressBar.setVisibility(View.INVISIBLE);
                     textViewPercentage.setVisibility(View.INVISIBLE);
                     textViewSize.setVisibility(View.INVISIBLE);
-                    notificationManager.notify(1, builder.build());
                     disconnect(true);
                 }
             }
@@ -515,11 +532,13 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private void uploadSuccessAction() {
         Toast.makeText(UploadActivity.this, "Envoi terminé", Toast.LENGTH_LONG).show();
         Handler handler = new Handler();
+        uploadFinished = true;
+        setupUploadFinishedNotification();
         handler.postDelayed(() -> {
             Intent intent = new Intent(UploadActivity.this, MainActivity.class);
             intent.putExtra("UPLOAD_SUCCESS", true);
             startActivity(intent);
-        }, 2000);
+        }, 1500);
     }
 
     public String getMimeType(Uri uri) {
@@ -540,8 +559,9 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
 
     private boolean isFileSizeOk(File file) {
-        fileSize = (int) (file.length() / 1046576);
-        if (fileSize > uploadmaxfilesize) {
+        fileSize = (int) (file.length() / 1024);
+        int fileSizeInMo = fileSize / 1024;
+        if (fileSizeInMo > uploadmaxfilesize) {
             Toast.makeText(UploadActivity.this, "Taille du fichier superieur à " + uploadmaxfilesize + "Mo", Toast.LENGTH_LONG).show();
             return false;
         } else
@@ -593,19 +613,12 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
         }
 
-        // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(this, UploadActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
         notificationManager = NotificationManagerCompat.from(this);
 
         builder = new NotificationCompat.Builder(this, "Ajaris")
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle("Ajaris Upload")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                 .setVibrate(new long[]{0L})
                 .setOnlyAlertOnce(true)
@@ -613,6 +626,41 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
         builder.setProgress(100, 0, false);
         notificationManager.notify(1, builder.build());
+    }
+
+    private void setupUploadFinishedNotification() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "AjarisUploader";
+            String description = "Uploader for Ajaris";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("Ajaris", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
+        }
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("UPLOAD_SUCCESS", true);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,1,intent,0);
+
+        notificationManager = NotificationManagerCompat.from(this);
+
+        builder = new NotificationCompat.Builder(this, "Ajaris")
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setContentTitle("Ajaris Upload")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                .setContentIntent(pendingIntent)
+                .setVibrate(new long[]{0L})
+                .setOnlyAlertOnce(true)
+                .setAutoCancel(true);
+
+        builder.setContentText("Envoi terminé")
+                .setProgress(0, 0, false);
+        notificationManager.notify(2, builder.build());
     }
 
     public String getPath(Uri uri) {
@@ -646,25 +694,58 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             builder.setProgress(100, percentage, false);
             progressBar.setProgress(percentage);
             textViewPercentage.setText(percentage + "%");
-            double fileSizeUploaded = ((double) percentage / 100.00) * fileSize;
-            String result = String.format("%.2f", fileSizeUploaded);
-            textViewSize.setText(result + "Mo/" + fileSize + "Mo");
+            if (fileSize < 1024) {
+                double fileSizeUploaded = ((double) percentage / 100.00) * fileSize;
+                String result = String.format("%.2f", fileSizeUploaded);
+                textViewSize.setText(result + "Ko/" + fileSize + "Ko");
+            } else {
+                double fileSizeUploaded = ((double) percentage / 100.00) * (fileSize / 1024);
+                String result = String.format("%.2f", fileSizeUploaded);
+                textViewSize.setText(result + "Mo/" + fileSize / 1024 + "Mo");
+            }
             notificationManager.notify(1, builder.build());
         } else { // Mode plusieurs fichiers, exemple sur 5
             int n = uris.size(); // 5
             int current = n - filesLeftToUpload; // 0, 1, 2, 3, 4
 
-            int value = percentage / n; // 0 à 20
-            int multiValue = value + (current * 100 / n); // de 0 à 20, de 20 à 40, ...
+            int printedValue;
 
-            builder.setProgress(100, multiValue, false);
-            progressBar.setProgress(multiValue);
-            textViewPercentage.setText(multiValue + "%");
-            double fileSizeUploaded = ((double) multiValue / 100.00) * totalFileSize;
-            String result = String.format("%.2f", fileSizeUploaded);
-            Log.i(TAG, "percentage " + multiValue + ", " + filesLeftToUpload + " , " + result);
-            textViewSize.setText(result + "Mo/" + totalFileSize + "Mo");
-            notificationManager.notify(1, builder.build());
+            int size = fileSizes.get(current);
+
+            if (current == 0) {
+                if (changePercentageMax == current) {
+                    changePercentageMax++;
+                    percentageMax = size * 100 / totalFileSize;
+                }
+                printedValue = size * percentage / totalFileSize;
+            } else {
+                printedValue = percentageMax + size * percentage / totalFileSize;
+                if (printedValue > 100)
+                    printedValue = 100;
+
+                if (changePercentageMax == current && percentage == 100) {
+                    percentageMax = percentageMax + size * 100 / totalFileSize;
+                    if (percentageMax > 100)
+                        percentageMax = 100;
+                    changePercentageMax++;
+                }
+            }
+
+            builder.setProgress(100, printedValue, false);
+            progressBar.setProgress(printedValue);
+            textViewPercentage.setText(printedValue + "%");
+            if (totalFileSize < 1024) {
+                double fileSizeUploaded = ((double) printedValue / 100.00) * totalFileSize;
+                String result = String.format("%.2f", fileSizeUploaded);
+                textViewSize.setText(result + "Ko/" + totalFileSize + "Ko");
+            } else {
+                double fileSizeUploaded = ((double) printedValue / 100.00) * (totalFileSize / 1024);
+                String result = String.format("%.2f", fileSizeUploaded);
+                textViewSize.setText(result + "Mo/" + totalFileSize / 1024 + "Mo");
+                Log.i(TAG, result);
+            }
+            if (percentage % 10 == 0) // To reduce lags
+                notificationManager.notify(1, builder.build());
         }
     }
 }

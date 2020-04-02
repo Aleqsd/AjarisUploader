@@ -24,7 +24,7 @@ public class RestService {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(URL)
-                    .client(getUnsafeOkHttpClient())
+                    //.client(getUnsafeOkHttpClient())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
