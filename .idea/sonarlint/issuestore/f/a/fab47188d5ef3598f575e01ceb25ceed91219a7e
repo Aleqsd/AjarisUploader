@@ -1,10 +1,0 @@
-
-P	java:S125."<This block of commented-out lines of code should be removed.(êÅ‰
-?
-java:S1481-")Remove this unused "date" local variable.(Õé¸ë
-c
-java:S1192/"MDefine a constant instead of duplicating this literal "test comment" 4 times.(ŠÿÿÏ
-N
-java:S1854-"8Remove this useless assignment to local variable "date".(Õé¸ë
-_
-java:S1192/"IDefine a constant instead of duplicating this literal "test.png" 4 times.(ŠÿÿÏ

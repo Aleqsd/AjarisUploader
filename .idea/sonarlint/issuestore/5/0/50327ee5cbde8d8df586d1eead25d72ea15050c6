@@ -1,11 +1,11 @@
 
-N
-java:S1068",Remove this unused "mContext" private field.(»úÅ¾øÿÿÿÿ8ë¿†.
-’
-java:S1319"uThe type of the "uploadList" object should be an interface such as "List" rather than the implementation "ArrayList".(ûğí»8ë¿†.
 P
-java:S1128".Remove this unused import 'android.os.Bundle'.(°şÊóøÿÿÿÿ8›Œ.
+java:S1128".Remove this unused import 'android.os.Bundle'.(°şÊóøÿÿÿÿ8›Œ.
+N
+java:S1068",Remove this unused "mContext" private field.(»úÅ¾øÿÿÿÿ8ë¿†.
 I
-java:S1068",Remove this unused "activity" private field.( §¶Ş8ë¿†.
+java:S1068",Remove this unused "activity" private field.( §¶Ş8ë¿†.
 ’
-java:S1319."pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(õÚó–şÿÿÿÿ8ë¿†.
+java:S13191"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(õÚó–şÿÿÿÿ8ë¿†.
+’
+java:S1319"uThe type of the "uploadList" object should be an interface such as "List" rather than the implementation "ArrayList".(ûğí»8ë¿†.

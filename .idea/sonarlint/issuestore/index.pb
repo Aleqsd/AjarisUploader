@@ -61,3 +61,5 @@ Iapp/src/main/java/com/mistale/ajarisuploader/api/ProgressRequestBody.java,d\5\
 Napp/src/main/java/com/mistale/ajarisuploader/api/GetRequestsWithoutDialog.java,9\7\97dc2a9f6818f0c5f589772dc0d0d94bfc767ab2
 p
 @app/src/main/java/com/mistale/ajarisuploader/api/RequestAPI.java,a\0\a0273d1dd08140fb1075eb575f1c70b5e94f2316
+v
+Fapp/src/main/java/com/mistale/ajarisuploader/SwipeProfileCallback.java,9\6\96b0eec779413cf2d41390bd58cf4b665c51d172

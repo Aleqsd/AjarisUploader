@@ -3,13 +3,13 @@
 java:S1319;"rThe type of the "uploads" object should be an interface such as "List" rather than the implementation "ArrayList".(ÀàÓÓüÿÿÿÿ
 i
 java:S1192"NDefine a constant instead of duplicating this literal "&contribution" 3 times.(ëá£÷ıÿÿÿÿ
-
-java:S1319"rThe type of the "uploads" object should be an interface such as "List" rather than the implementation "ArrayList".(Åİœùûÿÿÿÿ
-7
-java:S1643"Use a StringBuilder instead.(ëá£÷ıÿÿÿÿ
 p
 java:S1201?"UEither override Object.equals(Object), or rename the method to prevent any confusion.(ÂÅşÌşÿÿÿÿ
-‹
-java:S13193"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(¬û½¥ùÿÿÿÿ
+
+java:S1319"rThe type of the "uploads" object should be an interface such as "List" rather than the implementation "ArrayList".(Åİœùûÿÿÿÿ
 I
 java:S2201".The return value of "replaceAll" must be used.(ë×‚Øùÿÿÿÿ
+‹
+java:S13193"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(¬û½¥ùÿÿÿÿ
+7
+java:S1643"Use a StringBuilder instead.(ëá£÷ıÿÿÿÿ

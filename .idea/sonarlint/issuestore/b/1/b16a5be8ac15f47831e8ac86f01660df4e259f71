@@ -1,11 +1,5 @@
 
-\
-java:S1128"FRemove this unused import 'android.content.ActivityNotFoundException'.(Û‚¨
-G
-java:S1128",Remove this unused import 'android.net.Uri'.(òêû‘ıÿÿÿÿ
->
-java:S1185"(Remove this method to simply inherit it.(Ö‰ü¼
-]
-java:S1128"BRemove this unused import 'androidx.lifecycle.ViewModelProviders'.(ê· ºÿÿÿÿÿ
-H
-java:S1128"3Remove this unused import 'android.content.Intent'.(³ğ‹G
+E
+java:S1185#"(Remove this method to simply inherit it.(Ö‰ü¼8­÷ş’.
+v
+java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(Êä§øÿÿÿÿ8·Ş‘ş’.

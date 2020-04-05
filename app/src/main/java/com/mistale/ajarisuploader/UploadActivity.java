@@ -2,6 +2,7 @@ package com.mistale.ajarisuploader;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -63,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -92,6 +94,10 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private int changePercentageMax;
     private boolean uploadFinished;
     private Bitmap imagePreview;
+    private boolean isBaseInProfile;
+    private boolean isImportInProfile;
+    private List<String> baseNamesFromConnexion;
+    private List<String> importNamesFromConnexion;
 
     private ImageView imageView;
     private TextView textViewFileNumber;
@@ -185,8 +191,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     @Override
     protected void onResume() {
         super.onResume();
-        if (uploadFinished)
-        {
+        if (uploadFinished) {
             Intent intent = new Intent(UploadActivity.this, MainActivity.class);
             intent.putExtra("UPLOAD_SUCCESS", true);
             startActivity(intent);
@@ -314,10 +319,20 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                     Log.d(TAG, MessageFormat.format("Session id : {0}", XMLParser.getDocumentTag(doc, "sessionid")));
                     sessionid = XMLParser.getDocumentTag(doc, "sessionid");
                     ptoken = XMLParser.getDocumentTag(doc, "ptoken");
-                    uploadmaxfilesize = Integer.parseInt(removeLastChar(XMLParser.getDocumentTag(doc, "uploadmaxfilesize")));
+                    uploadmaxfilesize = Integer.parseInt(removeLastChar(Objects.requireNonNull(XMLParser.getDocumentTag(doc, "uploadmaxfilesize"))));
                     config = XMLParser.getConfig(doc);
-                    //TODO Verification profile et base avant le checkImport, afficher un popup avec une liste et un choix et update le profil dans les preferences? voire 3.2
-                    checkImport();
+
+                    baseNamesFromConnexion = XMLParser.getMultipleDocumentTag(doc, "bases");
+                    importNamesFromConnexion = XMLParser.getMultipleDocumentTag(doc, "imports");
+                    isBaseInProfile = isBaseInProfile(baseNamesFromConnexion);
+                    isImportInProfile = isImportInProfile(importNamesFromConnexion);
+
+                    if (!isBaseInProfile)
+                        chooseBasePopup(baseNamesFromConnexion);
+                    else if (!isImportInProfile)
+                        chooseImportPopup(importNamesFromConnexion);
+                    else
+                        checkImport();
                 },
                 error -> {
                     Toast.makeText(UploadActivity.this, "Erreur de connexion", Toast.LENGTH_LONG).show();
@@ -334,6 +349,104 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             }
         };
         queue.add(getRequest);
+    }
+
+    public void chooseBasePopup(List<String> baseNames) {
+        if (baseNames.size() == 1) {
+            String newBaseName = baseNames.get(0);
+            int numBase = Integer.parseInt(String.valueOf(newBaseName.charAt(0)));
+            for (int i = 0; i < profiles.size(); i++) {
+                if (selectedProfile.getName().equals(profiles.get(i).getName())) {
+                    Profile updatedProfile = selectedProfile;
+                    updatedProfile.setBase(new Base(numBase, newBaseName));
+                    selectedProfile = updatedProfile;
+                    Preferences.addPreferenceToPosition(updatedProfile, i, this);
+                }
+            }
+            isBaseInProfile = true;
+            if (isImportInProfile)
+                checkImport();
+        } else {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setTitle("Choisissez une base");
+
+            String[] basesArray = baseNames.toArray(new String[0]);
+
+            AtomicInteger checkedItem = new AtomicInteger();
+            dialogBuilder.setSingleChoiceItems(basesArray, checkedItem.get(), (dialog, which) -> checkedItem.set(which));
+
+            dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                String newBaseName = basesArray[checkedItem.get()];
+                int numBase = Integer.parseInt(String.valueOf(newBaseName.charAt(0)));
+                for (int i = 0; i < profiles.size(); i++) {
+                    if (selectedProfile.getName().equals(profiles.get(i).getName())) {
+                        Profile updatedProfile = selectedProfile;
+                        updatedProfile.setBase(new Base(numBase, newBaseName));
+                        selectedProfile = updatedProfile;
+                        Preferences.addPreferenceToPosition(updatedProfile, i, this);
+                    }
+                }
+                isBaseInProfile = true;
+                if (isImportInProfile)
+                    checkImport();
+            });
+            dialogBuilder.show();
+        }
+    }
+
+    public void chooseImportPopup(List<String> importNames) {
+        if (importNames.size() == 1) {
+            String newImportName = importNames.get(0);
+            for (int i = 0; i < profiles.size(); i++) {
+                if (selectedProfile.getName().equals(profiles.get(i).getName())) {
+                    Profile updatedProfile = selectedProfile;
+                    updatedProfile.setImportProfile(newImportName);
+                    selectedProfile = updatedProfile;
+                    Preferences.addPreferenceToPosition(updatedProfile, i, this);
+                }
+            }
+            isImportInProfile = true;
+            checkImport();
+        } else {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setTitle("Choisissez un profil d'import");
+
+            String[] importArray = importNames.toArray(new String[0]);
+
+            AtomicInteger checkedItem = new AtomicInteger();
+            dialogBuilder.setSingleChoiceItems(importArray, checkedItem.get(), (dialog, which) -> checkedItem.set(which));
+
+            dialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+                String newImportName = importArray[checkedItem.get()];
+                for (int i = 0; i < profiles.size(); i++) {
+                    if (selectedProfile.getName().equals(profiles.get(i).getName())) {
+                        Profile updatedProfile = selectedProfile;
+                        updatedProfile.setImportProfile(newImportName);
+                        selectedProfile = updatedProfile;
+                        Preferences.addPreferenceToPosition(updatedProfile, i, this);
+                    }
+                }
+                isImportInProfile = true;
+                checkImport();
+            });
+            dialogBuilder.show();
+        }
+    }
+
+    public boolean isBaseInProfile(List<String> baseNames) {
+        for (String baseName : baseNames) {
+            if (baseName.equals(selectedProfile.getBase().getName()))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isImportInProfile(List<String> importsNames) {
+        for (String importName : importsNames) {
+            if (importName.equals(selectedProfile.getImportProfile()))
+                return true;
+        }
+        return false;
     }
 
     private boolean isRequestValid() {
@@ -644,7 +757,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("UPLOAD_SUCCESS", true);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,1,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
 
         notificationManager = NotificationManagerCompat.from(this);
 

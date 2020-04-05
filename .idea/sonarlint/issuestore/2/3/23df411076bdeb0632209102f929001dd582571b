@@ -1,12 +1,12 @@
 
-U
-java:S1118":Add a private constructor to hide the implicit public one.(úÜžèþÿÿÿÿ
-“
-java:S1319"xThe type of the "contributions" object should be an interface such as "List" rather than the implementation "ArrayList".(ô¸Ý¢ûÿÿÿÿ
+7
+java:S1643"Use a StringBuilder instead.(½Ôƒ§ùÿÿÿÿ
 †
 java:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(æŒ›”
 t	java:S115
 "ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ºµè€ýÿÿÿÿ
 n	java:S115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(°½ˆf
-7
-java:S1643"Use a StringBuilder instead.(½Ôƒ§ùÿÿÿÿ
+“
+java:S1319"xThe type of the "contributions" object should be an interface such as "List" rather than the implementation "ArrayList".(ô¸Ý¢ûÿÿÿÿ
+U
+java:S1118":Add a private constructor to hide the implicit public one.(úÜžèþÿÿÿÿ
