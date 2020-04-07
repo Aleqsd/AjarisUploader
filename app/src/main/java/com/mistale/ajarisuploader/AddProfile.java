@@ -4,8 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 
 import com.mistale.ajarisuploader.api.RequestAPI;
 import com.mistale.ajarisuploader.api.XMLParser;
@@ -23,7 +22,9 @@ import com.mistale.ajarisuploader.api.XMLParser;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class AddProfile extends AppCompatActivity {
 
@@ -32,6 +33,9 @@ public class AddProfile extends AppCompatActivity {
     private List<Base> currentBases = new ArrayList<>();
     private List<String> importProfile = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private boolean profileModification;
+    private HashMap<String, String> profileMap;
+    private int position;
 
     EditText inputName;
     EditText inputUrl;
@@ -68,6 +72,26 @@ public class AddProfile extends AppCompatActivity {
         this.addButton = findViewById(R.id.button_add);
         this.cancelButton = findViewById(R.id.button_cancel);
 
+        profileModification = false;
+
+        Intent intentReceived = getIntent();
+        Bundle extras = intentReceived.getExtras();
+        if (extras != null) {
+            if (extras.containsKey("profileMap")) {
+                profileMap = (HashMap<String, String>) extras.getSerializable("profileMap");
+                inputName.setText(profileMap.get("name"));
+                this.inputLogin.setEnabled(true);
+                this.inputPwd.setEnabled(true);
+                inputUrl.setText(profileMap.get("url"));
+                inputLogin.setText(profileMap.get("login"));
+                position = Integer.parseInt(profileMap.get("position"));
+                addButton.setText("Modifier le profil");
+
+                profileModification = true;
+            }
+        }
+
+
         this.inputUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 if (RequestAPI.urlIsValid(this.inputUrl.getText().toString(), this.progressDialog)) {
@@ -99,6 +123,13 @@ public class AddProfile extends AppCompatActivity {
             } else {
                 this.displayError(getString(R.string.missing_fields));
             }
+
+            try {
+                InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                Objects.requireNonNull(imm).hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(), 0);
+            } catch (Exception e) {
+                Log.e("ADDPROFILE", Objects.requireNonNull(e.getMessage()));
+            }
         });
 
         this.addButton.setOnClickListener(v -> {
@@ -123,11 +154,11 @@ public class AddProfile extends AppCompatActivity {
                 }
             }
 
-            String profilImport;
+            String profileImport;
             if (importProfile.size() == 1)
-                profilImport = importProfile.get(0);
+                profileImport = importProfile.get(0);
             else
-                profilImport = this.inputImport.getSelectedItem().toString();
+                profileImport = this.inputImport.getSelectedItem().toString();
 
             Profile profile = new Profile(
                     this.inputName.getText().toString(),
@@ -135,9 +166,14 @@ public class AddProfile extends AppCompatActivity {
                     this.inputPwd.getText().toString(),
                     url,
                     base,
-                    profilImport
+                    profileImport
             );
-            Preferences.addPreference(profile, AddProfile.this);
+
+            if (profileModification)
+                Preferences.addPreferenceToPosition(profile, position, this);
+            else
+                Preferences.addPreference(profile, AddProfile.this);
+
             Intent intent = new Intent(AddProfile.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

@@ -2,6 +2,7 @@ package com.mistale.ajarisuploader;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+
+import java.util.HashMap;
 
 public class ProfileDialogInfo extends DialogFragment {
 
@@ -21,10 +24,23 @@ public class ProfileDialogInfo extends DialogFragment {
         String url = getArguments().getString("url");
         String base = getArguments().getString("base");
         String importProfile = getArguments().getString("import");
+        int position = getArguments().getInt("position");
+
+        HashMap<String, String> profileMap = new HashMap<>();
+        profileMap.put("name", name);
+        profileMap.put("login", login);
+        profileMap.put("url", url);
+        profileMap.put("position", String.valueOf(position));
 
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.profile_dialog, null);
-        builder.setView(view).setNegativeButton(R.string.dialog_ok, (dialog, id) -> ProfileDialogInfo.this.getDialog().cancel());
+        builder.setView(view).setNegativeButton("Modifier", (dialog, id) -> {
+                    Intent intent = new Intent(this.getContext(), AddProfile.class);
+                    intent.putExtra("profileMap", profileMap);
+                    startActivity(intent);
+                }
+        );
+        builder.setView(view).setPositiveButton("Continuer", (dialog, id) -> ProfileDialogInfo.this.getDialog().cancel());
 
         TextView dialog_name = view.findViewById(R.id.dialog_name);
         TextView dialog_login = view.findViewById(R.id.dialog_login);

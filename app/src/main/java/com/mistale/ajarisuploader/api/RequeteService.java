@@ -28,6 +28,7 @@ public interface RequeteService {
     @POST("upImportDoc.do")
     Call<ResponseBody> uploadSingleFile(
             @Header("Cookie") String sessionid,
+            @Header("User-Agent") String userAgent,
             @Part MultipartBody.Part file,
             @Part("jsessionid") RequestBody jsessionid,
             @Part("ptoken") RequestBody ptoken,

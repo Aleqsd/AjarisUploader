@@ -1,9 +1,9 @@
 
-Œ
-java:S1319"vThe type of the "profileList" object should be an interface such as "List" rather than the implementation "ArrayList".(ºüÆÇ
 H
 java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ
 m
 java:S1450"WRemove the "activity" field and declare it as a local variable in the relevant methods.( §¶Ş
 †
 java:S13199"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(ˆŠ¯
+Œ
+java:S1319"vThe type of the "profileList" object should be an interface such as "List" rather than the implementation "ArrayList".(ºüÆÇ

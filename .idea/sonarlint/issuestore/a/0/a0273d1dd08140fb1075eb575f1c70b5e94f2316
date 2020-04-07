@@ -1,19 +1,19 @@
 
-T
-java:S1128"9Remove this unused import 'com.mistale.ajarisuploader.R'.(ÎóÇÅùÿÿÿÿ
-\
-java:S2142S"FEither re-interrupt this method or rethrow the "InterruptedException".(üŸ´Â
-S
-java:S1068"1Remove this unused "CONFIG_IMPORT" private field.(ş¬Ãóûÿÿÿÿ8àóŞ•.
 \
 java:S2142b"FEither re-interrupt this method or rethrow the "InterruptedException".(üŸ´Â
-P
-java:S1118":Add a private constructor to hide the implicit public one.(ŞØ
+T
+java:S1128"9Remove this unused import 'com.mistale.ajarisuploader.R'.(ÎóÇÅùÿÿÿÿ
 c
 java:S2142C"FEither re-interrupt this method or rethrow the "InterruptedException".(üŸ´Â8¹¿Ã“.
-c
-java:S21420"FEither re-interrupt this method or rethrow the "InterruptedException".(üŸ´Â8ùÉÆ“.
+P
+java:S1118":Add a private constructor to hide the implicit public one.(ŞØ
 \
 java:S2142!"FEither re-interrupt this method or rethrow the "InterruptedException".(üŸ´Â
 h
 java:S1128	"FRemove this unused import 'com.mistale.ajarisuploader.UploadActivity'.(Ïîòúÿÿÿÿ8ÿÊ­Ô“.
+S
+java:S1068"1Remove this unused "CONFIG_IMPORT" private field.(ş¬Ãóûÿÿÿÿ8àóŞ•.
+\
+java:S2142S"FEither re-interrupt this method or rethrow the "InterruptedException".(üŸ´Â
+c
+java:S21420"FEither re-interrupt this method or rethrow the "InterruptedException".(üŸ´Â8ùÉÆ“.

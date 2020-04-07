@@ -198,6 +198,11 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         }
     }
 
+    private void TEST() {
+        selectedProfile.setBase(new Base(8, "Mistale"));
+        Preferences.addPreferenceToPosition(selectedProfile, 6, this);
+    }
+
     // ======================================= UI FUNCTIONS =======================================
 
     private void setupUI() {
@@ -344,8 +349,15 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 Map<String, String> params = new HashMap<>();
                 params.put("pseudo", selectedProfile.getLogin());
                 params.put("password", selectedProfile.getPwd());
-                params.put("ajaupmo", "androidUpload");
+                params.put("ajaupmo", "Mozilla/5.0 AjarisUpLoaderMobile");
                 return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("User-Agent", "Mozilla/5.0 AjarisUpLoaderMobile");
+                return headers;
             }
         };
         queue.add(getRequest);
@@ -489,7 +501,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 params.put("jsessionid", sessionid);
                 params.put("ptoken", ptoken);
                 params.put("config", config);
-                params.put("ajaupmo", "androidUpload");
+                params.put("ajaupmo", "Mozilla/5.0 AjarisUpLoaderMobile");
                 return params;
             }
 
@@ -497,6 +509,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Cookie", "JSESSIONID=" + sessionid);
+                headers.put("User-Agent", "Mozilla/5.0 AjarisUpLoaderMobile");
                 return headers;
             }
         };
@@ -524,10 +537,11 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
 
         String sessionIdCookie = "JSESSIONID=" + sessionid;
+        String userAgent = "Mozilla/5.0 AjarisUpLoaderMobile";
 
         RequeteService requeteService = RestService.getClient(selectedProfile.getUrl()).create(RequeteService.class);
 
-        Call<ResponseBody> call = requeteService.uploadSingleFile(sessionIdCookie, body, sess, ptok, ajau, cont, docu, contr);
+        Call<ResponseBody> call = requeteService.uploadSingleFile(sessionIdCookie, userAgent, body, sess, ptok, ajau, cont, docu, contr);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -593,9 +607,10 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
 
         String sessionIdCookie = "JSESSIONID=" + sessionid;
+        String userAgent = "Mozilla/5.0 AjarisUpLoaderMobile";
 
         RequeteService requeteService = RestService.getClient(selectedProfile.getUrl()).create(RequeteService.class);
-        Call<ResponseBody> call = requeteService.uploadSingleFile(sessionIdCookie, body, sess, ptok, ajau, cont, docu, contr);
+        Call<ResponseBody> call = requeteService.uploadSingleFile(sessionIdCookie, userAgent, body, sess, ptok, ajau, cont, docu, contr);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
