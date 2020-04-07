@@ -120,6 +120,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private NotificationManagerCompat notificationManager;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static final String AJAUPMO_VALUE = "Android:"+android.os.Build.VERSION.RELEASE+":"+ BuildConfig.VERSION_NAME;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -199,8 +200,8 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     }
 
     private void TEST() {
-        selectedProfile.setBase(new Base(8, "Mistale"));
-        Preferences.addPreferenceToPosition(selectedProfile, 6, this);
+        selectedProfile.setImportProfile("Mistale");
+        Preferences.addPreferenceToPosition(selectedProfile, 0, this);
     }
 
     // ======================================= UI FUNCTIONS =======================================
@@ -327,6 +328,8 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                     uploadmaxfilesize = Integer.parseInt(removeLastChar(Objects.requireNonNull(XMLParser.getDocumentTag(doc, "uploadmaxfilesize"))));
                     config = XMLParser.getConfig(doc);
 
+                    //TEST();
+
                     baseNamesFromConnexion = XMLParser.getMultipleDocumentTag(doc, "bases");
                     importNamesFromConnexion = XMLParser.getMultipleDocumentTag(doc, "imports");
                     isBaseInProfile = isBaseInProfile(baseNamesFromConnexion);
@@ -349,7 +352,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 Map<String, String> params = new HashMap<>();
                 params.put("pseudo", selectedProfile.getLogin());
                 params.put("password", selectedProfile.getPwd());
-                params.put("ajaupmo", "Mozilla/5.0 AjarisUpLoaderMobile");
+                params.put("ajaupmo", AJAUPMO_VALUE);
                 return params;
             }
 
@@ -501,7 +504,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
                 params.put("jsessionid", sessionid);
                 params.put("ptoken", ptoken);
                 params.put("config", config);
-                params.put("ajaupmo", "Mozilla/5.0 AjarisUpLoaderMobile");
+                params.put("ajaupmo", AJAUPMO_VALUE);
                 return params;
             }
 
@@ -531,7 +534,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
         RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
-        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "androidUpload");
+        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), AJAUPMO_VALUE);
         RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), description);
         RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedProfile.getBase().getNumber()));
         RequestBody contr = RequestBody.create(MediaType.parse("text/plain"), "true");
@@ -600,7 +603,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
         RequestBody sess = RequestBody.create(MediaType.parse("text/plain"), sessionid);
         RequestBody ptok = RequestBody.create(MediaType.parse("text/plain"), ptoken);
-        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), "androidUpload");
+        RequestBody ajau = RequestBody.create(MediaType.parse("text/plain"), AJAUPMO_VALUE);
         String description = textDescription.getText().toString();
         RequestBody cont = RequestBody.create(MediaType.parse("text/plain"), description);
         RequestBody docu = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedProfile.getBase().getNumber()));
@@ -649,12 +652,12 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
     private void disconnect(boolean uploadSucceded) {
         if (uploadSucceded) {
-            if (RequestAPI.isLoggedOut(selectedProfile.getUrl(), sessionid)) {
+            if (RequestAPI.isLoggedOut(selectedProfile.getUrl(), sessionid,this)) {
                 uploadSuccessAction();
             } else
                 Toast.makeText(UploadActivity.this, "Problème survenu lors de la déconnexion", Toast.LENGTH_LONG).show();
         } else
-            RequestAPI.isLoggedOut(selectedProfile.getUrl(), sessionid);
+            RequestAPI.isLoggedOut(selectedProfile.getUrl(), sessionid,this);
     }
 
     private void uploadSuccessAction() {

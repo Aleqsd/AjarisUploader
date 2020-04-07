@@ -123,6 +123,20 @@ public class XMLParser {
         return errorMessage;
     }
 
+    public static String getErrorMessageForLogout(Document doc) {
+        if (doc == null) return "";
+        String errorMessage = "";
+
+        NodeList nList = doc.getElementsByTagName("result");
+        Node nNode = nList.item(0);
+
+        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element eElement = (Element) nNode;
+            errorMessage = eElement.getElementsByTagName("message").item(0).getTextContent();
+        }
+        return errorMessage;
+    }
+
     public static String getConfig(Document doc) {
         if (doc == null) return "";
         String configValue = "";

@@ -94,13 +94,13 @@ public class AddProfile extends AppCompatActivity {
 
         this.inputUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                if (RequestAPI.urlIsValid(this.inputUrl.getText().toString(), this.progressDialog)) {
+                if (RequestAPI.urlIsValid(this.inputUrl.getText().toString(), this.progressDialog, this)) {
                     this.inputLogin.setEnabled(true);
                     this.inputPwd.setEnabled(true);
                 } else {
                     this.inputLogin.setEnabled(false);
                     this.inputPwd.setEnabled(false);
-                    this.displayError(getString(R.string.wrong_url));
+                    //this.displayError(getString(R.string.wrong_url));
                 }
             }
         });
@@ -125,7 +125,7 @@ public class AddProfile extends AppCompatActivity {
             }
 
             try {
-                InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 Objects.requireNonNull(imm).hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(), 0);
             } catch (Exception e) {
                 Log.e("ADDPROFILE", Objects.requireNonNull(e.getMessage()));
@@ -134,7 +134,7 @@ public class AddProfile extends AppCompatActivity {
 
         this.addButton.setOnClickListener(v -> {
             if (this.isLogged) {
-                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog);
+                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog, this);
             }
 
             String url = this.inputUrl.getText().toString();
@@ -182,14 +182,14 @@ public class AddProfile extends AppCompatActivity {
 
         this.cancelButton.setOnClickListener(v -> {
             if (this.isLogged) {
-                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog);
+                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog, this);
             }
             finish();
         });
     }
 
     public void populateBasesAndImports() {
-        this.lastDocument = RequestAPI.getLoginInfos(this.inputUrl.getText().toString(), this.inputLogin.getText().toString(), this.inputPwd.getText().toString(), this.progressDialog);
+        this.lastDocument = RequestAPI.getLoginInfos(this.inputUrl.getText().toString(), this.inputLogin.getText().toString(), this.inputPwd.getText().toString(), this.progressDialog, this);
         if (this.lastDocument != null) {
             this.isLogged = true;
             this.addButton.setEnabled(true);
@@ -222,7 +222,7 @@ public class AddProfile extends AppCompatActivity {
             this.validateLogin.setVisibility(Button.INVISIBLE);
         } else {
             if (this.isLogged) {
-                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog);
+                RequestAPI.isLoggedOut(inputUrl.getText().toString(), XMLParser.getDocumentTag(this.lastDocument, "sessionid"), progressDialog, this);
             }
             this.basesArray.clear();
             this.importsArray.clear();
@@ -232,7 +232,7 @@ public class AddProfile extends AppCompatActivity {
             this.textBase.setVisibility(TextView.INVISIBLE);
             this.textProfil.setVisibility(TextView.INVISIBLE);
             this.validateLogin.setVisibility(Button.VISIBLE);
-            this.displayError(getString(R.string.wrong_login));
+            //this.displayError(getString(R.string.wrong_login));
         }
 
         ArrayAdapter<String> adapterBases = new ArrayAdapter<>(
