@@ -98,6 +98,13 @@ public class AddProfile extends AppCompatActivity {
                     this.inputLogin.setEnabled(true);
                     this.inputPwd.setEnabled(true);
                 } else {
+                    try {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        Objects.requireNonNull(imm).hideSoftInputFromWindow(Objects.requireNonNull(v.getWindowToken()), 0);
+                    } catch (Exception e) {
+                        Log.e("ADDPROFILE", Objects.requireNonNull(e.getMessage()));
+                    }
+
                     this.inputLogin.setEnabled(false);
                     this.inputPwd.setEnabled(false);
                     //this.displayError(getString(R.string.wrong_url));
@@ -118,7 +125,7 @@ public class AddProfile extends AppCompatActivity {
         });
 
         this.validateLogin.setOnClickListener(v -> {
-            if (!this.inputLogin.getText().toString().equals("") && !this.inputLogin.getText().toString().equals("")) {
+            if (!this.inputLogin.getText().toString().equals("") && !this.inputPwd.getText().toString().equals("")) {
                 this.populateBasesAndImports();
             } else {
                 this.displayError(getString(R.string.missing_fields));

@@ -1,19 +1,19 @@
 
-f	java:S117#"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(´…±
-f	java:S117$"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(…£ğ
+E
+java:S1128"/Remove this unused import 'retrofit2.http.GET'.(¬ü‰´
 Q
 java:S1128"/Remove this unused import 'retrofit2.http.Url'.(ò¥š¾øÿÿÿÿ8‰†º’.
-I
-java:S1128"3Remove this unused import 'retrofit2.http.Headers'.(…ŒÏó
 F
 java:S1128"0Remove this unused import 'retrofit2.http.Path'.(íøŠ¡
+G
+java:S1128"1Remove this unused import 'retrofit2.http.Query'.(ÔÑîì
 F
 java:S1128
 "0Remove this unused import 'retrofit2.http.Body'.(º–øÚ
 F
 java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ
-V	java:S107"<Method has 8 parameters, which is greater than 7 authorized.(õÛ¸Ôşÿÿÿÿ
-G
-java:S1128"1Remove this unused import 'retrofit2.http.Query'.(ÔÑîì
-E
-java:S1128"/Remove this unused import 'retrofit2.http.GET'.(¬ü‰´
+V	java:S107"<Method has 9 parameters, which is greater than 7 authorized.(õÛ¸Ôşÿÿÿÿ
+f	java:S117$"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(´…±
+I
+java:S1128"3Remove this unused import 'retrofit2.http.Headers'.(…ŒÏó
+m	java:S117%"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(…£ğ8Ìş¯š.

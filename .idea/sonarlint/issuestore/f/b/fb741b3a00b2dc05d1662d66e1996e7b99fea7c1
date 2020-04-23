@@ -1,55 +1,59 @@
 
-X	java:S125R"<This block of commented-out lines of code should be removed.(²±…é8ªë•.
-b
-java:S1117Î"?Rename "description" which hides the field declared at line 88.(Ï¹ÜÏùÿÿÿÿ8åñ™Ñ”.
-c
-java:S2184×"@Cast one of the operands of this integer division to a "double".(ô›÷ÿÿÿÿÿ8åñ™Ñ”.
-‹
-java:S4165ê"mRemove this useless assignment; "selectedProfile" already holds the assigned value along all execution paths.(ÂöÈÿ8‡ÒìÒ”.
-r
-java:S1192Ä"ODefine a constant instead of duplicating this literal "UPLOAD_SUCCESS" 3 times.(ºûıúúÿÿÿÿ8ºËôÓ“.
-k
-java:S1117Õ"HRename "notificationManager" which hides the field declared at line 120.(ıì×íûÿÿÿÿ8åñ™Ñ”.
-L
-java:S1481°")Remove this unused "code" local variable.(§ÚÇäüÿÿÿÿ8åñ™Ñ”.
-[
-java:S1854°"8Remove this useless assignment to local variable "code".(§ÚÇäüÿÿÿÿ8åñ™Ñ”.
-{
-java:S3008{"^Rename this field "PERMISSIONS_STORAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±Ìä¯8×ßÃ’.
-u
-java:S3776¥"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(ô•û‘şÿÿÿÿ8åñ™Ñ”.
-n	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ñ²ùÏ8åñ™Ñ”.
-j
-java:S1192‡"LDefine a constant instead of duplicating this literal "text/plain" 12 times.(½âáŸ8ü¹ÓĞ”.
-u
-java:S3776â"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(¸Ş¢Æşÿÿÿÿ8¸ÙÑÒ”.
+„
+java:S1192ì"aDefine a constant instead of duplicating this literal "Mozilla/5.0 AjarisUpLoaderMobile" 4 times.(¼¼ÌÚÿÿÿÿÿ8Éş¯š.
+Y	java:S125Í"<This block of commented-out lines of code should be removed.(€›Ù8Â¨°š.
 ]
-java:S1117Ï"?Rename "description" which hides the field declared at line 88.(ù±ˆ8åñ™Ñ”.
-o
-java:S1192ó"LDefine a constant instead of duplicating this literal "JSESSIONID=" 3 times.(êÑªéúÿÿÿÿ8åñ™Ñ”.
-¤
-java:S1186ö"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¹Æº×şÿÿÿÿ8õªÀ™.
-V
-java:S1117µ"8Rename "uri" which hides the field declared at line 114.(úÜÆ˜8åñ™Ñ”.
+java:S1117ã"?Rename "description" which hides the field declared at line 88.(ù±ˆ8©«Œ°š.
 ‹
-java:S4165”"mRemove this useless assignment; "selectedProfile" already holds the assigned value along all execution paths.(ÂöÈÿ8ª‹ìÒ”.
+java:S4165¥"mRemove this useless assignment; "selectedProfile" already holds the assigned value along all execution paths.(ÂöÈÿ8©«Œ°š.
+}
+java:S1192ã"ZDefine a constant instead of duplicating this literal "Erreur de profil d'import" 3 times.(òÚÛÿÿÿÿÿ8©«Œ°š.
 }
 java:S1450`"[Remove the "imagePreview" field and declare it as a local variable in the relevant methods.(º±¦úÿÿÿÿ8ûúª©“.
 ^
-java:S2184¯"@Cast one of the operands of this integer division to a "double".(†Ñçá8åñ™Ñ”.
-p
-java:S2259¯"M"NullPointerException" will be thrown when invoking method "adaptRotation()".(¿›´ÿÿÿÿÿ8İÁ§“.
-Z
-java:S2589‹"7Remove this expression which always evaluates to "true"(†şñ½ÿÿÿÿÿ8ËãüÒ”.
+java:S2184Ã"@Cast one of the operands of this integer division to a "double".(†Ñçá8©«Œ°š.
+V
+java:S1117È"8Rename "uri" which hides the field declared at line 114.(úÜÆ˜8©«Œ°š.
 ]
-java:S1117ì"?Rename "description" which hides the field declared at line 88.(ù±ˆ8åñ™Ñ”.
-k
-java:S1117ò"HRename "notificationManager" which hides the field declared at line 120.(ıì×íûÿÿÿÿ8åñ™Ñ”.
-j
-java:S1192Ñ"GDefine a constant instead of duplicating this literal "Ajaris" 4 times.(Ñ±¿¹øÿÿÿÿ8åñ™Ñ”.
-}
-java:S1192Ò"ZDefine a constant instead of duplicating this literal "Erreur de profil d'import" 3 times.(òÚÛÿÿÿÿÿ8åñ™Ñ”.
-l
-java:S1192Û"NDefine a constant instead of duplicating this literal "androidUpload" 4 times.(‡”¬²8ü¹ÓĞ”.
+java:S1117€"?Rename "description" which hides the field declared at line 88.(ù±ˆ8©«Œ°š.
+[
+java:S1854Ä"8Remove this useless assignment to local variable "code".(§ÚÇäüÿÿÿÿ8©«Œ°š.
 z
-java:S3252˜"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(£Úµ¥ÿÿÿÿÿ8åñ™Ñ”.
+java:S3252¬"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(£Úµ¥ÿÿÿÿÿ8©«Œ°š.
+X	java:S125R"<This block of commented-out lines of code should be removed.(²±…é8ªë•.
+L
+java:S1481Ä")Remove this unused "code" local variable.(§ÚÇäüÿÿÿÿ8©«Œ°š.
+L
+java:S1144Ê")Remove this unused private "TEST" method.(ë“æ‚üÿÿÿÿ8Éş¯š.
+¤
+java:S1186ü"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¹Æº×şÿÿÿÿ8õªÀ™.
+p
+java:S2259µ"M"NullPointerException" will be thrown when invoking method "adaptRotation()".(¿›´ÿÿÿÿÿ8İÁ§“.
+j
+java:S1192å"GDefine a constant instead of duplicating this literal "Ajaris" 4 times.(Ñ±¿¹øÿÿÿÿ8©«Œ°š.
+u
+java:S3776ó"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(¸Ş¢Æşÿÿÿÿ8©«Œ°š.
+k
+java:S1117†"HRename "notificationManager" which hides the field declared at line 120.(ıì×íûÿÿÿÿ8©«Œ°š.
+b
+java:S1117á"?Rename "description" which hides the field declared at line 88.(Ï¹ÜÏùÿÿÿÿ8©«Œ°š.
+u
+java:S3776¹"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(ô•û‘şÿÿÿÿ8©«Œ°š.
+c
+java:S2184ë"@Cast one of the operands of this integer division to a "double".(ô›÷ÿÿÿÿÿ8©«Œ°š.
+‹
+java:S4165û"mRemove this useless assignment; "selectedProfile" already holds the assigned value along all execution paths.(ÂöÈÿ8©«Œ°š.
+j
+java:S1192™"LDefine a constant instead of duplicating this literal "text/plain" 12 times.(½âáŸ8ü¹ÓĞ”.
+r
+java:S1192Å"ODefine a constant instead of duplicating this literal "UPLOAD_SUCCESS" 3 times.(ºûıúúÿÿÿÿ8ºËôÓ“.
+n	java:S117£"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ñ²ùÏ8©«Œ°š.
+Z
+java:S2589‘"7Remove this expression which always evaluates to "true"(†şñ½ÿÿÿÿÿ8ËãüÒ”.
+k
+java:S1117é"HRename "notificationManager" which hides the field declared at line 120.(ıì×íûÿÿÿÿ8©«Œ°š.
+p	java:S100Ê"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ë“æ‚üÿÿÿÿ8Éş¯š.
+{
+java:S3008|"^Rename this field "PERMISSIONS_STORAGE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(±Ìä¯8×ßÃ’.
+o
+java:S1192„"LDefine a constant instead of duplicating this literal "JSESSIONID=" 3 times.(êÑªéúÿÿÿÿ8©«Œ°š.

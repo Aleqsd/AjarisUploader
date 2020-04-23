@@ -20,7 +20,7 @@ public class RequestAPI {
     private static final String LOGIN = "/upLogin.do";
     private static final String LOGOUT = "/upLogout.do";
     private static final String USER_AGENT = "Mozilla/5.0 AjarisUpLoaderMobile";
-    private static final String AJAUPMO_VALUE = "Android:"+android.os.Build.VERSION.RELEASE+":"+ BuildConfig.VERSION_NAME;
+    private static final String AJAUPMO_VALUE = "Android:" + android.os.Build.VERSION.RELEASE + ":" + BuildConfig.VERSION_NAME;
 
     public static boolean urlIsValid(String url, ProgressDialog progressDialog, Context context) {
         url = url.replaceAll("/$", "");
@@ -32,8 +32,10 @@ public class RequestAPI {
             String result = getRequest.execute(url + CHECK + "?User-Agent=" + USER_AGENT).get();
             urlDocument = XMLParser.readXML(result);
             isValid = XMLParser.getErrorCode(urlDocument) == 0;
-            if (result == null)
+            if (result == null) {
                 Toast.makeText(context, "URL invalide", Toast.LENGTH_LONG).show();
+                isValid = false;
+            }
         } catch (InterruptedException | ExecutionException e) {
             Toast.makeText(context, XMLParser.getErrorMessage(urlDocument), Toast.LENGTH_LONG).show();
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));

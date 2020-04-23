@@ -120,7 +120,7 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
     private NotificationManagerCompat notificationManager;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static final String AJAUPMO_VALUE = "Android:"+android.os.Build.VERSION.RELEASE+":"+ BuildConfig.VERSION_NAME;
+    private static final String AJAUPMO_VALUE = "Android:" + android.os.Build.VERSION.RELEASE + ":" + BuildConfig.VERSION_NAME;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -320,8 +320,10 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
         StringRequest getRequest = new StringRequest(Request.Method.POST, selectedProfile.getUrl() + "/upLogin.do",
                 response -> {
                     Document doc = XMLParser.readXML(response);
-                    if (doc == null)
+                    if (doc == null) {
                         Toast.makeText(UploadActivity.this, "Erreur de connexion", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     Log.d(TAG, MessageFormat.format("Session id : {0}", XMLParser.getDocumentTag(doc, "sessionid")));
                     sessionid = XMLParser.getDocumentTag(doc, "sessionid");
                     ptoken = XMLParser.getDocumentTag(doc, "ptoken");
@@ -652,12 +654,12 @@ public class UploadActivity extends AppCompatActivity implements ProgressRequest
 
     private void disconnect(boolean uploadSucceded) {
         if (uploadSucceded) {
-            if (RequestAPI.isLoggedOut(selectedProfile.getUrl(), sessionid,this)) {
+            if (RequestAPI.isLoggedOut(selectedProfile.getUrl(), sessionid, this)) {
                 uploadSuccessAction();
             } else
                 Toast.makeText(UploadActivity.this, "Problème survenu lors de la déconnexion", Toast.LENGTH_LONG).show();
         } else
-            RequestAPI.isLoggedOut(selectedProfile.getUrl(), sessionid,this);
+            RequestAPI.isLoggedOut(selectedProfile.getUrl(), sessionid, this);
     }
 
     private void uploadSuccessAction() {
