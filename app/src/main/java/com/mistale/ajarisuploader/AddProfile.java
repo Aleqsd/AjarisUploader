@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.mistale.ajarisuploader.api.RequestAPI;
 import com.mistale.ajarisuploader.api.XMLParser;
@@ -48,6 +51,7 @@ public class AddProfile extends AppCompatActivity {
     Button validateLogin;
     Button addButton;
     Button cancelButton;
+    ConstraintLayout constraintLayout;
 
     List<String> basesArray = new ArrayList<>();
     List<String> importsArray = new ArrayList<>();
@@ -71,6 +75,7 @@ public class AddProfile extends AppCompatActivity {
         this.validateLogin = findViewById(R.id.input_validate_login);
         this.addButton = findViewById(R.id.button_add);
         this.cancelButton = findViewById(R.id.button_cancel);
+        this.constraintLayout = findViewById(R.id.constraint_layout_add_profile);
 
         profileModification = false;
 
@@ -196,6 +201,12 @@ public class AddProfile extends AppCompatActivity {
     }
 
     public void populateBasesAndImports() {
+
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
+        constraintSet.connect(R.id.button_add, ConstraintSet.TOP,R.id.textInputLayout6,ConstraintSet.TOP,128);
+        constraintSet.applyTo(constraintLayout);
+
         this.lastDocument = RequestAPI.getLoginInfos(this.inputUrl.getText().toString(), this.inputLogin.getText().toString(), this.inputPwd.getText().toString(), this.progressDialog, this);
         if (this.lastDocument != null) {
             this.isLogged = true;

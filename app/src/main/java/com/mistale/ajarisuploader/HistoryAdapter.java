@@ -47,7 +47,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, final int position) {
         final Contribution contribution = contributionList.get(position);
-        holder.setIdAndComment(contribution.getId() + " : " +contribution.getUploads().get(0).getComment());
+        String description = contribution.getUploads().get(0).getComment();
+        if (description.length() > 40)
+            description = description.substring(0,40) + "...";
+        holder.setIdAndComment(contribution.getId() + " : " + description);
         holder.setLogin(Integer.toString(contribution.getNumberOfUploads()));
         holder.setProfile(contribution.getUploads().get(0).getProfile().getName());
     }
