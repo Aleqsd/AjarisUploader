@@ -174,7 +174,7 @@ public class AddProfile extends AppCompatActivity {
 
             Profile profile = new Profile(
                     this.inputName.getText().toString(),
-                    this.inputLogin.getText().toString(),
+                    this.inputLogin.getText().toString().trim(),
                     this.inputPwd.getText().toString(),
                     url,
                     base,
@@ -207,7 +207,7 @@ public class AddProfile extends AppCompatActivity {
         constraintSet.connect(R.id.button_add, ConstraintSet.TOP,R.id.textInputLayout6,ConstraintSet.TOP,128);
         constraintSet.applyTo(constraintLayout);
 
-        this.lastDocument = RequestAPI.getLoginInfos(this.inputUrl.getText().toString(), this.inputLogin.getText().toString(), this.inputPwd.getText().toString(), this.progressDialog, this);
+        this.lastDocument = RequestAPI.getLoginInfos(this.inputUrl.getText().toString(), this.inputLogin.getText().toString().trim(), this.inputPwd.getText().toString(), this.progressDialog, this);
         if (this.lastDocument != null) {
             this.isLogged = true;
             this.addButton.setEnabled(true);
