@@ -25,6 +25,7 @@ public class XMLParser {
         if (xmlString == null) return null;
         xmlString = xmlString.replaceAll("\\t", "");
         xmlString = xmlString.replaceAll("\\n", "");
+        xmlString = xmlString.replaceAll("\\r", "");
         xmlString = "<result>" + xmlString.split("<result>")[1];
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;
@@ -41,6 +42,7 @@ public class XMLParser {
         if (xmlString == null) return null;
         xmlString = xmlString.replaceAll("\\t", "");
         xmlString = xmlString.replaceAll("\\n", "");
+        xmlString = xmlString.replaceAll("\\r", "");
         xmlString = "<upload-result>" + xmlString.split("<upload-result>")[1];
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;
