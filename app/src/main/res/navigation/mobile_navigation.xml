@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_profiles"
-        android:name="com.mistale.ajarisuploader.Profiles"
+        android:name="com.orkis.ajarisuploader.Profiles"
         android:label="@string/title_profiles"
         tools:layout="@layout/profiles_fragment" />
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.mistale.ajarisuploader.History"
+        android:name="com.orkis.ajarisuploader.History"
         android:label="@string/title_history"
         tools:layout="@layout/history_fragment" />
 
     <fragment
         android:id="@+id/navigation_about"
-        android:name="com.mistale.ajarisuploader.About"
+        android:name="com.orkis.ajarisuploader.About"
         android:label="@string/title_about"
         tools:layout="@layout/about_fragment" />
 </navigation>

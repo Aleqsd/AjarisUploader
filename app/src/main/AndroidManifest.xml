@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mistale.ajarisuploader">
+    package="com.orkis.ajarisuploader">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -16,15 +16,15 @@
         android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
 
         <activity
-            android:name="com.mistale.ajarisuploader.AddProfile"
+            android:name="com.orkis.ajarisuploader.AddProfile"
             android:label="@string/title_activity_add_profile"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.mistale.ajarisuploader.UploadActivity"
+            android:name="com.orkis.ajarisuploader.UploadActivity"
             android:label="@string/title_activity_upload"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.mistale.ajarisuploader.MainActivity"
+            android:name="com.orkis.ajarisuploader.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

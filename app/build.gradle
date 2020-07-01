@@ -4,11 +4,11 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
-        applicationId "com.mistale.ajarisuploader"
+        applicationId "com.orkis.ajarisuploader"
         minSdkVersion 18
         targetSdkVersion 29
-        versionCode 15
-        versionName "1.50"
+        versionCode 16
+        versionName "1.51"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
