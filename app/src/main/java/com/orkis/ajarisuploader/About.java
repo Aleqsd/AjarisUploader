@@ -26,7 +26,7 @@ public class About extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         TextView textView = getView().findViewById(R.id.about_version);
-        textView.setText("Ajaris Uploader Mobile " + BuildConfig.VERSION_NAME);
+        textView.setText("Ajaris-Uploader Mobile " + BuildConfig.VERSION_NAME);
     }
 
     @Override
